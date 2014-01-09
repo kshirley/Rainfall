@@ -4,4 +4,15 @@ Kenny:
 1. Look up  papers that cite Sanso & Guenni 2000.
  - JABES
  - Bayesian Analysis
+These are possible outlets for our paper.
+
+2. Ask Dan about updated data for all 15 time series.
+
+3. Consider some out-of-sample (one-year-ahead) predictions.
+  - maybe there is some quantity of interest that we really care about, like onset time, or sum of rainfall over some stretch of time...
+
+4. Update the model writeup (the current version is the occurrence of rainfall, rather than the tobit model).
+
+
+
 
