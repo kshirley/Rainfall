@@ -1,17 +1,38 @@
 
 Kenny:
 
-1. Look up  papers that cite Sanso & Guenni 2000.
+1. Look up  papers that cite Sanso & Guenni 2000. Especially in:
  - JABES
  - Bayesian Analysis
 These are possible outlets for our paper.
 
-2. Ask Dan about updated data for all 15 time series.
+2. Update the model writeup (the current version is the occurrence of rainfall, rather than the tobit model).
 
-3. Consider some out-of-sample (one-year-ahead) predictions.
+
+Katya:
+1. Ask Dan about updated data for all 15 time series.
+
+2. Consider some out-of-sample (one-year-ahead) predictions.
   - maybe there is some quantity of interest that we really care about, like onset time, or sum of rainfall over some stretch of time...
 
-4. Update the model writeup (the current version is the occurrence of rainfall, rather than the tobit model).
+3. Next step with the data:
+
+Simulate n.sim = 1000 'copies' of the year 2011 for all 15 time series.
+
+  - i.e. this is a model for daily rainfall amounts, so there will be 365*15*1000 numbers.
+  - Because it's a tobit model, many of them will be zero, and the rest will be positive.
+  - aim for a 15 x 365 x 1000 array: y.sim <- array(NA, dim=c(15, 365, 1000))
+
+Next, draw a summary of the predictions that is comparable to figure 3.
+  - 15 plots for left side of figure 3: occurence of rain. Just compute the vector of length 365 of % of rainy days for each site. Can pool 5-days into one point if you want. 5-day pooled percentages should be smoother.
+
+  - 15 plots for the right side of figure 3, too. Choose 5-day pools if you wish (for a smoother plot).
+
+  - Let's super-impose the observed data (the gray lines) from Figure 3. Given that we are making 2011 predictions, if the linear trend is estimated to be large, then the predictions might not line up with the gray lines (the observed data), since they show the data from 1960 - 2010. But in practice, the predictions should be close (because the linear trend isn't that huge).
+
+
+
+
 
 
 
