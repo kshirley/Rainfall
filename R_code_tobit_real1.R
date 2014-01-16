@@ -3,9 +3,9 @@
 rm(list=ls())
 #source("~/Stats/Misc/myRfunctions.R")
 #data.path <- "~/Stats/IndexInsurance/AdiHa supporting data/"
-setwd("/Users/kathrynvasilaky/SkyDrive/IRI/RainfallSimulation/R")
+setwd("/Users/kathrynvasilaky/SkyDrive/IRI/RainfallSimulation/R/Rainfall")
 #setwd("/Users/katyav/SkyDrive/IRI/RainfallSimulation/R")
-path <- getwd()#"~/SkyDrive/IRI/RainfallSimulation/R/"  # enter in here wherever you want to store the scripts and data files
+path <- getwd()#"~/SkyDrive/IRI/RainfallSimulation/R/Rainfall"  # enter in here wherever you want to store the scripts and data files
 path <- paste(path,'/', sep='')
 source(paste(path,"R code multisite covariance scripts.R",sep=""))  # read in some scripts I wrote
 #library(bayesm)
@@ -56,11 +56,15 @@ site.names <- unlist(strsplit(rownames(data),"_")[seq(1,by=2,length=6)])[seq(1,b
 # Read in Nino 3.4 index:
 # KV - this index may come from here: http://www.cgd.ucar.edu/cas/catalog/climind/TNI_N34/
 nino <- read.table(paste(path,"nino34.long.data",sep=""),colClasses=rep("numeric",13))
+#vectorize data into one column
 nino <- matrix(t(as.matrix(nino[,-1])),ncol=1)
+#Make all dates
 nino.dates <- paste(rep(1871:2010,each=12),unique(months(date.string)),sep=" ")
+#cut dates and data off
 nino <- nino[1:1672]; nino.dates <- nino.dates[1:1672]  # nino only goes through April 2010.
 
 # subselect just the months that align with the rainfall data:
+#what index should the data start at?
 w <- which(nino.dates=="1991 October") # going 3 months before first rainfall month
 nino <- nino[w:length(nino.dates)]
 nino.dates <- nino.dates[w:1672]
@@ -75,6 +79,10 @@ nino.dates <- c(nino.dates,paste("2010",month.names[5:7]))
 nino <- nino - mean(nino)
 month.vec <- match(months(date.string),month.names)
 month.mat <- matrix(0,T,12)
+#repeat month data 18 times, add in 6 more months
+#this: c(rep(month.days,18),month.days[1:6],28), constructs 18 repeats of the months, plus the first 6 months plus one more element of 28
+#so nino[1:223] are the values for each of 223 months, which is the latter expression, so each value of nino will be repeated the number of days in the 223 months
+
 month.mat[cbind(1:T,month.vec)] <- rep(nino[1:223],c(rep(month.days,18),month.days[1:6],28))
 
 
@@ -360,13 +368,12 @@ t2 <- Sys.time()
 t2-t1
 
 
-
 gibbs.list <- list(mu.gibbs=mu.gibbs,sigma.gibbs=sigma.gibbs,alpha.gibbs=alpha.gibbs,lambda.gibbs=lambda.gibbs,tau.gibbs=tau.gibbs,beta.gibbs=beta.gibbs,
                    mu.arc.gibbs=mu.arc.gibbs,tau.arc.gibbs=tau.arc.gibbs,beta.arc.gibbs=beta.arc.gibbs,Sigma.gibbs=Sigma.gibbs,W.gibbs=W.gibbs)
-save(gibbs.list,file=paste(path,"gibbs_out_11112013_G5000.RData",sep=""))
+save(gibbs.list,file=paste(path,"gibbs_out_01152014_G5000.RData",sep=""))
 
 
-load(file=paste(path,"gibbs_out_11112013_G5000.RData",sep=""))
+load(file=paste(path,"gibbs_out_01152014_G5000.RData",sep=""))
 for (i in 1:length(gibbs.list)) assign(names(gibbs.list)[i],gibbs.list[[i]])
 
 
@@ -574,10 +581,8 @@ for (s in 1:S) Sigma.start[[s]] <- apply(Sigma.gibbs[[s]][,post.burn,,],c(1,3,4)
 start.list <- list(mu.start=mu.start,sigma.start=sigma.start,alpha.start=alpha.start,lambda.start=lambda.start,
                    tau.start=tau.start,beta.start=beta.start,mu.arc.start=mu.arc.start,tau.arc.start=tau.arc.start,
                    beta.arc.start=beta.arc.start,Sigma.start=Sigma.start)
-save(start.list,file=paste(path,"start_list_v3.RData",sep=""))
+save(start.list,file=paste(path,"start_list_v4.RData",sep=""))
 # v3 is the G=5000 output from 3/12 that includes P=23 predictors and alpha=10
-
-
 
 
 
