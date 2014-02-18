@@ -1,0 +1,26 @@
+1. Motivation:
+
+- Comparison to Sanso et al 2000:
+
+  - We do daily rainfall, they do dekadal
+    * Motivation: contracts need to be flexible, i.e. can we cite some papers that say that contracts based on daily properties of rainfall (sliding windows of 7, or 12, or 23-day rainfall sums, for example) are more efficient than contracts based on dekadal rainfall?
+
+  - They do non-stationary, ours is stationary. Bad.
+  - We incorporate Sea Surface Temperature -- check to see if they do.
+  - They don't do multiple time series per location -- we do. That's a big one.
+    * Motivation: The Adi Ha special case. We want to use a new gauge, and we need to correlate it to other gauges historically to use it for the future. (Or an "index" of gauges?)
+
+  - We could compare our model-based predictions to predictions from the empirical distribution (just using historical means)
+
+  - We could predict some function of all 5 time series for the same location, and show that, by estimating their correlation, we can better predict this function of all of them, compared to a model that estimates each of them separately.
+
+  - Predict onset. That's an interesting quantity that would be hard to model otherwise.
+
+
+
+Kenny: do more lit review
+
+
+
+
+  

@@ -5,16 +5,16 @@ rm(list=ls())
 #source("~/Stats/Misc/myRfunctions.R")
 #data.path <- "~/Stats/IndexInsurance/AdiHa supporting data/"
 path <- "~/Stats/IndexInsurance/multisite/"  # enter in here wherever you want to store the scripts and data files
-source(paste(path,"R code multisite covariance scripts.R",sep=""))  # read in some scripts I wrote
+source(paste(path, "R code multisite covariance scripts.R", sep=""))  # read in some scripts I wrote
 #library(bayesm)
 library(MASS)
 
 # load in old data set with Adi Ha short data sets and a couple others:
-load(paste(path,"ethiopia_full_data.RData",sep=""))  # read in the data, saved as an R object
-data <- data[c(6,1,7,2,8,3,9,4,10,5,11,12,13,14,15),]
+load(paste(path, "ethiopia_full_data.RData", sep=""))  # read in the data, saved as an R object
+data <- data[c(6, 1, 7, 2, 8, 3, 9, 4, 10, 5, 11, 12, 13, 14, 15), ]
 T <- dim(data)[2]
-site.mat <- cbind(c(1,1,2,2,3,3,4,4,5,5,6,6,6,6,6),c(1,2,1,2,1,2,1,2,1,2,1,2,3,4,5))
-arc <- c(1,0,1,0,1,0,1,0,1,0,1,0,0,0,0)
+site.mat <- cbind(c(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 6, 6, 6), c(1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 3, 4, 5))
+arc <- c(1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0)
 
 S <- 6
 L <- c(2,2,2,2,2,5)
