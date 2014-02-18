@@ -9,7 +9,9 @@ These are possible outlets for our paper.
 2. Update the model writeup (the current version is the occurrence of rainfall, rather than the tobit model).
 
 
+
 Katya:
+
 1. Ask Dan about updated data for all 15 time series.
 
 2. Consider some out-of-sample (one-year-ahead) predictions.
