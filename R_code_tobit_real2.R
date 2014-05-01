@@ -22,10 +22,11 @@ rm(list=ls())
 #source("~/Stats/Misc/myRfunctions.R")
 #data.path <- "~/Stats/IndexInsurance/AdiHa supporting data/"
 setwd("/Users/kathrynvasilaky/SkyDrive/IRI/RainfallSimulation/R/Rainfall")
+setwd("/Users/kshirley/Stats/Rainfall")
 #setwd("/Users/katyav/SkyDrive/IRI/RainfallSimulation/R")
 path <- getwd()#"~/SkyDrive/IRI/RainfallSimulation/R/Rainfall"  # enter in here wherever you want to store the scripts and data files
 path <- paste(path,'/', sep='')
-source(paste(path,"R code multisite covariance scripts.R",sep=""))  # read in some scripts I wrote
+source(paste(path,"R_code_multisite_covariance_scripts.R",sep=""))  # read in some scripts I wrote
 library(MASS)
 library(msm)
 library(LaplacesDemon)
@@ -292,7 +293,7 @@ for (s in 1:S) W.gibbs[[s]] <- array(NA,dim=c(K,G,J[s],n.samp))
 #################################
 # 2.Start the MCMC, Gibss Sampling
 ################################
-source(paste(path,"R code multisite covariance scripts.R",sep=""))
+#source(paste(path,"R code multisite covariance scripts.R",sep=""))
 dyn.load(paste(path,"zdraw.so",sep=""))
 dyn.load(paste(path,"draw_gamma.so",sep=""))
 is.loaded("zdraw")
@@ -400,7 +401,8 @@ gibbs.list <- list(mu.gibbs=mu.gibbs,sigma.gibbs=sigma.gibbs,alpha.gibbs=alpha.g
                    mu.arc.gibbs=mu.arc.gibbs,tau.arc.gibbs=tau.arc.gibbs,beta.arc.gibbs=beta.arc.gibbs,Sigma.gibbs=Sigma.gibbs,W.gibbs=W.gibbs)
 save(gibbs.list,file=paste(path,"gibbs_out_04272014_G5000.RData",sep=""))
 
-load(file=paste(path,"gibbs_out_04272014_G5000.RData",sep=""))
+#load(file=paste(path,"gibbs_out_04272014_G5000.RData",sep=""))
+load(file="gibbs_out_01152014_G5000.RData")
 for (i in 1:length(gibbs.list)) assign(names(gibbs.list)[i],gibbs.list[[i]])
 
 ##########################
@@ -431,7 +433,7 @@ save(start.list,file=paste(path,"start_list_v5.RData",sep=""))
 #4.Simulate W.new from posterior
 ###############################
 # function to simulate rainfall given parameters from gibbs output:
-sim.W <- function(alpha,beta,lambda,tau,beta.arc,Sigma,X,X.arc,na.preserve=TRUE,na.mat){
+sim.W <- function(alpha, beta, lambda, tau,beta.arc,Sigma,X,X.arc,na.preserve=TRUE,na.mat){
   Z.sim <- mvrnorm(T,rep(0,S),tau^2*R.cov(lambda,d.mat)) + X %*% beta
   gamma.mat <- matrix(rgamma(T*S,shape=alpha/2,scale=2/alpha),T,S)  
   W.new <- as.list(rep(NA,S))
@@ -446,6 +448,115 @@ sim.W <- function(alpha,beta,lambda,tau,beta.arc,Sigma,X,X.arc,na.preserve=TRUE,
   #return(unlist(W.new)[unlist(na.mat)==0])
   return(W.new)
 }
+
+
+# Measure onset in the observed data:
+# where onset date = the day in April on which cumulative April rainfall exceeded 20 mm
+april.obs <- as.list(rep(NA, S))
+april.sum <- as.list(rep(NA, S))
+for (s in 1:S) {
+  april.obs[[s]] <- matrix(NA, 19, L[s])
+  april.sum[[s]] <- matrix(NA, 19, L[s])
+  for (l in 1:L[s]) {
+    for (year in 1:19) {
+      sel <- as.numeric(substr(date.string, 1, 4)) == 1991 + year & months(date.string) == "April"
+      april.obs[[s]][year, l] <- sum(!na.mat[[s]][l, sel])
+      april.sum[[s]][year, l] <- sum(R[[s]][l, sel])
+    }    
+  }
+}
+
+# for Aprils with 30 observed days of rainfall, measure day on which cumulative April sum surpassed 20mm:
+onset.day <- as.list(rep(NA, S))
+for (s in 1:S) {
+  onset.day[[s]] <- matrix(NA, 19, L[s])
+  for (l in 1:L[s]) {
+    for (year in 1:19) {
+      sel <- as.numeric(substr(date.string, 1, 4)) == 1991 + year & months(date.string) == "April"
+      if (april.obs[[s]][year, l] == 30) {
+        tmp <- cumsum(R[[s]][l, sel])
+        onset.day[[s]][year, l] <- ifelse(max(tmp) > 20, min(which(tmp > 20)), NA)
+      }
+    }    
+  }
+}
+
+
+# Set up place to store posterior predictive simulations:
+pp.onset.date <- as.list(rep(NA, S))
+for (s in 1:S) {
+  pp.onset.date[[s]] <- array(NA, dim=c(19, L[s], N.sim))
+}
+
+# Number of posterior predictive simulations
+N.sim <- 150
+
+# Spread out (thin) across chains and iterations:
+k.vec <- rep(1:3, 50)
+g.vec <- rep(round(seq(3001, 5000, length=50)), each=3)
+
+# Set up year selection and store to access within loop:
+sel.year <- as.list(rep(NA, 19))
+for (i in 1:19) {
+  sel.year[[i]] <- which(as.numeric(substr(date.string, 1, 4)) == 1991 + i & months(date.string) == "April")	
+}
+
+
+# Do the posterior predictive simulations:
+t1 <- Sys.time()
+for (i in 1:N.sim) {
+  if (i %% 10 == 0) print(i)
+  # Collect Sigma into a list:
+  Sigma.sim <- as.list(rep(NA, S))
+  for (s in 1:S) Sigma.sim[[s]] <- Sigma.gibbs[[s]][k.vec[i], g.vec[i], , ]
+
+  # Simulate rainfall:
+  W.new <- sim.W(alpha=alpha.gibbs[k.vec[i], g.vec[i]], beta=beta.gibbs[k.vec[i], g.vec[i], , ], 
+                 lambda=lambda.gibbs[k.vec[i], g.vec[i]], 
+                 tau=tau.gibbs[k.vec[i], g.vec[i]], beta.arc=beta.arc.gibbs[k.vec[i], g.vec[i], ],
+                 Sigma=Sigma.sim, X=X, X.arc=X.arc, na.preserve=TRUE, na.mat=na.mat)
+  for (s in 1:S) {
+    for (l in 1:L[s]) {
+      for (year in 1:19) {
+        if (april.obs[[s]][year, l] == 30) {
+          tmp <- cumsum(W.new[[s]][l, sel.year[[year]]])
+          pp.onset.date[[s]][year, l, i] <- ifelse(max(tmp) > 20, min(which(tmp > 20)), NA)
+        }
+      }    
+    }
+  }
+}
+t2 <- Sys.time()
+t2 - t1
+# 11 seconds for N.sim = 150 ! (yay.)
+
+# Let's make ~ 170 posterior predictive plots!
+pdf(file="figures/fig_onset_postpred.pdf", width=6, height=6)
+par(mfrow=c(1, 1))
+for (s in 1:S) {
+  for (year in 1:19) {
+    for (l in 1:L[s]) {
+      if (april.obs[[s]][year, l] == 30) {
+        hist(pp.onset.date[[s]][year, l, ], breaks=0:30, main="", las=1, xlab="Day in April")
+        legend("topleft", legend=paste(sum(is.na(pp.onset.date[[s]][year, l, ])), "/150 missing", sep=""), inset=0.02)
+        title(main=paste(rownames(R[[s]])[l], year + 1991))
+        abline(v = onset.day[[s]][year, l], col="orange", lwd=2)
+        abline(v = mean(pp.onset.date[[s]][year, l, ], na.rm=TRUE), col=2, lty=2)
+      }
+    }
+  }
+}
+dev.off()
+
+
+
+
+
+
+
+
+
+
 
 #Generate W.new data, from posterior distributions
 #KV-K is number of chains, G is number of runs per chain, J.sum is the total number of sereis across locations
