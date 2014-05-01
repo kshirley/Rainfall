@@ -4,74 +4,75 @@
 rm(list=ls())
 #source("~/Stats/Misc/myRfunctions.R")
 #data.path <- "~/Stats/IndexInsurance/AdiHa supporting data/"
-path <- "~/Stats/IndexInsurance/multisite/"  # enter in here wherever you want to store the scripts and data files
-source(paste(path, "R code multisite covariance scripts.R", sep=""))  # read in some scripts I wrote
+setwd("~/Stats/Rainfall/")
+#path <- "~/Stats/IndexInsurance/multisite/"  # enter in here wherever you want to store the scripts and data files
+source("R code multisite covariance scripts.R")  # read in some scripts I wrote
 #library(bayesm)
 library(MASS)
 
 # load in old data set with Adi Ha short data sets and a couple others:
-load(paste(path, "ethiopia_full_data.RData", sep=""))  # read in the data, saved as an R object
+load("ethiopia_full_data.RData")  # read in the data, saved as an R object
 data <- data[c(6, 1, 7, 2, 8, 3, 9, 4, 10, 5, 11, 12, 13, 14, 15), ]
 T <- dim(data)[2]
 site.mat <- cbind(c(1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 6, 6, 6), c(1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 3, 4, 5))
 arc <- c(1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0)
 
 S <- 6
-L <- c(2,2,2,2,2,5)
+L <- c(2, 2, 2, 2, 2, 5)
 L.sum <- sum(L)
-month.days <- c(31,28,31,30,31,30,31,31,30,31,30,31)
-month <- c(rep(rep(1:12,month.days),49),rep(1:12,month.days)[1:209])
+month.days <- c(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+month <- c(rep(rep(1:12, month.days), 49), rep(1:12, month.days)[1:209])
 
 # 1992 onward:
-data <- data[,(365*31+1):T] # 1992 onward, all 15 sites:
+data <- data[, (365*31+1):T] # 1992 onward, all 15 sites:
 T <- dim(data)[2]
-x <- matrix(as.numeric(data>0),L.sum,T)
+x <- matrix(as.numeric(data > 0), L.sum, T)
 y <- t(x)
-date.string <- as.Date(1:(T+5)-1,origin="1992-01-01")
-leap.year.index <- 60 + c(0,365*4+1,365*8+2,365*12+3,365*16+4)
+date.string <- as.Date(1:(T + 5) - 1, origin="1992-01-01")
+leap.year.index <- 60 + c(0, 365*4 + 1, 365*8 + 2, 365*12 + 3, 365*16 + 4)
 date.string <- date.string[-leap.year.index]
 month.names <- unique(months(date.string))
 
 # read in lat-long data:
-ll <- read.table(paste(path,"lat_long_details.csv",sep=""),sep=",",header=TRUE)
-ll <- ll[c(3,5,4,1,2,6),]
-d.mat <- matrix(NA,S,S)
+ll <- read.table("lat_long_details.csv", sep=",", header=TRUE)
+ll <- ll[c(3, 5, 4, 1, 2, 6), ]
+d.mat <- matrix(NA, S, S)
 for (i in 1:S){
   for (j in 1:S){
-    d.mat[i,j] <- sqrt((ll[i,"Lat"]-ll[j,"Lat"])^2+(ll[i,"Long"]-ll[j,"Long"])^2)*108
+    d.mat[i, j] <- sqrt((ll[i, "Lat"] - ll[j, "Lat"])^2 + (ll[i, "Long"] - ll[j, "Long"])^2)*108
   }
 }
-rownames(d.mat) <- ll[,1]
-colnames(d.mat) <- ll[,1]
+rownames(d.mat) <- ll[, 1]
+colnames(d.mat) <- ll[, 1]
 d.mat <- d.mat/100
 
 # get location names:
-site.names <- unlist(strsplit(rownames(data),"_")[seq(1,by=2,length=6)])[seq(1,by=2,length=6)]
+site.names <- unlist(strsplit(rownames(data), "_")[seq(1, by=2, length=6)])[seq(1, by=2, length=6)]
 
 ### Include El Nino stuff:
 
 # Read in Nino 3.4 index:
-nino <- read.table(paste(path,"nino34.long.data",sep=""),colClasses=rep("numeric",13))
-nino <- matrix(t(as.matrix(nino[,-1])),ncol=1)
-nino.dates <- paste(rep(1871:2010,each=12),unique(months(date.string)),sep=" ")
+nino <- read.table("nino34.long.data", colClasses=rep("numeric", 13))
+nino <- matrix(t(as.matrix(nino[, -1])), ncol=1)
+nino.dates <- paste(rep(1871:2010, each=12), unique(months(date.string)), sep=" ")
 nino <- nino[1:1672]; nino.dates <- nino.dates[1:1672]  # nino only goes through April 2010.
 
 # subselect just the months that align with the rainfall data:
-w <- which(nino.dates=="1991 October") # going 3 months before first rainfall month
+w <- which(nino.dates == "1991 October") # going 3 months before first rainfall month
 nino <- nino[w:length(nino.dates)]
 nino.dates <- nino.dates[w:1672]
 
 # We want to impute 3 more months of nino values to stretch to the end of the daily rainfall time series:
-nino.impute <- as.numeric(predict(ar(nino),n.ahead=3)$pred)
-nino <- c(nino,nino.impute)
-nino.dates <- c(nino.dates,paste("2010",month.names[5:7]))
+nino.impute <- as.numeric(predict(ar(nino), n.ahead=3)$pred)
+nino <- c(nino, nino.impute)
+nino.dates <- c(nino.dates, paste("2010", month.names[5:7]))
 # OK, now nino is length 226, starting in October 1991 (3 months before rainfall data starts) and ending in July 2010
 
-# center nino at its mean
+# center nino at its mean:
 nino <- nino - mean(nino)
-month.vec <- match(months(date.string),month.names)
-month.mat <- matrix(0,T,12)
-month.mat[cbind(1:T,month.vec)] <- rep(nino[1:223],c(rep(month.days,18),month.days[1:6],28))
+month.vec <- match(months(date.string), month.names)
+month.mat <- matrix(0, T, 12)
+month.mat[cbind(1:T, month.vec)] <- rep(nino[1:223], c(rep(month.days, 18), month.days[1:6], 28))
 
 
 
