@@ -4,7 +4,7 @@
 ###############################################################################################################
 # Read in the data
 rm(list=ls())
-setwd("/Users/kathrynvasilaky/SkyDrive/IRI/RainfallSimulation/R/Rainfall")
+setwd("/Users/kathrynvasilaky/SkyDrive/IRI/RainfallSimulation/Rainfall")
 path <- getwd()#"~/SkyDrive/IRI/RainfallSimulation/R/Rainfall"  # enter in here wherever you want to store the scripts and data files
 path <- paste(path,'/', sep='')
 source(paste(path,"R code multisite covariance scripts.R",sep=""))  # read in some scripts I wrote
@@ -15,6 +15,7 @@ library(mvtnorm)
 
 #load parameter samples
 load(file=paste(path,"gibbs_out_01152014_G5000.RData",sep=""))
+#load(file=paste(path,"gibbs_09out_09232014_G5000.RData",sep=""))
 for (i in 1:length(gibbs.list)) assign(names(gibbs.list)[i],gibbs.list[[i]])
 
 
@@ -119,7 +120,9 @@ sim.W <- function(alpha,beta,lambda,tau,beta.arc,Sigma,X11,X.arc,na.preserve=TRU
 
 #I want to only sample from the end of the chain
 
-
+K<-3
+G<-5000
+J.sum=sum(J)
 # From the gibbs output:
 p.wet.gibbs11 <- array(NA,dim=c(K,G,J.sum,12)) # monthly percentage of wet days:
 mean.gibbs11 <- array(NA,dim=c(K,G,J.sum,12)) # monthly percentage of wet days:
@@ -133,7 +136,7 @@ for (k in 1:K){
     for (s in 1:S) Sigma.sim[[s]] <- Sigma.gibbs[[s]][k,g,,]
     # Simulate rainfall:
     W.new <- sim.W(alpha=alpha.gibbs[k,g],beta=beta.gibbs[k,g,,],lambda=lambda.gibbs[k,g],tau=tau.gibbs[k,g],beta.arc=beta.arc.gibbs[k,g,],
-                   Sigma=Sigma.sim,X=X,X.arc=X.arc,na.preserve=TRUE,na.mat=na.mat)
+                   Sigma=Sigma.sim,X=X11,X.arc=X.arc,na.preserve=TRUE,na.mat=na.mat)
     for (s in 1:S){
       for (j in 1:J[s]){
         for (m in 1:12){

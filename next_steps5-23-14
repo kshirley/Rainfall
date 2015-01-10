@@ -1,0 +1,42 @@
+
+We look at several important statistics to validate our model by plotting the statistics' distribution using XXX(100) simulations. We use a thinned sample of the last 2000 trials from the gibbs sampling to simulate rainfall from the posterior distribution. We then compute the following statistics for each simulation, a matrix that is 15 series by 6779 days:
+
+-probability of rainfall by month
+-mean rainfall by month
+-max rainfall by month
+-onset as defined by
+http://academiapublishing.org/ajar/abstract/2013/June/Hadgu%20et%20al.htm
+-consecutive dry days
+-interannual variability in rainfall (the standard deviation of total rainfall for the rainy season (April-Sept) across all years)
+
+We then plot the posterior distribution of each of the above statistics against the true value of this statistic coming from historical rainfall data. 
+
+Note that the the first 3 are already completed. The Onset variable was done by Kenny, but the definition of onset has to be adjusted according to the above paper. 
+Kenny's code for onset begins at line 452 and ends at line 549.
+
+Finally, consecutive dry days works, but the historical distribution needs to be calculated and added to the graph. The historical data are collected into tables to be plotted around in lines 876 to 895. So the consecutive dry days and onset statistics need to be computed here as well. 
+
+Note again, that the final graphs for any statistic should be plotted after the simulated data (the W.new function, 600-656) and after the historical data (876-895), because we need the posterior data with the historical line overlaid in each graph. 
+
+For interannual variability in rainfall, we'll have just one distribution and a point, or line for the true value. 
+
+
+After the graphs are in order, what is needed are the plots of the above metrics against the historical data and two cross-validation exercises. 
+Listed as follows:
+
+1. Insample Check: 
+Plot each of the above by (15) series with the posterior against the historical  
+2. Cross Validation (remove a satellite station and simulate the satellite station. The idea is to see how well the model predicts satellite data. does it do better? can the simulation match rain gauge data even better than satellites do because the model has more information. )
+Remove one station (the hagereselam_station, series k=1), fit the model, simulate hagereselam_station series, plot the simulation against actual data for hagereselam_station series
+3. Cross Validation (remove rain gauge data and simulate satellite data. the idea is to see how well the model does wihtout some rain gauge data, where rain gaue data is the truth, and satellite data is apprximate.)
+Remove some years for a rain gauge series (adiha_cup series, series k=12), fit the model, simulate hagereselam_station series, plot the simulation against actual 
+
+I imagine the cross-validation exercises won't be so different from how the data were projected forward for 2011. However, I'm not certain how to predict a time series with only the lat and long information for that series as would be needed for exercise (2). 
+
+
+
+
+My plan is to:
+1.correct the onset metric definition in the code
+2.finish graphing the consec dry days metric
+3.then work on the first cross validation

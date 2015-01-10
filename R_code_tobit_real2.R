@@ -21,10 +21,9 @@
 rm(list=ls())
 #source("~/Stats/Misc/myRfunctions.R")
 #data.path <- "~/Stats/IndexInsurance/AdiHa supporting data/"
-setwd("/Users/kathrynvasilaky/SkyDrive/IRI/RainfallSimulation/R/Rainfall")
-setwd("/Users/kshirley/Stats/Rainfall")
-#setwd("/Users/katyav/SkyDrive/IRI/RainfallSimulation/R")
-path <- getwd()#"~/SkyDrive/IRI/RainfallSimulation/R/Rainfall"  # enter in here wherever you want to store the scripts and data files
+setwd("/Users/kathrynvasilaky/SkyDrive/IRI/RainfallSimulation/Rainfall")
+#setwd("/Users/kshirley/Stats/Rainfall")
+path <- getwd()#"~/SkyDrive/IRI/RainfallSimulation/Rainfall"  # enter in here wherever you want to store the scripts and data files
 path <- paste(path,'/', sep='')
 source(paste(path,"R_code_multisite_covariance_scripts.R",sep=""))  # read in some scripts I wrote
 library(MASS)
@@ -449,7 +448,11 @@ sim.W <- function(alpha, beta, lambda, tau,beta.arc,Sigma,X,X.arc,na.preserve=TR
   return(W.new)
 }
 
-
+##############
+#Onset Metric
+#Measured as the first day in April on which cumulative April rainfall exceeds 20 m
+#This definition needs to be updated to measure the first day 
+#############
 # Measure onset in the observed data:
 # where onset date = the day in April on which cumulative April rainfall exceeded 20 mm
 april.obs <- as.list(rep(NA, S))
@@ -481,6 +484,8 @@ for (s in 1:S) {
   }
 }
 
+# Number of posterior predictive simulations
+N.sim <- 150
 
 # Set up place to store posterior predictive simulations:
 pp.onset.date <- as.list(rep(NA, S))
@@ -488,8 +493,6 @@ for (s in 1:S) {
   pp.onset.date[[s]] <- array(NA, dim=c(19, L[s], N.sim))
 }
 
-# Number of posterior predictive simulations
-N.sim <- 150
 
 # Spread out (thin) across chains and iterations:
 k.vec <- rep(1:3, 50)
@@ -503,6 +506,7 @@ for (i in 1:19) {
 
 
 # Do the posterior predictive simulations:
+#KV-With Thinning
 t1 <- Sys.time()
 for (i in 1:N.sim) {
   if (i %% 10 == 0) print(i)
@@ -556,7 +560,9 @@ dev.off()
 
 
 
-
+#####################
+#Consecutive Dry Days
+#####################
 
 #Generate W.new data, from posterior distributions
 #KV-K is number of chains, G is number of runs per chain, J.sum is the total number of sereis across locations
@@ -566,10 +572,37 @@ mean.gibbs <- array(NA,dim=c(K,G,J.sum,12)) # monthly percentage of wet days:
 sd.gibbs <- array(NA,dim=c(K,G,J.sum,12)) # monthly percentage of wet days:
 max.gibbs <- array(NA,dim=c(K,G,J.sum,12)) # monthly percentage of wet days:
 
-zero_count_data.gibbs <- array(NA,dim = c(K,100,J.sum,6779))
+
+# First code block inserted
+consec_zeros_count <- function(temp) {
+  #This function takes in a list of rainfall counts and computes
+  #the length of each set of contiguous zeros.
+  temp2 <- temp
+  temp2[temp!=0] <- 0
+  temp2[is.na(temp)] <- 0
+  temp2[temp==0] <- 1
+  rle_out <- rle(temp2)
+  len <- rle_out$lengths
+  v <- rle_out$values
+  consec_zeros <- len[v==1]
+}
+
+#bins for histograms
+edges <- seq(0,100)
+#add a bin for everything larger than 100 days
+edges <- append(edges,10000)
+#kenny's bayesian thinning, select observations in every 50
+g.vec <- round(seq(3001, 5000, length=50))
+#creat empty data structure filled with na's for consec hist
+zero_count_data.gibbs <- array(NA,dim = c(K, length(g.vec), J.sum, length(edges)-1))
+#end insertion
+
 for (k in 1:K){
   for (g in 1:G){
-    if (g%%20==0) print(g)
+    if (g%%20==0) {
+      print(g)
+    }
+    
     # Collect Sigma into a list:
     Sigma.sim <- as.list(rep(NA,S))
     for (s in 1:S) Sigma.sim[[s]] <- Sigma.gibbs[[s]][k,g,,]
@@ -577,13 +610,27 @@ for (k in 1:K){
     W.new <- sim.W(alpha=alpha.gibbs[k,g],beta=beta.gibbs[k,g,,],lambda=lambda.gibbs[k,g],tau=tau.gibbs[k,g],beta.arc=beta.arc.gibbs[k,g,],
                    Sigma=Sigma.sim,X=X,X.arc=X.arc,na.preserve=TRUE,na.mat=na.mat)
     
-    if (g>4900) {
-      for (s in 1:S){
-        for (j in 1:J[s]){
-          zero_count_data.gibbs[k,g-4900,c(0,cumsum(J))[s]+j,] <- W.new[[s]][j,]
+    #This is the second of 2 code blocks that inserted
+    #check to make sure the current g is at least as big as the smallest g.vec
+    if (g >= min(g.vec)) {
+      #only capture the correct slices
+      #if g is an element in the gvec, or thinned series
+      if (g %in% g.vec) {
+        #need to find where we are at in g.vec
+        # valid answers should be from 1 to length(g.vec)
+        local_g <- which(g.vec==g)
+        for (s in 1:S){
+          for (j in 1:J[s]){
+            #create vector of dry spells
+            dry_days <- consec_zeros_count(W.new[[s]][j,])
+            #count frequency of dryspells stored in sim data, where bins are constant across trials, but we only pull out 50 trials
+            #think a matrix 15 by 6000, repeated 5000 times, but we only pull out 50 of those trials. 
+            dry_days_hist <- hist(dry_days, breaks=edges)
+            zero_count_data.gibbs[k,local_g, c(0,cumsum(J))[s]+j,] <- dry_days_hist$counts
+          }
         }
-      }
-    }
+    }}
+    #end insertion
     
     for (s in 1:S){
       for (j in 1:J[s]){
@@ -605,12 +652,12 @@ for (k in 1:K){
 }
 post.list <- list(p.wet.gibbs=p.wet.gibbs,mean.gibbs=mean.gibbs,sd.gibbs=sd.gibbs,max.gibbs=max.gibbs)
 save(post.list,file=paste(path,"post_list_G5000_042814.RData",sep=""))
-load(file=paste(path,"post_list_G5000_042814.RData",sep=""))
+load(file=paste(path,"post_list_G5000_051414.RData",sep=""))
 for (i in 1:length(post.list)) assign(names(post.list)[i],post.list[[i]])
 
 
 #save all the data sets for future use, so you don't have to rerun for 5 hours
-save.image("~/SkyDrive/IRI/RainfallSimulation/R/Rainfall/post_sim_output042914.RData")
+save.image("~/SkyDrive/IRI/RainfallSimulation/R/Rainfall/post_sim_output051414.RData")
 
 
 # trace plot function from myRfunctions.R:

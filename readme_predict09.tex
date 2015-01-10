@@ -1,0 +1,29 @@
+Katya Vasilaky October 9, 2014
+To create the predicted 2009 data this is what went on. 
+
+I ran the model for 1992 to 2008, which just meant cutting off the data in that run at december 2008. I save those posterior estimates in gibbs_09out_09232014_G5000.RData, and that's what gets used for the sim.W for 2009. I think subselect the X_2009 and subselect the month vector for one year. These are inputs into W.sim, where the new rainfall is simulating using 92-08 posterior fits with X_2009 data. 
+
+Summary: 
+1. Use the 92-08 gibbs out posterior sample
+2. Created the X_t matrix that is only 365 days, and so that got cut off for 2009. 
+3. Created a month.vec that was only for 1 year
+4. Ran all the graphs, which now generate W.sim using 1 year of X data, and the posterior samples come from the 92-08 fit
+5. Graphs are of the 2009 prediction against historical plots (I just had to subselect the historical data for 2009). 
+
+
+The specific lines changes for the 2009 prediction are: 
+#1.line 190, first I change X, so that the previous scaling is on the same dimensions as the training data
+#2.line 437, then the posterior data comes from the 92-08 fit
+#3.line 490, then, I cut off X so that we only use 09 data before the W simulations
+#4. line 491 I redefine the month.vec,which needs to be dim of 365 for 2009 for the sim
+#5. line 492 I switch the T value to be 365 for wsim
+#6. line 495 created var num.of.years, which is the # of years to loop through for the onset metric, which is currently set to 1
+#7. line 520-625replace all the hard coded values for 19 with num.of.years which is now 1!
+#8. line 565 538 and 513 1991 to 2009
+#9. line 982 change the month.vec matrix back to what it was to create the historical data
+#10. line 994, set y=18 which is year.names[18]=2009 to plot only 2009 data
+#11. line 999, change 19 to 1 in the cumsum.data dimensions 
+#12. line 981, dimension of cumsum.data changed from y (which was going 1-19) to just  1
+
+
+The data are fine to then be used to fun comparison_plots2.R to create the nice comparison bar plots against historical values. 
