@@ -15,3 +15,7 @@ vignettes/*.pdf
 
 # R data files
 .RData
+
+# compiled C functions:
+.o
+.so
