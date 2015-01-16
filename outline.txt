@@ -1,0 +1,54 @@
+1 Motivation & Intro (both edit)
+
+2 Data (almost done)
+
+3 EDA (almost done)
+
+4 The Model (kenny finish explanation)
+
+5 Fitting the model (kenny and katya  - maybe kenny appendix to show multivariate t mixture)
+
+6 Simulation Study (optional) Kenny to update with new model
+
+7 Results (fit to all data, discuss inferences) kind of short.
+  focus on:
+    - ARC bias,
+    - site-scpecific covariance matrices
+    - spatial correlation
+    - El nino effects
+
+
+8 Out of sample predictions (hoepfully show our model does a bit better than simpler models)
+  - remove one series from a site
+    - make predictions under a few different models
+
+      * increasingly complex models:
+      a. just use the one time series
+      b. use all 15 (or 14) series, but no spatial dependence
+      c. assume independence between series at a given site
+      d. our model
+
+
+2 estimands: mean daily during the wet season, and onset
+same loss function: rmse (mm for daily mean and days for onset)
+
+
+Then... done!
+
+
+To do:
+kenny: clean up code in mcmc_baseline.R
+ - spacing
+ - create a data setup file to include scripts for setting up data and creating tidy versions
+ - read in tidy data
+ - remove references to 0/1 model for rainfall ("x" and "y")
+ - investigate w.draw and n.draw... (relics from binary model?)
+ - clean up the two .c functions by reading warnings from compiler
+ - add .o and .so files to the .gitignore
+ - re-run simulation study on this model to double-check
+   - investigate alpha draw, especially
+
+
+
+
+
