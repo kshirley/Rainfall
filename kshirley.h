@@ -111,7 +111,7 @@ int **imatrix(int nrow, int ncol){
   mat = (int **)malloc(nrow * sizeof(int *));
   for (i=0; i<nrow; i++){
     mat[i] = (int *)malloc(ncol * sizeof(int));
-    }
+  }
   return mat;
 }
 
@@ -294,8 +294,8 @@ void dtp(double **X, int n, int m, double **Y){
   for (i=0; i<n; i++){
     for (j=0; j<m; j++){
       Y[j][i] = X[i][j];
-		}
-	}
+    }
+  }
 }
 
 // Transpose of a square matrix of doubles, replacing the original matrix:
@@ -306,10 +306,10 @@ void dtsq(double **X, int n){
   for (i=0; i<n; i++){
     for (j=i+1; j<n; j++){
       temp = X[i][j];
-			X[i][j] = X[j][i];
-			X[j][i] = temp;
-		}
-	}
+      X[i][j] = X[j][i];
+      X[j][i] = temp;
+    }
+  }
 }
 
 
@@ -327,8 +327,8 @@ void fill_dmatrix(double *input, int n, int m, double **output){
   int i,j;
   for (i=0; i<n; i++){
     for (j=0; j<m; j++){
-	  output[i][j] = input[j*n + i];
-	}
+      output[i][j] = input[j*n + i];
+    }
   }
 }
 
@@ -337,8 +337,8 @@ void unfill_dmatrix(double **input, int n, int m, double *output){
   int i,j;
   for (i=0; i<n; i++){
     for (j=0; j<m; j++){
-	  output[j*n + i] = input[i][j];
-	}
+      output[j*n + i] = input[i][j];
+    }
   }
 }
 
@@ -347,8 +347,8 @@ void unfill_imatrix(int **input, int n, int m, int *output){
   int i,j;
   for (i=0; i<n; i++){
     for (j=0; j<m; j++){
-			output[j*n + i] = input[i][j];
-		}
+      output[j*n + i] = input[i][j];
+    }
   }
 }
 
@@ -358,8 +358,8 @@ void fill_imatrix(int *input, int n, int m, int **output){
   int i,j;
   for (i=0; i<n; i++){
     for (j=0; j<m; j++){
-	  output[i][j] = input[j*n + i];
-	}
+      output[i][j] = input[j*n + i];
+    }
   }
 }
 
@@ -368,9 +368,9 @@ void fill_i3array(int *input, int n, int m, int l, int ***output){
   int i,j,k;
   for (i=0; i<n; i++){
     for (j=0; j<m; j++){
-			for (k=0; k<l; k++){
-				output[i][j][k] = input[k*m*n + j*n + i];
-			}
+      for (k=0; k<l; k++){
+	output[i][j][k] = input[k*m*n + j*n + i];
+      }
     }
   }
 }
@@ -392,9 +392,9 @@ void fill_d3array(double *input, int n, int m, int l, double ***output){
   int i,j,k;
   for (i=0; i<n; i++){
     for (j=0; j<m; j++){
-	  for (k=0; k<l; k++){
-	    output[i][j][k] = input[k*m*n + j*n + i];
-	  }
+      for (k=0; k<l; k++){
+	output[i][j][k] = input[k*m*n + j*n + i];
+      }
     }
   }
 }
@@ -404,10 +404,10 @@ void fill_d4array(double *input, int n, int m, int r, int s, double ****output){
   int i,j,k,l;
   for (i=0; i<n; i++){
     for (j=0; j<m; j++){
-	  for (k=0; k<r; k++){
-	    for (l=0; l<s; l++){
-	      output[i][j][k][l] = input[l*r*m*n + k*m*n + j*n + i];
-	    }
+      for (k=0; k<r; k++){
+	for (l=0; l<s; l++){
+	  output[i][j][k][l] = input[l*r*m*n + k*m*n + j*n + i];
+	}
       }
     }
   }
@@ -418,10 +418,10 @@ void unfill_d4array(double ****input, int n, int m, int r, int s, double *output
   int i,j,k,l;
   for (i=0; i<n; i++){
     for (j=0; j<m; j++){
-	  for (k=0; k<r; k++){
-	    for (l=0; l<s; l++){
-	      output[l*r*m*n + k*m*n + j*n + i] = input[i][j][k][l];
-	    }
+      for (k=0; k<r; k++){
+	for (l=0; l<s; l++){
+	  output[l*r*m*n + k*m*n + j*n + i] = input[i][j][k][l];
+	}
       }
     }
   }
@@ -432,8 +432,8 @@ void unfill_i3array(int ***input, int n, int m, int r, int *output){
   int i,j,k;
   for (i=0; i<n; i++){
     for (j=0; j<m; j++){
-			for (k=0; k<r; k++){
-				output[k*m*n + j*n + i] = input[i][j][k];
+      for (k=0; k<r; k++){
+	output[k*m*n + j*n + i] = input[i][j][k];
       }
     }
   }
@@ -453,26 +453,27 @@ void isum(int *x, int n, int *z){
 }
 
 // Replicate the Sample function from R, with replacement always:
-int sample_old(int first, int last, double *prob){
-  int i, j, l=last-first+1;
-  int z;
-  double x, s;  
+/* int sample_old(int first, int last, double *prob){ */
+/*   int j, l = last - first + 1; */
+/*   int z; */
+/*   double x, s;   */
   
-  x = drand48();
-  s = 0.0;
-  for (j=0; j<l; j++){
-    s += prob[j];
-    if (x<s){
-      z = j+first;
-      break;}}
-  
-  return z;
-}
+/*   x = drand48(); */
+/*   s = 0.0; */
+/*   for (j = 0; j < l; j++){ */
+/*     s += prob[j]; */
+/*     if (x < s){ */
+/*       z = j + first; */
+/*       break; */
+/*     } */
+/*   } */
+/*   return z; */
+/* } */
 
 
 // Replicate the Sample function from R, with replacement always:
 void sample(int first, int last, double *prob, int *z){
-  int i, j, l=last-first+1;
+  int j, l=last-first+1;
   double x, s;
   
   x = drand48();
@@ -482,28 +483,28 @@ void sample(int first, int last, double *prob, int *z){
     if (x<s){
       z[0] = j+first;
       break;
-		}
-	}
+    }
+  }
 }
 
 /*
- // Generate a random dirichlet draw:
+// Generate a random dirichlet draw:
 void rdirichlet(int n, double *alpha, double *y){
-  int i;
-  double y_sum=0.0, *z;	
-	z = dvector(n);
+int i;
+double y_sum=0.0, *z;	
+z = dvector(n);
 		
-	// random sample from gamma distribution:
-	for (i=0; i<n; i++){
-		y[i] = rgamma(alpha[i],1);
-		y_sum += y[i];
-	}	
-	for (i=0; i<n; i++){
-	  z[i] = y[i]/y_sum;
-		y[i] = z[i];
-	}
+// random sample from gamma distribution:
+for (i=0; i<n; i++){
+y[i] = rgamma(alpha[i],1);
+y_sum += y[i];
+}	
+for (i=0; i<n; i++){
+z[i] = y[i]/y_sum;
+y[i] = z[i];
+}
 	
-	free_dvector(z);
+free_dvector(z);
 }
 */
 

@@ -151,71 +151,127 @@ We are also interested in the difference, on average, between the measurements o
 \section{The Model}
 %Our model consists of two main components: a model for the binary variable of whether or not it rains on a given day (called the frequency model), and a model for the amount of rainfall, given that there was rainfall (called the intensity model). In this paper, we are most interested in the frequency model; the methods we use to model frequency, though, could also be used to model intensity.
 
-We fit a tobit model for daily rainfall at multiple locations, with multiple time series observed at each site. Let us first set up some notation. Let $S=6$ denote the number of locations where we measure rainfall, and $\bJ = \{2,2,2,2,2,5\}$ is the vector denoting the number of daily rainfall time series observed for each of the $S$ locations. The total number of days in our time series is $T=6679$ days, from 1/1/1992 through 7/28/2010. Let $Y_{stj}$ denote the amount of rainfall, measured in mm, for location $s \in (1,...,S)$, day $t \in (1,...,T)$, and time series $j = (1,...,J_s)$. Last, let $D_{ik}$ denote the Euclidian distance between site $i$ and $k$, for $i,k \in (1,...,S)$.
+We fit a tobit model for daily rainfall at multiple locations, with multiple time series observed at each site. Let us first set up some notation. Let $S=6$ denote the number of locations where we measure rainfall, and $\bJ = \{2,2,2,2,2,5\}$ is the vector denoting the number of daily rainfall time series observed for each of the $S$ locations. The total number of days in our time series is $N=6679$ days, from 1/1/1992 through 7/28/2010. Let $Y_{stj}$ denote the amount of rainfall, measured in mm, for location $s \in (1,...,S)$, day $t \in (1,...,N)$, and time series $j = (1,...,J_s)$. Last, let $D_{ik}$ denote the Euclidian distance between site $i$ and $k$, for $i,k \in (1,...,S)$.
 
 We model $Y_{stj}$ using a hierarchical Bayesian tobit regression model, where the levels of the hierarchy correspond to different sources of variation:
 
 % observations:
 $\hspace{0.5in}
-Y_{stj} = \begin{cases} W_{stj} &\mbox{if } W_{stj} > 0 \\
+Y_{stj} = \begin{cases} W_{stj} &\mbox{if } W_{stj} > 0 \hspace{2.5in} \text{Observed rainfall}\\
 0  &\mbox{if } W_{stj} \leq 0, \end{cases}
 $
 
+% Latent continuous rainfall
 $\hspace{0.9in}
-% Rainfall (mm) for each time series, each location:
-\bW_{st} \sim \text{N}_{J_s}(\bZ_{st} + \bX^\text{ARC}_s \beta^\text{ARC}_s, \frac{1}{\gamma_{st}}\Sigma_s),
+\bW_{st} \sim \text{N}_{J_s}(\bZ_{st} + \bX^\text{ARC}_s \beta^\text{ARC}_s, \frac{1}{\gamma_{st}}\Sigma_s), \hspace{1.55in} \text{Latent rainfall}
 $
 
+% Underlying spatial mean rainfall process for each location:
 $\hspace{1.3in}
-% Underlying spatial rainfall process for each location:
-\bZ_t \sim N_S(\bX_t \bbeta^Z, \tau^2\bV),
+\bZ_t \sim N_S(\bX_t \bbeta^Z, \tau^2\bV), \hspace{1.75in} \text{Spatial mean rainfall}
 $
 
+% covariates including linear, quadratic time, sine and cosine, plus nino by month:
+$\hspace{1.7in}
+\beta_{ps}^Z \sim \text{N}(\mu_p, \sigma^2_p),
+$
+
+% mean of the groups of coefficients across locations
+$\hspace{2.1in}
+\mu_{p} \sim \text{N}(0, 5^2),
+$
+
+% variance of the groups of coefficients across locations
+$\hspace{2.1in}
+\sigma_{p} \sim \frac{1}{2}\text{t}(0, 1, \text{df} = 3),
+$
+
+% 'nugget effect' of spatial covariance:
+$\hspace{1.7in}
+\tau \sim \frac{1}{2}\text{t}(0, 1, \text{df} = 3),
+$
+
+% parametric spatial covariance matrix, exponential model
+$\hspace{1.7in}
+\bV=\{v_{ik}\}, v_{ii}=1, v_{ik} = \exp(-\lambda d_{ik}) \hspace{0.3in} \text{for $i,k \in (1,..,S)$}
+$
+
+% lambda determines the rate of spatial covariance decay across distance
+$\hspace{2.1in}
+\lambda \sim \text{gamma}(\text{shape} = 50, \text{ scale} = 3),
+$
+
+% These are the covariates
+%\hspace{2.1in}
+%\bX_t = (1, t, t^2, \sin(2\pi t \omega_1), \cos(2\pi t \omega_1),..., \sin(2\pi t \omega_4), \cos(2\pi t \omega_4), \\
+%X^\text{nino}_{\text{Jan}_{[t]}}, X^\text{nino}_{\text{Feb}_{[t]}}, ..., X^\text{nino}_{\text{Dec}_{[t]}}),
+%$
+
+\vspace{-0.4in}
+\begin{align*}
+\hspace{1.2in}
+\bX_t &= (1, t, t^2, \sin(2\pi t \omega_1), \cos(2\pi t \omega_1),..., \sin(2\pi t \omega_4), \cos(2\pi t \omega_4), \\
+& \hspace{0.3in} X^\text{nino}_{\text{Jan}_{[t]}}, X^\text{nino}_{\text{Feb}_{[t]}}, ..., X^\text{nino}_{\text{Dec}_{[t]}}),
+\end{align*}
+
+\vspace{-0.2in}
+% Indicator of ARC product
 $\hspace{1.3in}
 \bX^\text{ARC}_{sj} = 1(\text{jth time series at site s is an ARC product}),
 $
 
+% ARC effect:
 $\hspace{1.3in}
 \beta^\text{ARC}_s \sim \text{N}(\mu^\text{ARC}, \tau^2_\text{ARC}),
 $
 
+% mean ARC effect across locations
+$\hspace{1.7in}
+\mu^\text{ARC} \sim \text{N}(0, 5^2),
+$
+
+% variance of ARC effects across locations:
+$\hspace{1.7in}
+\tau_\text{ARC} \sim \frac{1}{2}\text{t}(0, 1, \text{df} = 3),
+$
+
+% Covariance matrices for each location:
 $\hspace{1.3in}
 \Sigma_s \sim \text{Inv-Wish}(v_0 = J_s, \Lambda_0^{-1} = \text{diag}(J_s))
 $
 
+% mixture weight for normal covariances, resulting in multivariate t:
 $\hspace{1.3in}
-\gamma_{st} \sim \gamma(\frac{\alpha_{st}}{2}, \frac{2}{\alpha_{st}}),
+%\gamma_{st} \sim \text{gamma}(\text{shape = } \frac{\alpha_{st}}{2}, \text{scale = } \frac{2}{\alpha_{st}}),
+\gamma_{st} \sim \text{gamma}(\text{shape = } \frac{5}{2}, \text{ scale = } \frac{2}{5}),
 $
 
-$
-\beta_{ps}^Z \sim \text{N}(\mu_p, \sigma^2_p), \hspace{1.62in} \text{for $p \in (1,..,K)$}
-$
+% multivariate t degrees of freedom
+%$\hspace{1.7in}
+%\alpha_{st} \sim U(3, 50).
+%$
 
-$
-\bV=\{v_{ik}\}, v_{ii}=1, v_{ik} = \exp(-\lambda d_{ik}) \hspace{0.3in} \text{for $i,k \in (1,..,S)$}
-$
+%where we use relatively flat priors for $\tau$, $\mu_p$, $\sigma_p$, $\lambda$, $\mu_\alpha$, and $\tau_\alpha$.
 
-$
-\bX_t = (1,t,\sin(2\pi t \omega_1), \cos(2\pi t \omega_1),...),
-$
+The explanation of the model is as follows.
+\begin{enumerate}
+\item The first level of the model is a standard tobit regression, where we model the observed rainfall, $Y_{stj}$, as being equal to the $j^{th}$ component of the latent rainfall vector, $\bW_{st}$, if it is greater than zero, and equal to zero if the $j^{th}$ component of the latent rainfall vector is less than or equal to zero.
+\item Next, for each location $s$, the length-$J_s$ vector of latent rainfall amounts, $\bW_{st}$, is a multivariate $t$ random variable centered at the spatial mean rainfall amount for that location, $\bZ_{st}$, and offset by an ARC bias effect, $\beta_s^\text{ARC}$ (where $X^\text{ARC}_{sj}$ is an indicator variable of whether time series $j$ at location $s$ is an ARC satellite product). The latent rainfall, $\bW_{st}$, is a multivariate-$t$ random variable because it is a scale mixture of multivariate normals with a mixture weight, $\frac{1}{\gamma_{st}}$, for the covariance, $\Sigma_s$, that is drawn from a gamma distribution.
+\item The location-specific covariance matrices $\Sigma_s$ allow the multiple time series at each location to be correlated in unique ways. The mixing parameters $\gamma_{st}$ determine the widths of the tails of the multivariate-$t$ distributions, and are modeled with a gamma prior distribution with shape and scale parameters equal to 5/2 and 2/5, respectively, which implies that the multivariate-$t$ distribution, $\bW_{st}$, has 5 degrees of freedom. (In follow-up models, we could relax this assumption and estimate from the data how heavy the tails should be; the choice of 5 degrees of freedom is based on the fits of some simple, exploratory models).
+\item The spatial mean rainfall amount for day $t$, $\bZ_t$, is modeled as a multivariate normal random variable whose mean depends on the day, $t$ (linearly, quadratically, and periodically, with periods $\bomega = \frac{1}{365}(1, 2, 3, 4)$), and also on effects from El Nino, where the El Nino effect is an additive constant that depends on the month (allowing El Nino to have different effects across the 12 months of the year).
+\item The covariance matrix of $\bZ_t$, $\tau^2\bV$, depends on $\tau$, a scaling factor, one known input, the Euclidean distance between locations, and one unknown parameter, $\lambda$. The spatial correlation in rainfall between locations is modeled separately from the noise inherent in the different measurement methods at each location, which is modeled by $\Sigma_s$. The model assumes that the covariances of pairs of $Z_{st}$'s decay exponentially with the Euclidian distance between the pairs of locations at the unknown rate $\lambda$, which we estimate from the data using a relatively flat prior.
+\item The rest of the model is straightforward. We shrink the $\beta_{ps}^Z$'s for each location toward a common mean $\mu_p$. We also model the ARC biases, $\beta^\text{ARC}_s$ as normal random variables with an unknown mean, $\mu_\text{ARC}$, and variance $\tau_\text{ARC}^2$.
+\end{enumerate}
 
-$
-\alpha_s \sim N(\mu_\alpha, \tau^2_\alpha),
-$
+%The next level of the model is essentially a measurement error model: we model $Z_{stj}$ as a normal random variable with a mean centered at $W_{st} + \alpha_s X^\text{ARC}_{sj}$. Here, $W_{st}$ is another latent variable representing whether it \emph{truly} rained at location $s$ on day $t$, and $\alpha_s$ is a bias induced by using the ARC satellite product. . The variance of $Z_{stj}$, $\tau_s$, represents how noisy the observations from multiple sources of data, $j=1,..,J_s$, are for location $s$. For example, we might find that the five Adi Ha time series, each coming from a different source of data (but attempting to measure the true daily rainfall at the same location) are highly variable, whereas the multiple time series from some other location are less variable. We treat the different time series at each location as noisy measurements of the same thing (the ``true" latent variable indicating nonzero rainfall), where the measurement error consists of fixed effects ($\alpha_s$) and random effects (whose variation is modeled by $\tau_s$). This model will also allow us to estimate if the ARC product at each location is sytematically biased to report more or less rainfall than the other sources of data. Note that the ARC bias is modeled as constant across the year, which is an assumption that we could relax in a subsequent model. Also, the errors are homoskedastic ($\tau_s$ does not depend on $t$).
 
+%We model the ``true" rainfall latent variables for each site, $W_{st}$, as dependent on each other, via a multivariate normal random variable. The mean of the $S$-length random vector $\bW_t$ is $\bX_t \bbeta$, and the covariance is $\bR$.
 
-where we use relatively flat priors for $\tau$, $\mu_p$, $\sigma_p$, $\lambda$, $\mu_\alpha$, and $\tau_\alpha$.
+%The mean of $\bW_t$ is related to time, where the cycles per year in $X_t$ are $365 \times \bomega = (1, 2, 3, 1/7)$, which are frequencies chosen based on exploratory data analysis. The term that accounts for a cycle every 7 years is interesting, because such a cycle would roughly correspond to an el Nino event. Note that we also model a linear trend in rainfall frequency for each location via $\beta_{2s}$.
 
-The explanation of the model is as follows. The first level of the model is a standard tobit regression, where we model the observed $Y_{stj}$ as being equal to the j$^{th}$ component of the latent multivariate $t$ random variable, $W_{st}$ if it is greater than zero, and equal to zero if the latent multivariate $t$ random variable is less than or equal to zero. Next, for each location $s$, the length-$J_s$ vector of latent rainfall amounts is a multivariate $t$ random variable centered at the mean rainfall amount for that location, $Z_{st}$, and offset by an ARC bias effect, $\beta_s^\text{ARC}$. $\bW_{st}$ is a multivariate $t$ random variable because it is a mixture of multivariate normals with a mixture weight, $\frac{1}{\gamma_{st}}$ that has a gamma distribution as its prior.
-
-The next level of the model is essentially a measurement error model: we model $Z_{stj}$ as a normal random variable with a mean centered at $W_{st} + \alpha_s X^\text{ARC}_{sj}$. Here, $W_{st}$ is another latent variable representing whether it \emph{truly} rained at location $s$ on day $t$, and $\alpha_s$ is a bias induced by using the ARC satellite product. $X^\text{ARC}_{sj}$ is an indicator variable of whether time series $j$ at location $s$ is an ARC satellite product. The variance of $Z_{stj}$, $\tau_s$, represents how noisy the observations from multiple sources of data, $j=1,..,J_s$, are for location $s$. For example, we might find that the five Adi Ha time series, each coming from a different source of data (but attempting to measure the true daily rainfall at the same location) are highly variable, whereas the multiple time series from some other location are less variable. We treat the different time series at each location as noisy measurements of the same thing (the ``true" latent variable indicating nonzero rainfall), where the measurement error consists of fixed effects ($\alpha_s$) and random effects (whose variation is modeled by $\tau_s$). This model will also allow us to estimate if the ARC product at each location is sytematically biased to report more or less rainfall than the other sources of data. Note that the ARC bias is modeled as constant across the year, which is an assumption that we could relax in a subsequent model. Also, the errors are homoskedastic ($\tau_s$ does not depend on $t$).
-
-We model the ``true" rainfall latent variables for each site, $W_{st}$, as dependent on each other, via a multivariate normal random variable. The mean of the $S$-length random vector $\bW_t$ is $\bX_t \bbeta$, and the covariance is $\bR$. The covariance matrix depends on only one input, the Euclidean distance between locations, and one unkonwn parameter, $\lambda$. This is how we model the spatial correlation in rainfall between locations (and how it is modeled separately from the noise inherent in the different measurement methods at each location, which is modeled by $\tau_s$). The model assumes that the covariance of pairs of $W_{st}$'s decays exponentially with Euclidian distance at the unknown rate $\lambda$. The mean of $\bW_t$ is related to time, where the cycles per year in $X_t$ are $365 \times \bomega = (1, 2, 3, 1/7)$, which are frequencies chosen based on exploratory data analysis. The term that accounts for a cycle every 7 years is interesting, because such a cycle would roughly correspond to an el Nino event. Note that we also model a linear trend in rainfall frequency for each location via $\beta_{2s}$.
-
-The rest of the model is straightforward. We shrink the $\beta_{ps}$'s for each location toward a common mean $\mu_p$. We also model the ARC biases, $\alpha_s$ as normal random variables with an unknown mean, $\mu_\alpha$, and variance $\tau_\alpha^2$.
 
 \section{Fitting the Model}
-We used MCMC to fit the model. There was a combination of gibbs steps and metropolis steps. It took about 180 minutes to sample 3 chains of 5000 iterations each.
+We used MCMC to fit the model. There was a combination of Gibbs steps and metropolis steps. It took about [x] minutes to sample 3 chains of 5000 iterations each. Details of the MCMC implementation are available in the appendix.
 
 \section{Simulation Study}
 First, we ran a simulation study, where we simulated data from a set of known parameters. These parameter values were chosen to approximate values that could have produced our observed data, based on EDA. The size of the simulated data set was similar to the real data in both dimensions (the number of time series and the number of days).
