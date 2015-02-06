@@ -64,8 +64,7 @@ arc <- c(1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0)
 S <- 6
 
 # number of series for each location
-L <- c(2, 2, 2, 2, 2, 5)
-L.sum <- sum(L)
+J <- c(2, 2, 2, 2, 2, 5)
 
 # number of days per month for a non-leap year:
 #month.days <- c(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
@@ -164,10 +163,7 @@ month.days <- c(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
 month.mat[cbind(1:N, month.vec)] <- rep(nino, c(rep(month.days, 18), month.days[1:6], 28))
 # month.mat contains the 3-month-lagged, normalized nino temperatures for each day in the data
 
-# Meta-parameters:
-N <- 6779  # number of time points
-S <- 6  # number of locations
-J <- c(2, 2, 2, 2, 2, 5)  # number of time series per location
+
 
 #########################
 # 1.b Enter ARC indicator
@@ -224,13 +220,17 @@ for (s in 1:S){
 
 ########################################################################################################################
 
-# Start here after running Rcode1_data_setup.R:
+# Start here after running 'Rcode1_data_setup.R'
 rm(list=ls())
 setwd("~/Git/Rainfall/")
 
 # load the input data and assign them to the global namespace:
 load("input_data.RData")
 for (i in 1:length(input.data)) assign(names(input.data)[i], input.data[[i]])
+
+# read in scripts:
+source("Rcode_tobit_mcmc_functions.R")
+library(MASS)
 
 # Simulate data:
 
@@ -261,16 +261,10 @@ Sigma[[5]] <- diag(J[5])
 Sigma[[6]] <- diag(J[6])
 
 # create exponential covariance matrix:
-R.cov <- function(lambda, d){
-  R <- diag(dim(d)[1])
-  R[upper.tri(R)] <- exp(-lambda*d[upper.tri(d)])
-  R[lower.tri(R)] <- exp(-lambda*d[lower.tri(d)])
-  return(R)
-}
-V <- tau^2*R.cov(lambda, d.mat)
+V <- R.cov(lambda, d.mat)
 
 # Simulate Z given X_t, beta, and V (lambda and tau)
-Z <- mvrnorm(n = N, mu = rep(0, S), Sigma = V)
+Z <- mvrnorm(n = N, mu = rep(0, S), Sigma = tau^2*V)
 xbeta <- X %*% beta
 Z <- Z + xbeta
 
@@ -281,7 +275,6 @@ for (s in 1:S){
   #print(s)
   gamma <- rgamma(n = N, shape = alpha/2, scale = 2/alpha)
   W[[s]] <- mvrnorm(n = N, mu = rep(0, J[s]), Sigma = Sigma[[s]])/sqrt(gamma)
-  #X.w <- cbind(rep(1,J[s]),X.arc[[s]])
   W[[s]] <- t(W[[s]] + matrix(Z[, s], N, J[s]) + matrix(rep(X.arc[[s]]*beta.arc[s], each = N), ncol = J[s]))
   gamma.mat[, s] <- gamma
 }
@@ -318,11 +311,17 @@ save(sim.data, file = "sim_data_seed_836.RData")
 
 ########################################################################################################################
 
-# Start here after running Rcode1_data_setup.R:
+# Start here after running Rcode1_data_setup.R and Rcode2_simulate_data.R
 # and after simulating data:
 rm(list=ls())
 setwd("~/Git/Rainfall/")
 source("Rcode_tobit_mcmc_functions.R")
+
+# load libraries:
+library(MASS)
+library(msm)
+#library(LaplacesDemon)
+library(mvtnorm)
 
 # load the input data and assign them to the global namespace:
 load("input_data.RData")
@@ -435,7 +434,7 @@ for (s in 1:S) W.null[[s]] <- matrix(0, J[s], N)
 ##################################
 
 K <- 3  # number of chains
-G <- 10000  # number of iterations/samples
+G <- 100  # number of iterations/samples
 adapt <- 500
 mu.gibbs <- array(NA, dim=c(K, G, P))
 sigma.gibbs <- array(NA, dim=c(K, G, P))

@@ -20,7 +20,7 @@ rwishart <- function (nu,  V){
 }
 
 # sample from a truncated normal on one side using an exponential rejection sampling scheme:
-rtnorm.exp <- function(n=1,mean=0,sd=1,z.lower=-Inf,right=1,iter.max=10){
+rtnorm.exp <- function(n = 1, mean = 0, sd = 1, z.lower = -Inf, right = 1, iter.max = 10){
   a.star <- (z.lower + sqrt(z.lower^2+4))/2
   ret.val <- rep(NA,n)
   w <- 1:n
