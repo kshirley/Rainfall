@@ -44,29 +44,35 @@ By Kenneth E. Shirley
 
 \section{Motivation}
 
-Crop yields respond to rainfall and temperature, but averaged decadal or even average monthly rainfall can obscure the affects of weather on yields. Frequent exposure to extreme temperatures (high and lows) matters tremendously (Schlenker 2009). Furthermore, the daily variation in other variables, such as soil moisture have been found to be equally important, and if not accounted for, allow for temperature's effect to be overstated (Ortiz 2014). Specifically, the NUMBER of times and WHEN a crop is exposed to highs/lows in temperature and moisture is crucial, which decadal or monthly measures cannot capture. [Is this disingenuous if we don't have temperature but just rainfall amount?]
+Weather simulations are used to study future weather patterns in the context of climate-sensitive systems, and to simulate climate change scenarios and study its repercussions. Extreme weather events, such as drought, are frequently the hardest to predict,  the most damaging to agricultural livelihoods and the costliest events in terms of disaster response. However, multiple data sources may not always coincide with one another and may not coincide with human experience of extreme weather events making responsiveness difficult. In the case of such conflicting data, it is important that weather predictions are not drawn based on one information source alone, but with attention to multiple sources and the technology with which data are captured. Futhermore, more robust within site estimations can render more robust across site correlations. Both aspects can enable better simulation of rainfall. 
 
-Daily statistics and extremes of weather often have a greater impact on end-users than climatological averages. For example, although seasonal rainfall totals and average temperatures can provide a general guide to crop yields, plants are also extremely sensitive to extreme weather events over a few hours (Schlenker, 2009, Ortiz 2014), especially during flowering or pod-set.  A classic example is in groundnut, where high temperatures during the one or two days of flowering leads to pod death and plant death (Wheeler et al, 1996; Wheeler et al, 2000), or in maize, where a dry spell over the short Anthesis Tasselling Interval has a well measured and catastrophic impact on yields (Bolaños and Edmeades (1996)).  Similar impacts can be seen in hydrology, where extreme rainfall events that are often of more interest to flood modellers than seasonal averages (REFERENCE), or in climate science, where it is crucial to be able to convert projections of regional averages into changes in local weather (REFERENCE).    
+Past weather simulators have not simultaneously captured within site and across site correlation of weather time series. Initially, many weather simulators were estimated using one time series per location. 
+%history: markov, distributions, multiple sites, h bayes
+Wilks and Wilby (1999) provide an overview of the developments in weather simulation. The technique for producing such time series began with stochastic point process-based models in space and time are used. Both (Sanso) and (weather game) provide good overviews of this trajectory. First order Markov chains were first used to generate such point processes, modeling the occurrence of rainy versus non-rainy days dictated by transition probabilities. Transition probabilities were based on the climatological relative frequency of precipitation days (Gabriel and Neumann (1962)). Improvements to this first model then included modeling the non-zero rainfall days [Todorovic and Woolhiser (1975)] , which followed with developments in the type of distribution for non-zero days: including an exponential distribution (Richardson (1981)) and then a gamma distribution [Thom, 1958; Katz, 1977; Buishand, 1977; 1978; Stern and Coe, 1984; Wilks, 1989; 1992 (1981)]. Other methodologies for simulating precipitation occurrences is the use of spell-length models. Rather than simulating rainfall occurrences day by day, spell-length models operate by fitting wet and dry periods to different probability distributions (Buishand, 1977; 1978; Roldan and Woolhiser,1982). Non-parametric simulation methods have also been developed which involved resampling data such that time correlations are captured in the resampling to estimate distribution parameters (Young (1994), Lall and Sharma (1996), Lall et al. (1996) and Rajagopalan et al. (1997)).
+	
+The objective in all of these approaches is to be able to simulate long synthetic time-series of weather that reflect key observed statistics in the region of interest e.g. means, dry spell lengths, inter annual rainfall variability, or probability of extreme events occurring. Capturing a spatial dependence between sites or series, as well as charactersitics of the series themselves, such as non-stationarity, can improve our predictive analytics. 
 
-The ability to generate realistic daily time-series of weather is therefore valued in many end-user applications such as hydrological, climate or crop simulation modelling, especially over regions of the world where there are sparse ground based weather station networks.  The technique for producing such time series has moved from deterministic weather models where rainfall follows a stochastic markov process where transition probabilities dictate the chance of rain, give only the particular state. As in (weather generation game) the seminal papers in this area are xxxx. The paper also reviews the techniques of XXX and YYYY[HELEN]. The objective in any of these approaches is to be able to simulate long synthetic time-series of weather that reflect key observed statistics in the region of interest e.g. means, dry spell lengths, or probability of extreme events occurring.  
+%spatial 
+There is also a a high level of interest in spatially correlated weather generators, which would have a clear benefit when considering modeling river basins or regional food security.  Incorporating spatial correlation is also key when one considers that most weather events such as droughts or floods have a high impact precisely because they are spatially correlated, regional events, thus incorporating observed spatial correlations into a well calibrated stochastic approach is likely to lead to more realistic impact models.  Several different techniques and methods have been suggested.  The MarkSim weather generator uses spatially correlated input grids of statistics to allow one to allow estimation at a site where there are no observations (Jones and Thornton, 1993). Wilks (1999,1998) extended a richardson weather generator by driving it with a grid of spatially correlated random numbers.  More recently this approach was extended in the GIST weather generator, which incorporates spatial correlation through the use of correlation matrices to sample from a cumulative probability function at each location (Baigorria and Jones, 2010), or in Kleiber et al (2012) the use of latent Gaussian processes.  In 2012. Greatrex (2012) proposed a geostatistical sequential simulation approach coupled to a markov generator, which would allow spatially correlated ensembles of maps of rainfall to be generated.  It is important to note that many of these approaches rely on a large amount of observed and calibrated data, for example a dense station network to create variograms [EXPLAIN].   
 
-The Hierarchal Bayes method goes beyond the markov approach for several reasons: 
-[ assumes simplistic relationships between weather variables, and regional climate modelling is still in its infancy over many regions, with well documented problems in modelling variables such as rainfall.  But you guys can incorporate all the information you have, so multiple time-series at a location, SSTs etc without knowing the exact prior relationship]
+Hierchacal bayesian estimation is yet another approach equipped to model spatial as well as temporal relationships. It goes beyond the simplistic and often linear relationships assumed in markovian weather simulators. It models and estimates the functional relationship between weather series over time. The most recent development in the use of the hierarchal bayesian approach comes from Sanso and Guenni (2012), which improves upon Sanso and Duenni (1996), by 1) incorporating spatial correlation for the joint distribution of weather series from several stations and 2) the non-stationarity of rainfall data. Tha authors show that there model is able to predict for a large number of stations, some of which have poor quality data. 
 
-Recently, there has been a high level of interest in spatially correlated weather generators, which would have a clear benefit when considering modelling river basins or regional food security.  Incorporating spatial correlation is also key when one considers that most weather events such as droughts or floods have a high impact precisely because they are spatially correlated, regional events, thus incorporating observed spatial correlations into a well calibrated stochastic approach is likely to lead to more realistic impact models.  Several different techniques and methods have been suggested.  The MarkSim weather generator uses spatially correlated input grids of statistics to allow one to allow estimation at a site where there are no observations (Jones and Thornton, 1993). Wilks (1999,1998) extended a richardson weather generator by driving it with a grid of spatially correlated random numbers.  More recently this approach was extended in the GIST weather generator, incorporates spatial correlation through the use of correlation matrices to sample from a cumulative probability function at each location (Baigorria and Jones, 2010), while Kleiber et al (2012) suggests the use of latent Gaussian processes.  In 2012. Greatrex (2012) proposed a geostatistical sequential simulation approach coupled to a markov generator, which would allow spatially correlated ensembles of maps of rainfall to be generated.  It is important to note that many of these approaches rely on a large amount of observed and calibrated data, for example a dense station network to create variograms [EXPLAIN].   
+While we do not focus on the non-stationarity aspect of raifnall series, the novelty of our approach is our ability to account for two levels of the rainfall time series information at each site: 1) both the location of the measurement and 2) the instrument used to measure, as well to incorporate. In addition, we 3) estimate the the spatial covariance between all these series and 4) the noise or error in recording rainfall due to the instrument itself. By incorporating several layers of information sources for each site in which we would like to predict weather, we are adding more information to the parameter estimates and, hopefully, improving out-sample predictions. Because we used daily data to fit our model, our simulated data and out-of-sample predictions are daily, which allows us to compute statistics sensitive to daily measurements: probability of rainfall, dry spells, and extreme rainfall. 
 
-Then move onto the heirarchical bayes approach and discuss the sanso guenni and related papers......
-#http://iri.columbia.edu/climate/forecast/tutorial2/
 
-The hierchacal bayesian estimation is a modeling approach first employed in XXXXX (KENNY?). The approach has two steps or levels: the parameters describing the effect of say satellite information in describing rainfall, and then given those parameters, the probability that rainfall actually occurred. We also assume that given the parameters, the probability of rainfall follows a particular model such as a probit. Use initial crude estimates of betas, an interative process called Gibbs sampling is used to estimate the parameter conditional on the current estimates of the other parameters by making a random draw from the conditional distribution. After a burn in period, the estimates from several different "chains" converge to the correct estimates for each parameter. 
+We find that our model performs well in cross validation exercises with simulated data in parameters are known, as well as with capturing historical data patterns on which the esimates are based. In addition our cross validation exericses with historical data both across time and space perform relatively wel. 
 
-The approach has been broadened to incorporate features such as 
-non-stationarity sanso
-kleiber
 
-The novelty of our approach is our ability to account for two levels of the rainfall time series information at each site: 1) both the location of the measurement and 2) the instrument used to measure, as well to incorporate. In addition, we 3) estimate the the spatial covariance between all these series and 4) the noise or error in recording rainfall due to the instrument itself. By incorporating several layers of information sources for each site in which we would like to predict weather, we are adding more information to the parameter estimates and, hopefully, improving out-sample predictions. Because we used daily data to fit our model, our simulated data and out-of-sample predictions are daily, which allows us to compute statistics sensitive to daily measurements: probability of rainfall, dry spells, and extreme rainfall. 
+In the next sections XXXXXX
 
-The remainder the paper is as follows. In Section 
+%More recently, simulators aim to generate weather sequences at multiple points, where the spatial correlations between rainfall occurrence at different sites are captured using spatially dependent random variables (Wilks 1999). More recently Yatest et al (2003) and later Apipattanavis et. al. (2007) model  spatially averaged weather time series for a representative time series of an entire region. As the authors, state, this approach works well if the sites are homogenous in terms of their weather. 
+
+%Crop yields respond to rainfall and temperature, but average decadal or even average monthly rainfall can obscure the effects of weather on yields. Frequent exposure to extreme temperatures (high and low) matters tremendously (Schlenker 2009). Furthermore, the daily variation in other variables, such as soil moisture, has been found to be equally important, and if not accounted for, allows for temperature's effect to be overstated (Ortiz 2014). Specifically, the NUMBER of times and WHEN a crop is exposed to highs/lows in temperature and moisture is crucial, which decadal or monthly measures cannot capture. [Is this disingenuous if we don't have temperature but just rainfall amount?]
+
+%Daily statistics and extremes of weather often have a greater impact on end-users than climatological averages. For example, although seasonal rainfall totals and average temperatures can provide a general guide to crop yields, plants are also extremely sensitive to extreme weather events over a few hours (Schlenker, 2009, Ortiz 2014), especially during flowering or pod-set.  A classic example is in groundnut, where high temperatures during the one or two days of flowering leads to pod death and plant death (Wheeler et al, 1996; Wheeler et al, 2000), or in maize, where a dry spell over the short Anthesis Tasselling Interval has a well measured and catastrophic impact on yields (Bola–os and Edmeades (1996)).  Similar impacts can be seen in hydrology, where extreme rainfall events that are often of more interest to flood modelers than seasonal averages \citet{hydro}, or in climate science, where it is crucial to be able to convert projections of regional averages into changes in local weather (REFERENCE).    
+
+%The ability to generate realistic daily time-series of weather is therefore valued in many end-user applications such as hydrological, climate or crop simulation modeling, especially over regions of the world where there are sparse ground based weather station networks.  
+
 
 
 
@@ -175,6 +181,52 @@ The rest of the model is straightforward. We shrink the $\beta_{ps}$'s for each 
 
 \section{Fitting the Model}
 We used MCMC to fit the model. There was a combination of gibbs steps and metropolis steps. It took about 180 minutes to sample 3 chains of 5000 iterations each.
+%Here is text to follow from Sanso 2012
+
+``To fit the model presented in the previous section, we
+use a Markov chain Monte Carlo method (MCMC), as described
+by, for example, Smith and Roberts (1993), to obtain
+samples from the posterior distribution of a’, r2, A, p, z =
+(zI... . , Z T ) and 0 = (01,. . . , O T ) , where each 19%h as dimension
+q.
+inverse gamma distributions, so it is straightforward to
+obtain samples from them. The full conditionals for X and
+p do not correspond to the functional form of any known
+density and so, following Muller (1991), we propose the
+use of a Metropolis step. This proceeds as follows: We first
+transform X to the log scale, then we obtain a proposal
+from a uniform distribution centred at the log of the last
+imputed value of A, and finally we accept the proposal with
+a probability that is given by the usual Metropolis-Hastings
+algorithm (see, e.g., Chib and Greenberg 1995). We proceed
+in a similar way to obtain samples of 0.
+To obtain samples of utr let wt = (ut, wt2) and, accordingly,
+split zt as (ztl, zt2), the full conditional of ut is a
+multivariate normal with mean ztl and covariance matrix
+a2p21, where I is the identity matrix.
+By a similar argument, we can see that the full conditional
+distribution of vt is a truncated multivariate normal
+with mean obtained by splitting zt and covariance matrix
+a multiple of the identity, which facilitates the sampling.
+Nevertheless, care must be taken when the components of
+zt are large and positive, because then the distribution is
+concentrated in a region away from the negative values.
+The full conditional of zt is a multivariate normal with
+covariance matrix C = (I/p2 + V(X)-’)-’ and mean
+Samples of 0 = (0, , .. . ,QT) can be obtained using
+the algorithm proposed by Carter and Kohn (1994) and
+Fruhwirth-Schnatter (1 994), which produces a sample from
+the joint density of 0. The procedure is known as forward
+\$filtering backward sampling (FFBS) and begins with calculating
+the posterior moments E(0t IDt, a2, p, A) = mt and
+var(0tIDt,02,p,A) = Ct, using the standard results from
+dynamic linear models (forward filtering). The backward
+sampling starts by obtaining a sample dT N Nk(mT,CT)
+and then recursively sampling dt - N(rntlt+l, Ctlt+l),
+where mtlt+l = mt + &(&+I - Grnt)lCt~t+=l Ct -
+AtQtAL1Qt = GCtG‘ + Wt, and At = C,G‘Q;l, for
+t = T - 1,. . . ,l.''
+
 
 \section{Simulation Study}
 First, we ran a simulation study, where we simulated data from a set of known parameters. These parameter values were chosen to approximate values that could have produced our observed data, based on EDA. The size of the simulated data set was similar to the real data in both dimensions (the number of time series and the number of days).
@@ -192,7 +244,25 @@ The results were very encouraging: we were able to precisely estimate the spatia
 
 
 \section{Results}
-The results on the real data are equally encouraging. 
+%More text to edit, following Sanso 2012
+Results are based on from a chain after a burn-in of 3,000 iterations. We assessed
+convergence by running the chain for three different starting
+values, changing the initial seed of the random number
+generator, and monitoring the samples of 0’. p’, d. and A.
+The values of the Brooks, Gelman, and Rubin conver, eence
+diagnostic for each of the parameters, as well as the multivariate
+test, were all below 1.1 1, a threshold suggested by
+Gainerman (1997) as satisfactory, after 4,000 iterations. We
+iioticed that samples stabilize after few iterations, although
+a strong autocorrelation IS present. We ran the Raftery and
+Lewis convergence test (Raftery and Lewis 1992) and obtained
+that for all four parameters, the suggested burn-in
+was less than 800, the suggested thinning was less than 20.
+and fewer than 50,000 iterations were needed to achieve an
+accuracy of Li.01, with probability .95, in the estimation of
+the .025 and .95 quantiles. All of these results where obtained
+running the set of routines BOA for R, developed by
+Brian Smith (http://www.pnblic-health.uiowa.edu/boa/).''
 
 1. prob and mean rainfall historical vs. sim\\
 
