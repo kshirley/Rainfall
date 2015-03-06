@@ -5,6 +5,7 @@
 
 # Next, run 'Rcode2_simulate_data.R' to simulate some data:
 # Now you have another .RData file containing true parameter values and some simulated data
+# file name is: "sim_data_seed_836.RData"
 
 # Clear the workspace:
 rm(list=ls())
@@ -24,12 +25,12 @@ load("input_data.RData")
 for (i in 1:length(input.data)) assign(names(input.data)[i], input.data[[i]])
 
 # load the simulated data and true values of parameters and assign to global namespace:
-load("sim_data_seed_836.RData")
+seed <- 888
+load(paste0("sim_data_seed_", seed, ".RData"))
 for (i in 1:length(sim.data)) assign(names(sim.data)[i], sim.data[[i]])
 
 # Replace the real data, Y, with the simulated version, Y.sim:
 Y <- Y.sim
-T=N
 
 # Now let's write the MCMC code:
 # Eventually this block might be its own file, or function called "Rcode3"
@@ -71,7 +72,7 @@ K <- 3
 load("start_list_v2.RData")
 
 # random starting points:
-set.seed(634)
+set.seed(638)
 mu.start <- matrix(rnorm(K*P), K, P)
 sigma.start <- matrix(runif(K*P, 0.2, 1), K, P)
 alpha.start <- rep(5, K)
@@ -89,7 +90,6 @@ for (s in 1:S) {
     Sigma.start[[s]][k, , ] <- diag(J[s])
   }
 }
-
 
 # compute the mean of Z.start
 xb.start <- array(NA, dim = c(K, N, S))
@@ -134,7 +134,7 @@ for (s in 1:S) W.null[[s]] <- matrix(0, J[s], N)
 ##################################
 
 K <- 3  # number of chains
-G <- 100  # number of iterations/samples
+G <- 2000  # number of iterations/samples
 adapt <- 500
 mu.gibbs <- array(NA, dim=c(K, G, P))
 sigma.gibbs <- array(NA, dim=c(K, G, P))
@@ -255,7 +255,7 @@ for (k in 1:K){
     beta.gibbs[k, g, , ] <- beta
     
     # draw tau | Z, beta, lambda, a, b where prior(tau^2) ~ inverse-gamma(shape=a,rate=b)
-    tau <- tau.draw.tobit(Z, beta, lambda, a = 1, b = 1)
+    tau <- tau.draw.tobit(Z, beta, lambda, a = 1, b = 1, T = N)
     tau.gibbs[k, g] <- tau
     
     # draw lambda | beta, tau, Z:
@@ -293,7 +293,7 @@ gibbs.list <- list(mu.gibbs = mu.gibbs,
                    beta.arc.gibbs = beta.arc.gibbs, 
                    Sigma.gibbs = Sigma.gibbs, 
                    W.gibbs = W.gibbs)
-save(gibbs.list, file = "gibbs_out_20150204_G10k.RData")
+save(gibbs.list, file = "gibbs_out_20150306_G2k.RData")
 
 
 

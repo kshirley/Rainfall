@@ -15,7 +15,8 @@ library(MASS)
 # Simulate data:
 
 # Set true parameter values:
-set.seed(836)
+seed <-888
+set.seed(seed)
 mu <- rnorm(P, 0, 1)
 sigma <- runif(P, 0.3, 0.8)
 alpha <- 5 # degrees of freedom for student-t
@@ -26,7 +27,6 @@ beta.arc <- seq(0, 2, length = S)
 tau.arc <- sd(beta.arc) # variability of ARC effects
 
 # Simulate regression coefficients for underlying weather process:
-set.seed(328)
 beta <- matrix(NA, P, S)
 for (p in 1:P){
   beta[p, ] <- rnorm(S, mu[p], sigma[p])
@@ -87,6 +87,6 @@ sim.data <- list(mu = mu,
                  gamma.mat = gamma.mat, 
                  Y.sim = Y.sim)
 
-save(sim.data, file = "sim_data_seed_836.RData")
+save(sim.data, file = paste0("sim_data_seed_", seed, ".RData"))
 
 
