@@ -179,7 +179,7 @@ draw.beta.tobit <- function(tau, lambda, vec, xtx.ones, Z, X, sigma, mu){
   return(list(beta = beta, B = B))
 }
 
-tau.draw.tobit <- function(Z, beta, lambda, a, b){
+tau.draw.tobit <- function(Z, beta, lambda, a, b, T){
   b.post <- b + 0.5*sum(((Z-X%*%beta) %*% solve(R.cov(lambda, d.mat)))*(Z-X%*%beta))
   a.post <- a + T*S*0.5
   return(sqrt(1/rgamma(1, shape = a.post, rate = b.post)))
