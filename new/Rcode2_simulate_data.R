@@ -26,6 +26,7 @@ beta.arc <- seq(0, 2, length = S)
 tau.arc <- sd(beta.arc) # variability of ARC effects
 
 # Simulate regression coefficients for underlying weather process:
+set.seed(328)
 beta <- matrix(NA, P, S)
 for (p in 1:P){
   beta[p, ] <- rnorm(S, mu[p], sigma[p])

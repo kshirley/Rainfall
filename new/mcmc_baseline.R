@@ -10,6 +10,9 @@
 rm(list=ls())
 setwd("~/Git/Rainfall/")
 
+#setwd("~/SkyDrive/IRI/RainfallSimulation/Rainfall")
+#path<-"~/SkyDrive/IRI/RainfallSimulation/Rainfall/"
+
 # read in scripts:
 source("Rcode_tobit_mcmc_functions.R")
 library(MASS)
@@ -26,6 +29,7 @@ for (i in 1:length(sim.data)) assign(names(sim.data)[i], sim.data[[i]])
 
 # Replace the real data, Y, with the simulated version, Y.sim:
 Y <- Y.sim
+T=N
 
 # Now let's write the MCMC code:
 # Eventually this block might be its own file, or function called "Rcode3"
@@ -64,7 +68,7 @@ for (s in 1:S){
 K <- 3
 
 # check names of start value parameters:
-#load("start_list_v2.RData")
+load("start_list_v2.RData")
 
 # random starting points:
 set.seed(634)
@@ -328,4 +332,3 @@ start.list <- list(mu.start=mu.start,sigma.start=sigma.start,alpha.start=alpha.s
                    beta.arc.start=beta.arc.start,Sigma.start=Sigma.start)
 save(start.list,file=paste(path,"start_list_v5.RData",sep=""))
 # v3 is the G=5000 output from 3/12 that includes P=23 predictors and alpha=10
-
