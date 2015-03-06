@@ -19,18 +19,22 @@
 
 
 8 Out of sample predictions (hoepfully show our model does a bit better than simpler models)
-  - remove one series from a site
-    - make predictions under a few different models
+  Experiment 1: remove one series from a site, and only one 2-4 year time span from that series
+    - hager selam 2005 - 2008 station
+    - make predictions under a few different models:
 
       * increasingly complex models:
-      a. just use the one time series
-      b. use all 15 (or 14) series, but no spatial dependence
+      a. just use the one time series, up until the data were removed
+      b. use all 15 (or 14 b/c of Adi Ha new is so short) series, but no spatial dependence
       c. assume independence between series at a given site
       d. our model
 
-
-2 estimands: mean daily during the wet season, and onset
+2 estimands: mean daily mm rainfall during the wet season, and the day of onsetd
 same loss function: rmse (mm for daily mean and days for onset)
+
+
+
+
 
 
 Then... done!
