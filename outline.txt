@@ -1,5 +1,9 @@
 1 Motivation & Intro (both edit)
 
+  -The Adi ha new sereis was our original the motivation--we'd like to predict this short station using other series like ARC.
+  -But for the purposes of this paper, we won't use adi ha in our experiment, as we don't have enough historical data to check if the model is performing well. 
+  -So rather, we eliminate the last 3 years of hagersalam station, and check if we can reproduce it. 
+
 2 Data (almost done)
 
 3 EDA (almost done)
@@ -51,6 +55,12 @@ kenny: clean up code in mcmc_baseline.R
  - add .o and .so files to the .gitignore
  - re-run simulation study on this model to double-check
    - investigate alpha draw, especially
+ - Play around with how fat tails should be on t distribution--namely alpha=5 or giving alpha a tight prior between -3 and 30
+
+katya: 
+ - re-run the baseline study with 5,000 runs
+ - set up the first experiment removing last 3 years of hager salam station (series 1)
+
 
 
 
