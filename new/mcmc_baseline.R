@@ -294,7 +294,16 @@ save(gibbs.list, file = "gibbs_out_20150326_G5k_HS1.RData")
 
 
 
+<<<<<<< HEAD
 load(file = "gibbs_out_20150326_G5k_HS1.RData")
+=======
+
+
+
+#load(file=paste(path,"gibbs_out_NA11172014_G5000.RData",sep=""))
+#load(file = "gibbs_out_04272014_G5000.RData")
+load(file = "gibbs_out_20150306_G2k.RData")
+>>>>>>> 2ef2ef19523ccf5334856515617602eb1165130b
 for (i in 1:length(gibbs.list)) assign(names(gibbs.list)[i], gibbs.list[[i]])
 
 
