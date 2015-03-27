@@ -11,30 +11,45 @@
 4 The Model (kenny finish explanation)
 
 5 Fitting the model (kenny and katya  - maybe kenny appendix to show multivariate t mixture)
+ - appendix of the gibbs sampling steps (kenny)
+ - discussion (finish teh discussion of the steps for fitting the model)
 
 6 Simulation Study (optional) Kenny to update with new model
+ - choose somewhat realistic parameter settings and show a couple of trace plots of the challenging/interesting parameters
 
-7 Results (fit to all data, discuss inferences) kind of short.
+7 Results (fit to all data, discuss inferences). Run should probably be 20k iterations, just to be safe.
   focus on:
     - ARC bias,
     - site-scpecific covariance matrices
     - spatial correlation
     - El nino effects
+  Notes:
+  (1) run for 5k, get an idea of posterior means, then set starting points to be +/- 3 or 4 standard deviations from posterior means
+  (2) set up "adapt"to be 1,000, and look at trace plots
+  (3) maybe set burn-in to be ~5000 iterations
+  (4) maybe do thinning, so look at every fifth iteration out of 15,000 post-burnin, for example for a 3,000 point posterior sample for each parameter.
+  (5) compute gelman-rubin statistics for each of the 234 parameters
+  (6) Do inference, discuss, etc. Maybe a nice plot of posterior means and standard errors (horizontal bar-type plot).
 
 
-8 Out of sample predictions (hoepfully show our model does a bit better than simpler models)
+8 Out of sample predictions (hopefully show our model does a bit better than simpler models)
   Experiment 1: remove one series from a site, and only one 2-4 year time span from that series
     - hager selam 2005 - 2008 station
     - make predictions under a few different models:
 
       * increasingly complex models:
-      a. just use the one time series, up until the data were removed
-      b. use all 15 (or 14 b/c of Adi Ha new is so short) series, but no spatial dependence
-      c. assume independence between series at a given site
+      a. just use the one time series, up until the data were removed (remove all other data)
+      b. use all 15 (or 14 b/c of Adi Ha new is so short) series, but no spatial dependenc (lambda = 0)
+      c. assume independence between series at a given site (Sigmas are all diagonal 1's)
       d. our model
 
-2 estimands: mean daily mm rainfall during the wet season, and the day of onsetd
-same loss function: rmse (mm for daily mean and days for onset)
+3 estimands: 
+  (1) predict every day of rainfall for 3 months per year (90 * 4 = 360 predictions)
+  (2) the day of onset (4 predictions)
+  (3) the number of 7-day droughts in the 90 days following onset of the season
+
+
+same loss function: rmse (mm for daily mean and daily rainfall, and days for onset)
 
 
 

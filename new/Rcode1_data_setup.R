@@ -4,8 +4,8 @@ rm(list=ls())
 # set working directory:
 setwd("~/Git/Rainfall/")
 
-setwd("~/SkyDrive/IRI/RainfallSimulation/Rainfall")
-path<-"~/SkyDrive/IRI/RainfallSimulation/Rainfall/"
+#setwd("~/SkyDrive/IRI/RainfallSimulation/Rainfall")
+#path<-"~/SkyDrive/IRI/RainfallSimulation/Rainfall/"
 
 
 
@@ -65,7 +65,7 @@ year.vec <- match(year.names, year.names)
 # KV: IF YOU'RE CUTTING OFF A SERIES DO IT HERE
 # Make all series for last three years of Hagersalam, NA, for cross validation exericse
 # This is 5476 to 6779 is 2007 to 2010
-data[1, 5476:6779]<-NA
+#data[1, 5476:6779]<-NA
 
 # Put the observed rainfall in a list with one element per location
 # where each list element is a matrix:
@@ -208,13 +208,13 @@ for (s in 1:S){
 
 
 # KV: Some later parameters that are useful to save
-K <-3
+#K <-3
 
-G<- 2000
+#G<- 2000
 
-adapt <- 500
+#adapt <- 500
 
-burn <- 1001:2000
+#burn <- 1001:2000
 
 # Save the necessary data objects in a named list:
 input.data <- list(Y = Y,  # observed rainfall
