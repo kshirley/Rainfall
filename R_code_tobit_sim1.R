@@ -3,10 +3,15 @@
 rm(list=ls())
 #source("~/Stats/Misc/myRfunctions.R")
 #data.path <- "~/Stats/IndexInsurance/AdiHa supporting data/"
-setwd("/Users/kathrynvasilaky/SkyDrive/IRI/RainfallSimulation/R")
-#setwd("/Users/katyav/SkyDrive/IRI/RainfallSimulation/R")
-path <- getwd()#"~/SkyDrive/IRI/RainfallSimulation/R/"  # enter in here wherever you want to store the scripts and data files
-path <- paste(path,'/', sep='')
+#setwd("/Users/kathrynvasilaky/SkyDrive/IRI/RainfallSimulation/R")
+setwd("~/Rainfall/")
+setwd("~/SkyDrive/IRI/RainfallSimulation/Rainfall")
+path<-"~/SkyDrive/IRI/RainfallSimulation/Rainfall/"
+
+
+#path <- getwd()#"~/SkyDrive/IRI/RainfallSimulation/R/"  # enter in here wherever you want to store the scripts and data files
+
+#path <- paste(path,'/', sep='')
 source(paste(path,"R code multisite covariance scripts.R",sep=""))  # read in some scripts I wrote
 #library(bayesm)
 library(MASS)
@@ -79,7 +84,6 @@ nino <- nino - mean(nino)
 month.vec <- match(months(date.string),month.names)
 month.mat <- matrix(0,T,12)
 month.mat[cbind(1:T,month.vec)] <- rep(nino[1:223],c(rep(month.days,18),month.days[1:6],28))
-
 
 
 
@@ -303,7 +307,7 @@ for (s in 1:S) W.null[[s]] <- matrix(0,J[s],T)
 
 # Set up storage for gibbs samples:
 K <- 3
-G <- 5000
+G <- 100
 adapt <- 500
 mu.gibbs <- array(NA,dim=c(K,G,P))
 sigma.gibbs <- array(NA,dim=c(K,G,P))

@@ -4,6 +4,8 @@ rm(list=ls())
 # set working directory:
 setwd("~/Git/Rainfall/")
 
+setwd("~/SkyDrive/IRI/RainfallSimulation/Rainfall")
+path<-"~/SkyDrive/IRI/RainfallSimulation/Rainfall/"
 
 
 
@@ -58,6 +60,12 @@ month.names <- unique(months(date.string))
 year.names <- unique(format(date.string, "%Y"))
 month.vec <- match(months(date.string), month.names)
 year.vec <- match(year.names, year.names)
+
+
+# KV: IF YOU'RE CUTTING OFF A SERIES DO IT HERE
+# Make all series for last three years of Hagersalam, NA, for cross validation exericse
+# This is 5476 to 6779 is 2007 to 2010
+data[1, 5476:6779]<-NA
 
 # Put the observed rainfall in a list with one element per location
 # where each list element is a matrix:
@@ -199,7 +207,14 @@ for (s in 1:S){
 }
 
 
+# KV: Some later parameters that are useful to save
+K <-3
 
+G<- 2000
+
+adapt <- 500
+
+burn <- 1001:2000
 
 # Save the necessary data objects in a named list:
 input.data <- list(Y = Y,  # observed rainfall
@@ -213,6 +228,8 @@ input.data <- list(Y = Y,  # observed rainfall
                    year.vec = year.vec,  # vector of year indices
                    d.mat = d.mat,  # distance matrix
                    X = X,  # design matrix for spatial regression
+                   month.names = month.names, #month names for graphs
+                   X.names = X.names,
                    P = P,  # number of predictors in X
                    na.mat = na.mat  # list of NA indicators for observed rainfall
                    )

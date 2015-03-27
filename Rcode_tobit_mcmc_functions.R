@@ -1,3 +1,45 @@
+# Simulate Function W.new 
+# function to simulate rainfall given parameters from gibbs output:
+sim.W <- function(alpha, beta, lambda, tau,beta.arc,Sigma,X,X.arc,na.preserve=TRUE,na.mat){
+  Z.sim <- mvrnorm(N,rep(0,S),tau^2*R.cov(lambda,d.mat)) + X %*% beta
+  gamma.mat <- matrix(rgamma(N*S,shape=alpha/2,scale=2/alpha),N,S)  
+  W.new <- as.list(rep(NA,S))
+  for (s in 1:S){
+    mu.W <- t(Z.sim[,s] + t(matrix(X.arc[[s]]*beta.arc[s],J[s],N)))
+    temp <- t(mvrnorm(n=N,mu=rep(0,J[s]),Sigma=Sigma[[s]])/sqrt(gamma.mat[,s]))
+    temp <- temp + mu.W
+    temp[temp<0] <- 0
+    W.new[[s]] <- temp
+    if (na.preserve) W.new[[s]][na.mat[[s]]==1] <- NA
+  }
+  #return(unlist(W.new)[unlist(na.mat)==0])
+  return(W.new)
+}
+
+
+# Traceplot Function  
+# trace plot function from myRfunctions.R:
+tp <- function(gibbs.input,burn=0,end=dim(gibbs.input)[2],nc=3,ylim=range(gibbs.input[,(burn+1):end]),thin=1,...){
+  if(nc==1){
+    z <- matrix(gibbs.input,ncol=1)
+  } else {
+    z <- matrix(t(gibbs.input),ncol=nc)
+  }
+  
+  
+  G.local <- dim(z)[1]
+  #rg <- ifelse(ylim==c(-99,-99),c(min(z[(burn+1):end,]),max(z[(burn+1):end,])),c(ylim[1],ylim[2]))
+  #xrg <- ifelse(xlim==c(-99,-99),c(0,length(z[,1])),c(xlim[1],xlim[2]))
+  thin.seq <- seq(thin,G.local,by=thin)
+  lt <- length(thin.seq)
+  plot(thin.seq,z[thin.seq,1],col=1,type="l",ylim=ylim,...,xaxt="n")
+  axis(1,at=seq(0,G.local,length=5))
+  if(nc > 1){
+    for (i in 2:nc) lines(thin.seq,z[thin.seq,i],col=i)
+  }
+}
+
+
 # define student t density function:
 dst <- function(x, nu, mu, sigma) {
   gamma((nu + 1)/2)/(gamma(nu/2)*sqrt(nu*pi*sigma^2))*(1 + 1/nu*((x - mu)/sigma)^2)^(-1*(nu + 1)/2)

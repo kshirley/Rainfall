@@ -1,62 +1,28 @@
 #Comes from the graphs in R_code_tobit_real3.R and the graphs in comparison_plots2.R
 #After running the preferred baseline file, this file should work to create all graphs using the resulting posterior. 
 
+# Clear the workspace:
+rm(list=ls())
+setwd("~/Git/Rainfall/")
+setwd("~/SkyDrive/IRI/RainfallSimulation/Rainfall")
+path<-"~/SkyDrive/IRI/RainfallSimulation/Rainfall/"
+
+source("Rcode_tobit_mcmc_functions.R")
 
 ###############################
 #Load last MCMC
 ###############################
+
+# load the input data and assign them to the global namespace:
+load("input_data.RData")
+for (i in 1:length(input.data)) assign(names(input.data)[i], input.data[[i]])
+
+
 #Regular Posterior
-load(file="gibbs_out_NA11172014_G5000.RData")
-#gibbs_out_NA11172014_G5000.RData
-#gibbs_out_04272014_G5000.RData
-#Posterior with NA's for Adiha
+#load(file="gibbs_out_20150326_G5k.RData")
+#Last 3 years of Hager Salem as NA:
+load(file="gibbs_out_20150326_G5k_HS1.RData")
 for (i in 1:length(gibbs.list)) assign(names(gibbs.list)[i],gibbs.list[[i]])
-
-
-
-########################
-#Simulate Function W.new 
-########################
-# function to simulate rainfall given parameters from gibbs output:
-sim.W <- function(alpha, beta, lambda, tau,beta.arc,Sigma,X,X.arc,na.preserve=TRUE,na.mat){
-  Z.sim <- mvrnorm(T,rep(0,S),tau^2*R.cov(lambda,d.mat)) + X %*% beta
-  gamma.mat <- matrix(rgamma(T*S,shape=alpha/2,scale=2/alpha),T,S)  
-  W.new <- as.list(rep(NA,S))
-  for (s in 1:S){
-    mu.W <- t(Z.sim[,s] + t(matrix(X.arc[[s]]*beta.arc[s],J[s],T)))
-    temp <- t(mvrnorm(n=T,mu=rep(0,J[s]),Sigma=Sigma[[s]])/sqrt(gamma.mat[,s]))
-    temp <- temp + mu.W
-    temp[temp<0] <- 0
-    W.new[[s]] <- temp
-    if (na.preserve) W.new[[s]][na.mat[[s]]==1] <- NA
-  }
-  #return(unlist(W.new)[unlist(na.mat)==0])
-  return(W.new)
-}
-
-###################
-#Traceplot Function  
-###################
-# trace plot function from myRfunctions.R:
-tp <- function(gibbs.input,burn=0,end=dim(gibbs.input)[2],nc=3,ylim=range(gibbs.input[,(burn+1):end]),thin=1,...){
-  if(nc==1){
-    z <- matrix(gibbs.input,ncol=1)
-  } else {
-    z <- matrix(t(gibbs.input),ncol=nc)
-  }
-  
-  
-  G.local <- dim(z)[1]
-  #rg <- ifelse(ylim==c(-99,-99),c(min(z[(burn+1):end,]),max(z[(burn+1):end,])),c(ylim[1],ylim[2]))
-  #xrg <- ifelse(xlim==c(-99,-99),c(0,length(z[,1])),c(xlim[1],xlim[2]))
-  thin.seq <- seq(thin,G.local,by=thin)
-  lt <- length(thin.seq)
-  plot(thin.seq,z[thin.seq,1],col=1,type="l",ylim=ylim,...,xaxt="n")
-  axis(1,at=seq(0,G.local,length=5))
-  if(nc > 1){
-    for (i in 2:nc) lines(thin.seq,z[thin.seq,i],col=i)
-  }
-}
 
 
 ############################
@@ -64,12 +30,12 @@ tp <- function(gibbs.input,burn=0,end=dim(gibbs.input)[2],nc=3,ylim=range(gibbs.
 ############################
 #R vs W
 #Problem is that W is not stored
-pdf(file=paste(path,"fig_R_vs_W.pdf",sep=""),width=7,height=7)
+pdf(file=paste(path,"fig_Y_vs_W.pdf",sep=""),width=7,height=7)
 par(mfrow=c(1,1))
 for (s in 1:S){
   for (j in 1:J[s]){
-    plot(R[[s]][j,R[[s]][j,]>0])
-    points(W[[s]][j,is.na(R[[s]][j,])],col=2)
+    plot(Y[[s]][j,Y[[s]][j,]>0])
+    points(W[[s]][j,is.na(Y[[s]][j,])],col=2)
   }
 }
 dev.off()
@@ -85,7 +51,7 @@ dev.off()
 pdf(file=paste(path,"fig_lamba_spatialcov.pdf",sep=""),width=7,height=7)
 par(mfrow=c(1,1))
 tp(lambda.gibbs)
-tp(lambda.gibbs,burn=2500)
+tp(lambda.gibbs,burn=1500)
 #abline(h=true.values$lambda,col=4)
 dev.off()
 
@@ -93,7 +59,7 @@ dev.off()
 pdf(file=paste(path,"fig_alpha.pdf",sep=""),width=7,height=7)
 par(mfrow=c(1,1))
 tp(alpha.gibbs)
-tp(alpha.gibbs,burn=2500)
+tp(alpha.gibbs,burn=1500)
 #abline(h=true.values$alpha,col=4)
 dev.off()
 
@@ -190,7 +156,7 @@ dev.off()
 # Look at el Nino effects:
 pdf(file=paste(path,"fig_tobit_elnino.pdf",sep=""),height=6,width=9)
 se.nino <- numeric(12)
-for (i in 1:12) se.nino[i] <- sd(as.numeric(mu.gibbs[,2501:G,i+11]))
+for (i in 1:12) se.nino[i] <- sd(as.numeric(mu.gibbs[,1501:G,i+11]))
 par(mfrow=c(1,1))
 plot(1:12,mu.pm[12:23],main="Mean monthly El Nino effect",ylim=c(-4,5),xlim=c(0,13))
 abline(h=0,lty=2,lwd=2)
@@ -223,13 +189,13 @@ dev.off()
 july.obs <- as.list(rep(NA, S))
 july.sum <- as.list(rep(NA, S))
 for (s in 1:S) {
-  july.obs[[s]] <- matrix(NA, 19, L[s])
-  july.sum[[s]] <- matrix(NA, 19, L[s])
-  for (l in 1:L[s]) {
+  july.obs[[s]] <- matrix(NA, 19, J[s])
+  july.sum[[s]] <- matrix(NA, 19, J[s])
+  for (l in 1:J[s]) {
     for (year in 1:19) {
       sel <- as.numeric(substr(date.string, 1, 4)) == 1991 + year & months(date.string) == "July"
       july.obs[[s]][year, l] <- sum(!na.mat[[s]][l, sel])
-      july.sum[[s]][year, l] <- sum(R[[s]][l, sel])
+      july.sum[[s]][year, l] <- sum(Y[[s]][l, sel])
     }    
   }
 }
@@ -240,15 +206,15 @@ onset.day <- as.list(rep(NA, S))
 #days 31+31-2-2
 tmp<-c(rep(NA,30))
 for (s in 1:S) {
-  onset.day[[s]] <- matrix(NA, 19, L[s])
-  for (l in 1:L[s]) {
+  onset.day[[s]] <- matrix(NA, 19, J[s])
+  for (l in 1:J[s]) {
     for (year in 1:19) {
       sel <- as.numeric(substr(date.string, 1, 4)) == 1991 + year & months(date.string) == "July" 
       for (j in 3:30) {
         #tmp <- cumsum(R[[s]][l, sel])
         #this is the statement to say that the last two days have to have been positive
-        if ( R[[s]][l,sel][j-1]>0 & R[[s]][l,sel][j-2]>0 & !is.na(R[[s]][l,sel][j-1]) & !is.na(R[[s]][l,sel][j-2]) ) {
-          tmp[i]=R[[s]][l,sel][j]+R[[s]][l,sel][j-1]+R[[s]][l,sel][j-2] 
+        if ( Y[[s]][l,sel][j-1]>0 & Y[[s]][l,sel][j-2]>0 & !is.na(Y[[s]][l,sel][j-1]) & !is.na(Y[[s]][l,sel][j-2]) ) {
+          tmp[i]=Y[[s]][l,sel][j]+Y[[s]][l,sel][j-1]+Y[[s]][l,sel][j-2] 
         }
         else {tmp[j]=NA}
         onset.day[[s]][year, l] <- ifelse(!is.na(min(which(tmp > 20))), min(which(tmp > 20))+2, NA)
@@ -265,13 +231,13 @@ N.sim <- 150
 # Set up place to store posterior predictive simulations:
 pp.onset.date <- as.list(rep(NA, S))
 for (s in 1:S) {
-  pp.onset.date[[s]] <- array(NA, dim=c(19, L[s], N.sim))
+  pp.onset.date[[s]] <- array(NA, dim=c(19, J[s], N.sim))
 }
 
 
 # Spread out (thin) across chains and iterations:
 k.vec <- rep(1:3, 50)
-g.vec <- rep(round(seq(3001, 5000, length=50)), each=3)
+g.vec <- rep(round(seq(1001, 2000, length=50)), each=3)
 
 # Set up year selection and store to access within loop:
 sel.year <- as.list(rep(NA, 19))
@@ -295,7 +261,7 @@ for (i in 1:N.sim) {
                  tau=tau.gibbs[k.vec[i], g.vec[i]], beta.arc=beta.arc.gibbs[k.vec[i], g.vec[i], ],
                  Sigma=Sigma.sim, X=X, X.arc=X.arc, na.preserve=TRUE, na.mat=na.mat)
   for (s in 1:S) {
-    for (l in 1:L[s]) {
+    for (l in 1:J[s]) {
       for (year in 1:19) {
         #from the 3rd day to the 30th
         for (j in 3:30) {
@@ -323,12 +289,12 @@ pdf(file="Onset_postpred.pdf", width=6, height=6)
 par(mfrow=c(2, 2))
 for (s in 1:S) {
   for (year in 1:19) {
-    for (l in 1:L[s]) {
+    for (l in 1:J[s]) {
       if (july.obs[[s]][year, l] == 30) {
         #pdf(paste("Onset Rainfall", i,".pdf",sep=""))
         hist(pp.onset.date[[s]][year, l, ], breaks=0:30, main="", las=1, xlab="Day in July")
         legend("topleft", legend=paste(sum(is.na(pp.onset.date[[s]][year, l, ])), "/150 missing", sep=""), inset=0.02)
-        title(main=paste(rownames(R[[s]])[l], year + 1991))
+        title(main=paste(rownames(Y[[s]])[l], year + 1991))
         abline(v = onset.day[[s]][year, l], col="orange", lwd=2)
         abline(v = mean(pp.onset.date[[s]][year, l, ], na.rm=TRUE), col=2, lty=2)
       }
@@ -376,7 +342,7 @@ cumsum.data.gibbs<- array(NA, dim=c(K,length(g.vec),J.sum,19)) #annual total rai
 
 for (k in 1:K){
   print( k)
-  for (g in 3000:5000){
+  for (g in 3001:5000){
     if (g%%20==0) { print(g) }
     
     # Collect Sigma into a list:
@@ -420,7 +386,6 @@ for (k in 1:K){
       }
     }
   }
-}
 }
 
 
@@ -492,15 +457,18 @@ sd.data <- matrix(NA,J.sum,12)
 max.data <- matrix(NA,J.sum,12)
 cumsum.data<-matrix(NA, J.sum, 19)
 
+#wet.vec<-matrix(NA, J.sum, 19)
+
 for (s in 1:S){
   for (j in 1:J[s]){
     for (m in 1:12){
       for (y in year.vec){
-        cumsum.data[c(0,cumsum(J))[s]+j,y] <- round(sum(R[[s]][j,year.vec==y],na.rm=TRUE))
+        cumsum.data[c(0,cumsum(J))[s]+j,y] <- round(sum(Y[[s]][j,year.vec==y],na.rm=TRUE))
+    
         #print(c(0,cumsum(J))[s]+j)
         #R is the list of 
-        p.wet.data[c(0,cumsum(J))[s]+j,m] <- sum(R[[s]][j,month.vec==m]>0,na.rm=TRUE)/sum(!is.na(R[[s]][j,month.vec==m]))
-        wet.vec <- R[[s]][j,month.vec==m & R[[s]][j,]>0]
+        p.wet.data[c(0,cumsum(J))[s]+j,m] <- sum(Y[[s]][j,month.vec==m]>0,na.rm=TRUE)/sum(!is.na(Y[[s]][j,month.vec==m]))
+        wet.vec <- Y[[s]][j,month.vec==m & Y[[s]][j,]>0]    
         mean.data[c(0,cumsum(J))[s]+j,m] <- mean(wet.vec,na.rm=TRUE)
         sd.data[c(0,cumsum(J))[s]+j,m] <- sd(wet.vec,na.rm=TRUE)
         max.data[c(0,cumsum(J))[s]+j,m] <- max(wet.vec,na.rm=TRUE)
@@ -514,7 +482,7 @@ for (s in 1:S){
 consec.data<- matrix(data=NA, nrow=J.sum, ncol=length(edges)-1)
 for (s in 1:S){
   for (j in 1:J[s]){
-    wet.vec2 <- R[[s]][j,]
+    wet.vec2 <- Y[[s]][j,]
     dry_days<-consec_zeros_count(wet.vec2)
     dry_days_hist <- hist(dry_days, breaks=edges)
     #this cumsum(J))[s]+j, is a counter going from 1-15th row
@@ -522,9 +490,9 @@ for (s in 1:S){
   }
 }
 
+dev.off
 
-
-#ERROR
+# Replace the Infs with NAs else you'll get an error for plots
 max.data[max.data==-Inf] <- NA
 
 #KV-Plot the actual original data:
@@ -568,8 +536,8 @@ dev.off()
 #Posterior Histogram Plots
 ###########################
 # Plot these posterior predictive checks:
-pb <- seq(3000,5000,by=5)
-pdf(file=paste(path,"fig_tobit_ppred-max.pdf",sep=""),width=10,height=8)
+pb <- seq(1001,2000,by=5)
+pdf(file=paste(path,"fig_tobit_max.gibbs.pdf",sep=""),width=10,height=8)
 par(mfrow=c(3,4))
 for (i in 1:J.sum){
   for (m in 1:12){
@@ -594,12 +562,11 @@ for (i in 1:J.sum){
 dev.off()
 
 
-
 # Plot some values of W against the observed values (R):
 pdf(file=paste(path,"fig_ppred_WvsObservedR.pdf",sep=""),width=10,height=8)
 par(mfrow=c(2,1))
 plot(W.new[[1]][1,na.mat[[1]][1,]==0])
-plot(R[[1]][1,na.mat[[1]][1,]==0],col=2)
+plot(Y[[1]][1,na.mat[[1]][1,]==0],col=2)
 dev.off()
 
 
@@ -643,7 +610,7 @@ dev.off()
 ############################
 
 #KV plot comparable posterior graphs to historical
-post <- p.wet.gibbs[1,4001:5000,1:15,1:12]
+post <- p.wet.gibbs[1,3001:5000,1:15,1:12]
 post_p <- colMeans(post)
 
 pdf(file=paste(path,"PercWetDays_Posterior.pdf",sep=""),height=6,width=9)
@@ -653,18 +620,18 @@ for (i in 1:15) lines(1:12,post_p[i,],col=i)
 dev.off()
 
 # mean wet day rainfall:
-post <- mean.gibbs[1,4001:5000,1:15,1:12]
+post <- mean.gibbs[1,3001:5000,1:15,1:12]
 post_m <- colMeans(post)
 
 pdf(file=paste(path,"MeanWetDays_Posterior.pdf",sep=""),height=6,width=9)
-plot(-10,-10,xlim=c(1,12),ylim=c(0,max(post_m,na.rm=TRUE)),las=1,xlab="Month",ylab="Mean (mm)",xaxt="n",mean="Mean wet day rainfall,Posterior")
+plot(-10,-10,xlim=c(1,12),ylim=c(0,max(post_m,na.rm=TRUE)),las=1,xlab="Month",ylab="Mean (mm)",xaxt="n",main="Mean wet day rainfall,Posterior")
 axis(1,at=1:12,labels=substr(month.names,1,1))
 for (i in 1:15) lines(1:12,post_m[i,],col=i)
 dev.off()
 
 
 # sd wet day rainfall:
-post <- sd.gibbs[1,4001:5000,1:15,1:12]
+post <- sd.gibbs[1,3001:5000,1:15,1:12]
 post_s <- colMeans(post)
 
 pdf(file=paste(path,"SdWetDays_Posterior.pdf",sep=""),height=6,width=9)
@@ -675,7 +642,7 @@ dev.off()
 
 
 # max wet day rainfall:
-post <- max.gibbs[1,4001:5000,1:15,1:12]
+post <- max.gibbs[1,3001:5000,1:15,1:12]
 post_ma <- colMeans(post)
 
 pdf(file=paste(path,"MaxWetDays_Posterior.pdf",sep=""),height=6,width=9)

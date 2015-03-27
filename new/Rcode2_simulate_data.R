@@ -3,6 +3,9 @@
 # Start here after running 'Rcode1_data_setup.R'
 rm(list=ls())
 setwd("~/Git/Rainfall/")
+setwd("~/SkyDrive/IRI/RainfallSimulation/Rainfall")
+path<-"~/SkyDrive/IRI/RainfallSimulation/Rainfall/"
+
 
 # load the input data and assign them to the global namespace:
 load("input_data.RData")
