@@ -12,7 +12,7 @@
 
 5 Fitting the model (kenny and katya  - maybe kenny appendix to show multivariate t mixture)
  - appendix of the gibbs sampling steps (kenny)
- - discussion (finish teh discussion of the steps for fitting the model)
+ - discussion (finish the discussion of the steps for fitting the model)
 
 6 Simulation Study (optional) Kenny to update with new model
  - choose somewhat realistic parameter settings and show a couple of trace plots of the challenging/interesting parameters
