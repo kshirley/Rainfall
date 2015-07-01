@@ -68,7 +68,6 @@
 \begin{document}
 
 \title{Hierarchical Bayes models for daily rainfall time series at multiple locations from different data sources\\
-(VERY PRELIMINARY: DO NOT CITE)
 %\thanks{ thanks...}
 }
 \author {Kenneth Shirley \thanks{ATT Research Labs}
@@ -84,7 +83,7 @@
 \begin{singlespace}  
 \begin{abstract}
 
-We estimate a Hierarchical Bayesian models for daily rainfall that incorporates two novelties for estimating spatial and temporal correlations. We estimate the within site time series correlations for a particular rainfall site using multiple data sources at a given location, and we estimate the across site covariance in rainfall based on location distance. Previosu models have captured cross site correlations as a functions of site specific distances, but not within site correlations across multiple data sources, and not both aspects simultaneously. Further, we incorporte information on the technology used (satellite versus rain guage) in our estimations, which is also a novel addition. This methodology has far reaching applictions to other data contexts in which multiple datasources exist for a given event or variable for which within and between site covariances can be estimated over time. 
+We estimate a Hierarchical Bayesian models for daily rainfall that incorporates two novelties for estimating spatial and temporal correlations. We estimate the within site time series correlations for a particular rainfall site using multiple data sources at a given location, and we estimate the across site covariance in rainfall based on location distance. Previous models have captured cross site correlations as a functions of site specific distances, but not within site correlations across multiple data sources, and not both aspects simultaneously. Further, we incorporate information on the technology used (satellite versus rain gauge) in our estimations, which is also a novel addition. This methodology has far reaching applications to other data contexts in which multiple datasources exist for a given event or variable for which within and between site covariances can be estimated over time. 
 
 \end{abstract}
 
@@ -375,7 +374,7 @@ We first ran a simulation study, where we simulated data from a set of known par
 
 We find that our model performs well with simulated data, in which are able to recover know parameters--in particular, our parameter for across and within site correlation. In addition, our model performs well in cross validation exercises with historic rainfall data, in which we reproduce historic time series for missing years or missing locations, perform well. 
 
-The results are  encouraging: we were able to precisely estimate the spatial correlation between locations as well as the variability of different data sources within single locations. Figure~\ref{fig_sim_sum1} shows trace plots for $\lambda$, $\mu_\alpha$, and $\tau_\alpha$. All three parameters were well-estimated, and convergence was relatively quick with a burn-in period of 3000 draws. Furthermore, we were able to accurately estimate different ARC biases, $\alpha_s$ for each location, as well as different amounts of variability at each location, $\tau_s$. Last, the estimates of $\beta$ were accurate.
+The results are  encouraging: we were able to precisely estimate the spatial correlation between locations as well as the variability of different data sources within single locations. Figure~\ref{fig_sim_sum1} shows trace plots for $\lambda$, $\mu_\alpha$, and $\tau_\alpha$ using the simulated data. All three parameters were well-estimated, and convergence was relatively quick with a burn-in period of 20000 draws. Furthermore, we were able to accurately estimate different ARC biases, $\alpha_s$ for each location, as well as different amounts of variability at each location, $\tau_s$. Last, the estimates of $\beta$ were accurate.
 
 
 \begin{figure}[htbp]
@@ -386,56 +385,33 @@ The results are  encouraging: we were able to precisely estimate the spatial cor
 \end{center}
 \end{figure}
 
-\section{Validation}
-\label{sec:validate}
-Wrap the mcmc into a function that you hand it 2 lists: 
-experiments with dropping out 1 series and call out our mcmc function 
-verctor of J can become 22225 to 22224 and we re-fit the model
-make the code pull in the dimension of the data
-
-
-The way we show that we can estimate them both well is by doing clever experiments by for example removing one out of the two predicting the removed one. And then we will treat all 15 as if they are independent. So we will independently show that lambda matters and that sigma matters. That's the key. 
 
 
 \section{Results}
 \label{sec:results}
 %Remove
-Our results are based on three chains after a burn-in of 5,000 iterations. We assessed convergence by running the chain for three different starting values, changing the initial seed of the random number generator, and monitoring the samples of 0’. p’, d. and A.
-The values of the Brooks, Gelman, and Rubin convergence diagnostic for each of the parameters, as well as the multivariate test, were all below 1.1, a threshold suggested by Gainerman (1997) as satisfactory, after 4,000 iterations. We noticed that our samples stabilized after few iterations (500), although a strong autocorrelation is present. We ran the Raftery and Lewis convergence test (Raftery and Lewis 1992) and obtained that for all four parameters, the suggested burn-in was less than 800, the suggested thinning was less than 20. Fewer than 50,000 iterations were needed to achieve an accuracy of Li.01, with probability .95, in the estimation of the .025 and .95 quantiles. All of these results where obtained running the set of routines BOA for R, developed by Brian Smith (http://www.pnblic-health.uiowa.edu/boa/).''
+Our results are based on three chains of 15,000 after a burn-in of 5,000 iterations with a jump parameter of XX and an adaption parameter of XXX. We assessed convergence by running the chain for three different starting values, 4 standard deviations above and below the historical means.The values of the Brooks, Gelman, and Rubin convergence diagnostic for each of the parameters,  were mostly below 1.1 (lambda, tau, tau.arc, mu.arc), a threshold suggested by Gainerman (1997) as satisfactory. We noticed that some of our samples stabilized after under 5,000 iterations, but a strong autocorrelation is present, such as with tau. 
 
 
+\subsection{Trace Plots of Key Parameters}
 
-1. prob and mean rainfall historical vs. sim\\
+\begin{figure}[htbp]
+\begin{center}
+\includegraphics[width=5.0in]{fig_lamba_spatialcov.pdf}
+\end{center}
+\end{figure}
 
-%\begin{figure}[htbp]
-%\begin{center}
-%\includegraphics[width=6.0in]{Posterior_pwet_series1.pdf}
-%\includegraphics[width=6.0in]{Posterior_pwet_series3.pdf}
-%\includegraphics[width=6.0in]{Posterior_pwet_series4.pdf}
+
 %\includegraphics[width=6.0in]{Posterior_pwet_series8.pdf}
 %\includegraphics[width=6.0in]{Posterior_pwet_series9.pdf}
 %\caption{Simulation study results for $\lambda$, $\mu_\alpha$, and $\tau_\alpha$, where the horizontal blue lines represent the known true values of the parameters.}
 %\label{Posterior}
-%\end{center}
-%\end{figure}
 
-2. dry spell historical vs sim
 
-3. rainfall above a certain amount
-
-3. metrics showing prob of rainfall in all locations?
 
 
 \section{Discussion}
 \label{sec:discuss}
-To do-
-1-simulation 
-2-check some average rainfall measures
-3-write out sampling strategy (Kenny)
-4-check that the code works for conditional sampling (8-10 steps)
-
-
-
 
 
 

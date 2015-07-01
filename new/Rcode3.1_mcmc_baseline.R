@@ -1,14 +1,19 @@
 ########################################################################################################################
+# Rcode3.1_mcmc_baseline.R differs from Rcode3_mcmc_baseline.R in the mcmcm starting values being farther apart. 
+  #In particular, the sigma matrix is called from another file called sigma.start.R
 # Run 'Rcode1_data_setup.R'
 # Now you have saved a local copy of "input_data.RData" which contains the real data and some other objects
 # Next, run 'Rcode2_simulate_data.R' to simulate some data:
 # Now you have another .RData file containing true parameter values and some simulated data
 # file name is: "sim_data_seed_836.RData"
+# or load the real data from input_data.R 
+
 # Clear the workspace:
 rm(list=ls())
 setwd("~/Git/Rainfall/")
-setwd( "~kathrynvasilaky/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
-path<-"~kathrynvasilaky/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall"
+
+setwd("~kathrynvasilaky/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
+path<-"kathrynvasilaky/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall"
 
 # read in scripts:
 source("Rcode_tobit_mcmc_functions.R")
@@ -68,34 +73,50 @@ K <- 3
 # check names of start value parameters:
 load("start_list_v2.RData")
 
-# random starting points:
+#random starting points:
 set.seed(638)
+
+#mu is the mean beta effect
+#summary(mu.gibbs[1,,])
 mu.start <- matrix(rnorm(K*P), K, P)
+#mu.start <- matrix(rnorm(K*P), 0, 4*5.1)
+
+#sigma is the sd for the mean of beta
+#summary(sigma.gibbs[2,,])
+#mean of .07 and sd of .3
+sigma.start <- matrix(runif(K*P, 0.522, 4*.6), K, P)
+
+#alpha is a hyper parameter and sd of the mu arc effect
 alpha.start <- rep(5, K)
-lambda.start <- c(0.5, 2.5, 4.5)
-#tau.start <- c(2, 4, 6)
-tau.start <- c(2, 4, 12)
 
-sigma.start <- matrix(runif(K*P, 0.2, 1), K, P)
+#lamba is the across site correlation
+#lambda.start <- c(0.5, 2.5, 4.5)
+#mean of .o7, sd of .04
+lambda.start <- c(0.06, 2.5, 4.5)
 
+#mean 7.5 sd of 1.03
+#tau.start <- c(7.5, 2, 20)
+tau.start <- c(2, 8, 12)
+
+#betas are the effects of each time trend (there are 23)
 beta.start <- array(NA, dim=c(K, P, S))
-  for (s in 1:S) beta.start[, , s] <- mu.start + rnorm(K*P, 0, 0.5*sigma.start)
+for (s in 1:S) beta.start[, , s] <- mu.start + rnorm(K*P, 0, 0.5*sigma.start)
 
-
+#mu arc is the mean of the arc effect
 #mu.arc.start <- numeric(K)
 mu.arc.start <- c(3, 1, .5)
+
+#tau arc is the sd of the arc effect
 #tau.arc.start <- c(0.5, 1, 1.5)
 tau.arc.start <- c(0.5, 1, 3)
+
+#betar arc is the marginal effect of arc
 beta.arc.start <- matrix(0, K, S)
 
 
-Sigma.start <- vector(mode = "list", length = S)
-for (s in 1:S) {
-  Sigma.start[[s]] <- array(0, dim=c(K, J[s], J[s]))
-  for (k in 1:K) {
-    Sigma.start[[s]][k, , ] <- diag(J[s])
-  }
-}
+#setting all the sigma values manually
+setwd("/Users/kathrynvasilaky/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall/new")
+source("sigma.start.R")
 
 # compute the mean of Z.start
 xb.start <- array(NA, dim = c(K, N, S))
@@ -139,8 +160,8 @@ for (s in 1:S) W.null[[s]] <- matrix(0, J[s], N)
 #1.e Set up storage for gibbs samples:
 ##################################
 
-G <- 5000  # number of iterations/samples
-adapt <- 2000
+G <- 20000  # number of iterations/samples
+adapt <- 2000 # for good mixing, you want the model to not jump too often
 mu.gibbs <- array(NA, dim=c(K, G, P))
 sigma.gibbs <- array(NA, dim=c(K, G, P))
 alpha.gibbs <- array(NA, dim=c(K, G))
@@ -298,21 +319,20 @@ gibbs.list <- list(mu.gibbs = mu.gibbs,
                    beta.arc.gibbs = beta.arc.gibbs, 
                    Sigma.gibbs = Sigma.gibbs, 
                    W.gibbs = W.gibbs)
-save(gibbs.list, file = "gibbs_out_20150326_G5k_HS1.RData")
+save(gibbs.list, file = "gibbs_out_20150616_G20k.RData")
 
 
 
-
-<<<<<<< HEAD
-load(file = "gibbs_out_20150326_G5k_HS1.RData")
+load(file = "gibbs_out_20150616_G20k.RData")
 =======
 
 
 
 #load(file=paste(path,"gibbs_out_NA11172014_G5000.RData",sep=""))
 #load(file = "gibbs_out_04272014_G5000.RData")
-load(file = "gibbs_out_20150306_G2k.RData")
->>>>>>> 2ef2ef19523ccf5334856515617602eb1165130b
+#load(file = "gibbs_out_20150306_G2k.RData")
+load(file = "gibbs_out_20150616_G20k.RData")
+#>>>>>>> 2ef2ef19523ccf5334856515617602eb1165130b
 for (i in 1:length(gibbs.list)) assign(names(gibbs.list)[i], gibbs.list[[i]])
 
 
@@ -322,7 +342,7 @@ for (i in 1:length(gibbs.list)) assign(names(gibbs.list)[i], gibbs.list[[i]])
 #3 New Gibbs starting points
 ##########################
 # New starting points AFTER BURN IN:
-post.burn <- 3001:G
+post.burn <- 10001:G
 names(gibbs.list)
 mu.start <- apply(mu.gibbs[,post.burn,],c(1,3),mean)
 sigma.start <- apply(sigma.gibbs[,post.burn,],c(1,3),mean)
@@ -339,5 +359,5 @@ for (s in 1:S) Sigma.start[[s]] <- apply(Sigma.gibbs[[s]][,post.burn,,],c(1,3,4)
 start.list <- list(mu.start=mu.start,sigma.start=sigma.start,alpha.start=alpha.start,lambda.start=lambda.start,
                    tau.start=tau.start,beta.start=beta.start,mu.arc.start=mu.arc.start,tau.arc.start=tau.arc.start,
                    beta.arc.start=beta.arc.start,Sigma.start=Sigma.start)
-save(start.list,file=paste(path,"start_list_v5.RData",sep=""))
+save(start.list,file=paste(path,"start_list_v6.RData",sep=""))
 # v3 is the G=5000 output from 3/12 that includes P=23 predictors and alpha=10
