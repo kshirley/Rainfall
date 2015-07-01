@@ -7,8 +7,8 @@
 rm(list=ls())
 setwd("~/Git/Rainfall/")
 
-setwd("~kathrynvasilaky/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
-path<-"kathrynvasilaky/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall"
+#setwd("~kathrynvasilaky/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
+#path<-"kathrynvasilaky/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall"
 
 #read in scripts:
 source("Rcode_tobit_mcmc_functions.R")
@@ -17,7 +17,7 @@ library(msm)
 library(mvtnorm)
 library(coda)
 
-# load the input data and assign them to the global namespace:
+# load the input data and assign elements of the list to the global namespace:
 load("input_data.RData")
 for (i in 1:length(input.data)) assign(names(input.data)[i], input.data[[i]])
 
@@ -39,43 +39,193 @@ adapt <- 2000
 G <- 20000
 K <- 3
 
-tp(lambda.gibbs, las = 1, main = "lambda", ylab = "lambda")
-#abline(h = sim.data$lambda, col = 4)
-tp(lambda.gibbs, las = 1, main = "lambda", ylab = "lambda", burn=7500)
 
-#tau
-tp(tau.gibbs, las = 1, main = "tau", ylab = "tau", burn=7500)
-#abline(h = sim.data$tau, col = 4)
 
-#Mu arc
-tp(mu.arc.gibbs, las=1, main="mu arc",ylab="mu arc")
-
-#Tau arc
-tp(tau.arc.gibbs, las=1, main="mu arc",ylab="tau arc")
-
-#Sigma 
-pdf(file = "fig_Sigma_check.pdf", width = 5, height = 5)
-for (s in 1:S) {
-  l <- sum(!upper.tri(Sigma.gibbs[[s]][1, 1, , ]))
-  r <- row(Sigma.gibbs[[s]][1, 1, , ])[!upper.tri(Sigma.gibbs[[s]][1, 1, , ])]
-  c <- col(Sigma.gibbs[[s]][1, 1, , ])[!upper.tri(Sigma.gibbs[[s]][1, 1, , ])]
-  #print(dim(sim.data$Sigma[[s]]))
-  #print(paste(r, c, l))
-  for (j in 1:l) {
-    tp(Sigma.gibbs[[s]][, , r[j], c[j]], las = 1)
-    title(main = paste0("Site = ", s, ", Row = ", r[j], ", Col = ", c[j]))
-    #abline(h = sim.data$Sigma[[s]][r[j], c[j]], col = 4)
+### beta:
+pdf(file = "plots-20k/fig_tobit_trace_beta_P23.pdf", width = 8, height = 6)
+par(mfrow = c(2, 3))
+for (j in 1:P){
+  for (s in 1:S){
+    tp(beta.gibbs[, , j, s], thin= 20, ylim = range(beta.gibbs[ , , j, ]), 
+       main = paste(X.names[j], site.names[s], sep=" "), las = 1, xlab = "Iteration")
   }
 }
 dev.off()
 
+# All the betas look good re: convergence
+
+# G-R statistics:
+gr.beta <- matrix(0, P, S)  # store them in a 23 x 5 matrix
+for (s in 1:S) {
+  x <- as.mcmc.list(list(mcmc(beta.gibbs[1, , 1:P, s], start = 10001, end = G, thin = 1), 
+                         mcmc(beta.gibbs[2, , 1:P, s], start = 10001, end = G, thin = 1), 
+                         mcmc(beta.gibbs[3, , 1:P, s], start = 10001, end = G, thin = 1)))
+  gr.beta[, s] <- gelman.diag(x)$psrf[, 1]
+}  
+
+round(gr.beta, 2)
+apply(gr.beta, 2, range)
+apply(gr.beta, 1, range)
+
+
+### mu
+pdf(file = "plots-20k/fig_tobit_trace_mu.pdf", width = 8, height = 6)
+par(mfrow = c(1, 1))
+for (j in 1:P){
+  tp(mu.gibbs[, , j], thin = 20, main = X.names[j], las = 1, xlab = "Iteration")
+}
+dev.off()
+
+# look OK
+
+# G-R statistics:
+x <- as.mcmc.list(list(mcmc(mu.gibbs[1, , 1:P], start = 10001, end = G, thin = 1), 
+                       mcmc(mu.gibbs[2, , 1:P], start = 10001, end = G, thin = 1), 
+                       mcmc(mu.gibbs[3, , 1:P], start = 10001, end = G, thin = 1)))
+gr.mu <- gelman.diag(x)$psrf[, 1]
+
+
+
+### sigma
+pdf(file = "plots-20k/fig_tobit_trace_sigma.pdf", width = 8, height = 6)
+par(mfrow = c(1, 1))
+for (j in 1:P){
+  tp(sigma.gibbs[, , j], thin = 20, main = X.names[j], las = 1, xlab = "Iteration")
+}
+dev.off()
+
+# G-R statistics:
+x <- as.mcmc.list(list(mcmc(sigma.gibbs[1, , 1:P], start = 10001, end = G, thin = 1), 
+                       mcmc(sigma.gibbs[2, , 1:P], start = 10001, end = G, thin = 1), 
+                       mcmc(sigma.gibbs[3, , 1:P], start = 10001, end = G, thin = 1)))
+gr.sigma <- gelman.diag(x)$psrf[, 1]
+
+
+
+
+### tau:
+tp(tau.gibbs, las = 1, main = "tau", ylab = "tau")
+tp(tau.gibbs, las = 1, main = "tau", ylab = "tau", burn = 10000)
+
+gelman.diag(as.mcmc.list(list(mcmc(as.matrix(tau.gibbs[1, ]), start = 10001, end = G, thin = 1), 
+                              mcmc(as.matrix(tau.gibbs[2, ]), start = 10001, end = G, thin = 1), 
+                              mcmc(as.matrix(tau.gibbs[3, ]), start = 10001, end = G, thin = 1))))
+# 1.06                              
+
+
+
+### lambda:
+
+# basic trace plot:
+tp(lambda.gibbs, las = 1, main = "lambda", ylab = "lambda")
+
+# zooming in on post burnin:
+tp(lambda.gibbs, las = 1, main = "lambda", ylab = "lambda", burn = 7500)
+
+# explicitly limiting y axis to c(0, 0.2)
+tp(lambda.gibbs, las = 1, main = "lambda", ylab = "lambda", ylim = c(0, 0.2))
+
+gelman.diag(as.mcmc.list(list(mcmc(as.matrix(lambda.gibbs[1, ]), start = 10001, end = G, thin = 1), 
+                              mcmc(as.matrix(lambda.gibbs[2, ]), start = 10001, end = G, thin = 1), 
+                              mcmc(as.matrix(lambda.gibbs[3, ]), start = 10001, end = G, thin = 1))))
+# 1.19
+
+
+
+
+
+### mu_arc:
+tp(mu.arc.gibbs, las=1, main="mu arc", ylab="mu arc")
+gelman.diag(as.mcmc.list(list(mcmc(as.matrix(mu.arc.gibbs[1, ]), start = 10001, end = G, thin = 1), 
+                              mcmc(as.matrix(mu.arc.gibbs[2, ]), start = 10001, end = G, thin = 1), 
+                              mcmc(as.matrix(mu.arc.gibbs[3, ]), start = 10001, end = G, thin = 1))))
+# 1.00
+
+### tau_arc
+tp(tau.arc.gibbs, las = 1, main = "mu arc", ylab = "tau arc")
+gelman.diag(as.mcmc.list(list(mcmc(as.matrix(tau.arc.gibbs[1, ]), start = 10001, end = G, thin = 1), 
+                              mcmc(as.matrix(tau.arc.gibbs[2, ]), start = 10001, end = G, thin = 1), 
+                              mcmc(as.matrix(tau.arc.gibbs[3, ]), start = 10001, end = G, thin = 1))))
+# 1.01
+
+
+### beta.arc
+pdf(file = "plots-20k/fig_tobit_trace_beta_arc.pdf", width = 8, height = 6)
+par(mfrow = c(1, 1))
+for (s in 1:S){
+  tp(beta.arc.gibbs[, , s], thin = 20, main = site.names[s], las = 1, xlab = "Iteration")
+}
+dev.off()
+
+# look OK
+
+# G-R statistics:
+x <- as.mcmc.list(list(mcmc(beta.arc.gibbs[1, , 1:S], start = 10001, end = G, thin = 1), 
+                       mcmc(beta.arc.gibbs[2, , 1:S], start = 10001, end = G, thin = 1), 
+                       mcmc(beta.arc.gibbs[3, , 1:S], start = 10001, end = G, thin = 1)))
+gr.beta.arc <- gelman.diag(x)$psrf[, 1]
+
+range(gr.beta.arc)
+# 1.01 to 1.32
+
+
+
+
+### Sigma: 
+pdf(file = "plots-20k/fig_tobit_trace_sigma_covariance.pdf", width = 8, height = 8)
+for (s in 1:S) {
+  par(mfrow = c(J[s], J[s]))
+  if (s != 6) {
+    for (i in 1:J[s]) {
+      for (j in 1:J[s]) {  	
+        tp(Sigma.gibbs[[s]][, , i, j], las = 1, thin = 20, xlab = "Iteration")
+        title(main = paste0("Site = ", s, ", Row = ", i, ", Col = ", j))
+      }
+    }
+  } else {
+    for (i in 1:J[s]) {
+      for (j in 1:J[s]) {
+      	par(mar = c(0, 2, 0, 0), xaxt = "n")
+        tp(Sigma.gibbs[[s]][, , i, j], las = 1, thin = 20, xlab = "", main = "", ylab = "")
+      }
+    }  	
+  }
+}
+dev.off()
+
+
+
+# posterior mean of time series for spatial mean:
+mu.bar <- apply(mu.gibbs[, 10001:G, ], 3, mean)
+
+# spatial mean across locations:
+z.bar <- X %*% matrix(mu.bar, ncol = 1)
+
+# plot the spatial mean across locations by time:
+plot(date.string, z.bar, type = "l")
+
+sel <- as.numeric(substr(date.string, 1, 4)) == 2005
+plot(date.string[sel], z.bar[sel], type = "l")
+
+
+
+
+
+
+
+
+
+
+
+
+
 # posterior means of covariance matrices
 lapply(Sigma.gibbs, function(x) apply(x[, 5001:10000, , ], 3:4, mean))
 
-# posterior means of correlation matrices?
+# posterior means of correlation matrices:
 lapply(Sigma.gibbs, function(x) cov2cor(apply(x[, 5001:10000, , ], 3:4, mean)))
 
-# posterior means of correlation matrices?
+# posterior means of correlation matrices:
 lapply(Sigma.gibbs, function(x) sqrt(diag(apply(x[, 5001:10000, , ], 3:4, mean))))
 
 apply(Sigma.gibbs[[1]][, 5001:10000, , ], 3:4, mean)

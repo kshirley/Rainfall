@@ -10,7 +10,7 @@
 \usepackage[print,sectionbreak,panelright]{pdfscreen}
 \usepackage{hyperref}
 \usepackage{array}
-\usepackage[cmbold]{mathtime}
+%\usepackage[cmbold]{mathtime}
 \usepackage{amsmath}
 \usepackage[sort]{natbib}
 \usepackage{xspace}
@@ -73,9 +73,7 @@
 \author {Kenneth Shirley \thanks{ATT Research Labs}
 \and Kathryn Nadine Vasilaky \thanks{Earth Institute and International Research Institute for Climate and Society, Columbia University, Lamont Campus 61 Route 9W, Lamont Hall, 2G (corresponding email: \tt{knv4columbia.edu})}
 \and Daniel Osgood \thanks{International Research Institute for Climate and Society Columbia University}
-\and Helen Greatrix  \thanks{International Research Institute for Climate and Society Columbia University}
-
-}
+\and Helen Greatrix  \thanks{International Research Institute for Climate and Society Columbia University}}
 \maketitle
 
 \vspace{-4ex}
@@ -345,7 +343,7 @@ Regression coefficients describing the shape of the seasonal process, comprise t
 Regarding the $X_t$ matrix comprising the base climatology, there are 23 vectors comprised of an intercept, time, time squared, 4 series of sine waves, 4 series of cosine waves, and 12 separate monthly betas for the El Nino effects. $X_t$ and the distribution of it's parameters are established to correspond with the beta distribution. Time and time squared, sines, cosines, and ell nino effects are all centered around at 0 and scaled to have a standard deviation of 1. (Negative 1 for the time scale is 1992 and positive 1 is 2010.) The  intercept we expect to be near 5. Therefore, a $N(0,5^2)$ for the beta distribution will capture the estimated beta, where our beta estimates generally do not exceed -1 or 1. This weather pattern, with 4 main periodic components, is easy adaptable to other parts of the world, by choosing different frequencies for the sine and cosine waves, such as seasonalities occurring once every 2 years or once every four years. The 184 beta estimates can then capture the particular trends in seasonal rainfall. 
 
 %alpha not estimated
-Note that we are not sampling \alpha, which is the degrees of freedom for the multivariate t distribution, which we set to 5 or 10, which is reasonable. That is, every day at every location we have a multivariate t with 5 degrees of freedom. 10 gives is fat tails to handle the large rainfalls. 
+Note that we are not sampling $\alpha$, which is the degrees of freedom for the multivariate t distribution, which we set to 5 or 10, which is reasonable. That is, every day at every location we have a multivariate t with 5 degrees of freedom. 10 gives is fat tails to handle the large rainfalls. 
 
 %30 covariance and 1 tau
 The next largest parameter estimation comes with estimating our covariance matrices. For $\Sigma$, the spatial correlation across sites, we estimate 6 matrices;  5 of these matrices are two by two symmetric matrices with 3 free parameters, the two variances and then the off-diagnol. The final matrix is five by five with 15 free parameters. This totals to 30 parameters to be estimated in the Sigma covariance matrix. $\tau$, an unrestricted parameter, augments the spatial correlation matrix, making the product a covariance matrix. 

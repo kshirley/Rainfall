@@ -16,21 +16,55 @@
 
 6 Simulation Study (optional) Kenny to update with new model
  - choose somewhat realistic parameter settings and show a couple of trace plots of the challenging/interesting parameters
+ - update 7/1/15 probably not include this in final paper, since we are seeing good convergence on real data.
 
 7 Results (fit to all data, discuss inferences). Run should probably be 20k iterations, just to be safe.
   focus on:
-    - ARC bias,
-    - site-scpecific covariance matrices
-    - spatial correlation
-    - El nino effects
+    - ARC bias, (mu_arc)
+    - site-scpecific covariance matrices (Sigma)
+    - spatial correlation (lambda)
+    - El nino effects (some betas)
+    - check variances (tau)
+    - Plot of the seasonal mean (betas)
+
   Notes:
   (1) run for 5k, get an idea of posterior means, then set starting points to be +/- 3 or 4 standard deviations from posterior means
-  (2) set up "adapt"to be 1,000, and look at trace plots
-  (3) maybe set burn-in to be ~5000 iterations
-  (4) maybe do thinning, so look at every fifth iteration out of 15,000 post-burnin, for example for a 3,000 point posterior sample for each parameter.
-  (5) compute gelman-rubin statistics for each of the 234 parameters
+  (2) set up "adapt"to be 2,000, and look at trace plots
+  (3) maybe set burn-in to be ~10000 iterations
+  (4) maybe do thinning, so look at every fifth iteration out of 10,000 post-burnin, for example for a 2,000 point posterior sample for each parameter.
+  (5) compute gelman-rubin statistics for each of the 224 parameters
   (6) Do inference, discuss, etc. Maybe a nice plot of posterior means and standard errors (horizontal bar-type plot).
 
+
+
+7/1/15 update - stuff to write in Section 7:
+--------------
+
+- we did trace plots for each parameter (show lambda, tau, and one 2x2 covariance matrix)
+- we computed gelman-rubin statistic for each parameter, and all were relatively small except for February Nino Effect
+- We computed posterior means and standard errors for each parmater; they are available in the supplemental material
+- Plot the posterior mean of mu to show overall time series pattern
+- Related: plot the posterior mean of P(wet) and mean mm per day.
+
+
+Also include some posterior predictive checks.
+ - Mean rainfall by month
+ - Proportion of wet days per month
+ - Interannual variability
+
+Discuss the meaning of the spatial correlation estimate. If lambda = 0.07, what does this really mean? recall that distance is scaled. For example, at what distance does the sparial correlation drop below 0.05?
+
+We can say we're obviously measuring the March-April "hump" in rainfall, before the July-August wet season.
+
+Show the estimated correlation matrices for all 6 locations.
+
+
+
+In the discussion: Explain that this helps us build an insurance product that can blend info from various local measurement devices, increasing trust.
+
+
+
+Update 7/1/15: maybe we don't have to bother with this for the first draft at least:
 
 8 Out of sample predictions (hopefully show our model does a bit better than simpler models)
   Experiment 1: remove one series from a site, and only one 2-4 year time span from that series
