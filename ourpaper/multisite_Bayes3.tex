@@ -3,6 +3,7 @@
 \usepackage{amsmath}
 \usepackage[sort]{natbib}
 \usepackage{setspace}
+\usepackage{xspace}
 \usepackage{graphicx}
 \usepackage{lscape}
 \usepackage{isorot}
@@ -10,17 +11,8 @@
 \usepackage[print,sectionbreak,panelright]{pdfscreen}
 \usepackage{hyperref}
 \usepackage{array}
-%\usepackage[cmbold]{mathtime}
-\usepackage{amsmath}
-\usepackage[sort]{natbib}
-\usepackage{xspace}
-\usepackage{graphicx}
-\usepackage{hyperref}
-
 \newcolumntype{H}{>{\setbox0=\hbox\bgroup}c<{\egroup}@{}}
 \doublespacing
-\newcolumntype{H}{>{\setbox0=\hbox\bgroup}c<{\egroup}@{}}
-\usepackage{lscape}
 \setlength{\textwidth}{6.5in}
 \setlength{\textheight}{9.0in}
 \setlength{\oddsidemargin}{0in}
@@ -32,6 +24,29 @@
 \usepackage[margin=0.7in]{geometry}
 \newcolumntype{H}{>{\setbox0=\hbox\bgroup}c<{\egroup}@{}}
 % code that creates meaningful variable names from the short stata names
+
+\usepackage{amsmath}
+\usepackage[sort]{natbib}
+\usepackage{setspace}
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{lscape}
+\usepackage{isorot}
+\usepackage{booktabs}
+\usepackage[print,sectionbreak,panelright]{pdfscreen}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{amssymb}
+
+\newcolumntype{H}{>{\setbox0=\hbox\bgroup}c<{\egroup}@{}}
+\doublespacing
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{9.0in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\topmargin}{0.0in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0.0in}
+
 \usepackage{graphicx,amsmath}
 \usepackage{epsfig}
 
@@ -61,28 +76,22 @@
 \def\bR{\pmb{R}}
 \def\bW{\pmb{W}}
 
-
-
-
-
 \begin{document}
 
 \title{Hierarchical Bayes models for daily rainfall time series at multiple locations from different data sources\\
-%\thanks{ thanks...}
+\thanks{THIS RESEARCH WAS SUPPORTED BY .....}
 }
 \author {Kenneth Shirley \thanks{ATT Research Labs}
 \and Kathryn Nadine Vasilaky \thanks{Earth Institute and International Research Institute for Climate and Society, Columbia University, Lamont Campus 61 Route 9W, Lamont Hall, 2G (corresponding email: \tt{knv4columbia.edu})}
-\and Daniel Osgood \thanks{International Research Institute for Climate and Society Columbia University}
-\and Helen Greatrix  \thanks{International Research Institute for Climate and Society Columbia University}}
+\and Helen Greatrex  \thanks{International Research Institute for Climate and Society Columbia University}
+\and Daniel Osgood \thanks{International Research Institute for Climate and Society Columbia University}}
 \maketitle
 
 \vspace{-4ex}
 
 \begin{singlespace}  
 \begin{abstract}
-
-We estimate a Hierarchical Bayesian models for daily rainfall that incorporates two novelties for estimating spatial and temporal correlations. We estimate the within site time series correlations for a particular rainfall site using multiple data sources at a given location, and we estimate the across site covariance in rainfall based on location distance. Previous models have captured cross site correlations as a functions of site specific distances, but not within site correlations across multiple data sources, and not both aspects simultaneously. Further, we incorporate information on the technology used (satellite versus rain gauge) in our estimations, which is also a novel addition. This methodology has far reaching applications to other data contexts in which multiple datasources exist for a given event or variable for which within and between site covariances can be estimated over time. 
-
+We estimate a Hierarchical Bayesian models for daily rainfall that incorporates two novelties for estimating spatial and temporal correlations. We estimate the within site time series correlations for a particular rainfall site using multiple data sources at a given location, and we estimate the across site covariance in rainfall based on location distance. Previous rainfall models have captured cross site correlations as a functions of site specific distances, but not within site correlations across multiple data sources, and not both aspects simultaneously. Further, we incorporate information on the technology used (satellite versus rain gauge) in our estimations, which is also a novel addition. This methodology has far reaching applications in providing more accurate and complex weather insurance contracts based combining information from multiple data sources from a  single site,  a crucial improvement in the face of climate change. Secondly, the modeling extends to many other data contexts where multiple datasources exist for a given event or variable where both within and between series covariances can be estimated over time.
 \end{abstract}
 
 
@@ -100,37 +109,29 @@ We estimate a Hierarchical Bayesian models for daily rainfall that incorporates 
 
 \section{Motivation}
 
-Weather simulations are used to study future weather patterns in the context of climate-sensitive systems, and to simulate climate change scenarios and study its repercussions. Extreme weather events, such as drought, are frequently the hardest to predict,  the most damaging to agricultural livelihoods and the costliest events in terms of disaster response. However, multiple data sources may not always coincide with one another and may not coincide with human experience of extreme weather events making responsiveness difficult. In the case of such conflicting data, it is important that weather predictions are not drawn based on one information source alone, but with attention to multiple sources and the technology with which data are captured. Futhermore, more robust within site estimations can render more robust across site correlations. Both aspects can enable better simulation. 
+The ability to simulate a realistic time-series of daily rainfall is crucial in modeling climate impacts, particularly in locations with limited weather observations.   Simulated rainfall is widely used as an input into many end-user applications across agriculture, health, hydrology and ecology.  Weather generators, or simulators, are often used ``fill in'' missing observations, examine uncertainty or to investigate situations where historical records are not sufficiently long to include extreme events.   However, the current explosion of climate adaptation programs has substantially increased the practical demands placed on weather simulators, demands that often exceed the capabilities of state of the art.  
 
-Past weather simulators have not simultaneously captured within site and across site correlation of weather time series. Initially, many weather simulators were estimated using one time series per location. 
-%history: markov, distributions, multiple sites, h bayes
-Wilks and Wilby (1999) provide an overview of the developments in weather simulation. Weather series were first modeled with stochastic point process models in space and time. Both (Sanso) and (weather game) provide good overviews of this trajectory. First order Markov chains were first used to generate such point processes, modeling the occurrence of rainy versus non-rainy days dictated by transition probabilities. Transition probabilities were based on the relative frequency of precipitation in observed climatology (Gabriel and Neumann (1962)). Improvements to this first model then included modeling the non-zero rainfall days (Todorovic and Woolhiser, 1975), which followed with developments in the type of distribution for non-zero days: including an exponential distribution (Richardson (1981)) and then a gamma distribution [Thom, 1958; Katz, 1977; Buishand, 1977; 1978; Stern and Coe, 1984; Wilks, 1989; 1992 (1981)]. Other methodologies for simulating precipitation occurrences is the use of spell-length models. Rather than simulating rainfall occurrences day by day, spell-length models operate by fitting wet and dry periods to different probability distributions (Buishand, 1977; 1978; Roldan and Woolhiser,1982). Non-parametric simulation methods have also been developed which involved resampling data such that time correlations are captured in the resampling to estimate distribution parameters (Young (1994), Lall and Sharma (1996), Lall et al. (1996) and Rajagopalan et al. (1997)).
-	
-The objective in all of these approaches is to be able to simulate long synthetic time-series of weather that reflect key observed statistics in the region of interest e.g. means, dry spell lengths, inter annual rainfall variability, or probability of extreme events occurring. Capturing a spatial dependence between sites or series, as well as charactersitics of the series themselves, such as non-stationarity, can improve our predictive analytics. 
+One particularly salient example is the increase i weather index insurance in developing countries for which payouts are based on rainfall deficits.  These projects have grown from a couple hundred farmers to tens of millions over the past decade \citep{Greatrex2015}.   The price of the insurance must cover the payouts.  Price is therefore is driven by the probability of a payout, which is driven by the probability of the rainfall deficits relevant to major crop losses. Naturally, insurance projects have relied heavily on rainfall models to drive insurance price calculations.  Because payout formulas are closely tied to specific rainfall features relevant to the crops insured, it is important for rainfall models to accurately characterize the relevant details for infrequent, tail events.  These rainfall features are often challenging for rainfall models, such as onset, inter-annual variability, consecutive dry days, climate teleconnections, and local spatial relationships. Because of these challenges, there are reports of initial applications of weather models leading to spurious results and unpredictable prices \citep{Giannini2009}.  As a result, insurance companies often include substantial increases in the insurance price to protect against their lack of confidence in the rainfall models \citep{Osgood2012},.
 
-%spatial motivation
-Thus incorporating observed spatial correlations into a well calibrated stochastic approach is likely to lead to more realistic impact models.  Several different techniques and methods have been suggested.  The MarkSim weather generator uses spatially correlated input grids of statistics to allow one to allow estimation at a site where there are no observations (Jones and Thornton, 1993). Wilks (1999,1998) extended a Richardson weather generator by driving it with a grid of spatially correlated random numbers.  More recently this approach was extended in the GIST weather generator, which incorporates spatial correlation through the use of correlation matrices to sample from a cumulative probability function at each location (Baigorria and Jones, 2010), or in Kleiber et al (2012) the use of latent Gaussian processes. In 2012. Greatrex (2012) proposed a geostatistical sequential simulation approach coupled to a markov generator, which would allow spatially correlated ensembles of maps of rainfall to be generated.  It is important to note that many of these approaches rely on a large amount of observed and calibrated data, for example a dense station network to create variograms [HELEN EXPLAIN].   
+Perhaps a greater challenge is data poverty;  insurance projects must often be implemented where there are few historical ground based rainfall observations.  In some cases, networks of new gauges are installed, and in others, new satellite datasets are used.  These alternative datasets often provide a great deal of additional knowledge about rainfall patterns at the site of interest.  However, it is a non-trivial challenge to combine these multiple information sources, especially as satellites measure rainfall in a fundamentally different way to gauges, with different spatial statistics.  In addition, in order to use these new sources of information, statistics and probabilities must be informed by any information available for the long histories necessary to characterize the extreme tail events that drive large insurance payouts. Often the historical record is captured over a region, but not by any individual data source.  Typically, the data is in the form of a series of different rain gauges across the region in which only a subset of rain gauges are operational during different years or decades.
 
-Hierchacal bayesian estimation is yet another approach equipped to model spatial as well as temporal relationships. It goes beyond the simplistic and often linear relationships assumed in markovian weather simulators. It models and estimates the functional relationship between weather series over time. The most recent development in the use of the hierarchal bayesian approach comes from Sanso and Guenni (2012), which improves upon Sanso and Duenni (1996), by 1) incorporating spatial correlation for the joint distribution of weather series from several stations and 2) the non-stationarity of rainfall data. The authors show that their model is able to simulate weather data and summary statistics for a large number of stations, some of which have poor quality data. 
+Projects such as insurance need tools that can utilize short histories of new gauges, as well as the overlapping experiences of historical gauges in the region while utilizing information from other sources, such as satellite estimates to provide the best distributions possible.  They also need to be able to condition on climate processes to quantify impacts of decadal processes, climate change, and ENSO \citep{Bell2013}.   This paper provides advances in methodology towards such a tool, based on a Hierarchical Bayesian approach.  Our model incorporates two novel aspects to simultaneously take into account site-specific correlations across multiple data-sources, plus cross-site spatial correlations.
 
-While we do not focus on the aspect of non-stationarity aspect in raifnall series, the novelty of our approach is our ability to account for two levels of the rainfall time series information at each site: 1) both the location of the measurement and 2) the instrument used to measure rainfall are incorporated. In addition, we 3) estimate the the spatial covariance between all these series and 4) the noise or error in recording rainfall due to the instrument itself. By incorporating several layers of information sources for each site in which we would like to predict weather, we are adding more information to the parameter estimates and, hopefully, improving out-of-sample predictions. Because we used daily data to fit our model, our simulated data and out-of-sample predictions are daily, which allows us to compute statistics sensitive to daily measurements: probability of rainfall, dry spells, and extreme rainfall. 
+%Place within weather generator research: markov, distributions, multiple sites, h bayes
+There have been a myriad of published methodologies on stochastic weather generation, as comprehensively described in \citet{Wilks1999}, \citep{Sanso2000} and \citet{Verdin2015}.   We aim to give a brief overview to explain how our model fits in with weather generator literature.  The concept of probabilistically modeling weather has existed since the early 1900s, leading to the first statistical model of rainfall in \citet{Gabriel1962}.  These statistical models were formalized as stochastic weather generators, conceived as a parametric, two step process as proposed by \citet{Richardson1981}.  Daily rainfall occurrence was modeled as a Markov chain, then other weather variables including rainfall intensity were randomly sampled from a pre-specified distributions (typically Gamma for rainfall).   In recent years weather generator research has focused on four main areas: 1. Better capturing the rainfall occurrence and intensity distributions; 2. Incorporating spatial correlations to allow estimation at a point with little or no input data 3. Including multiple data sources and covariates; and 4. Increasing computational efficiency and tool development.  
 
-The ability to incorporate spatial correlations has several policy implications. First, food insecurity is generally correlation in time and space in parallel with rainfall patterns. Thus, predictions that incorporate these patterns can allow for better response to anticipated droughts and subsequent food shortages. This is crucial for aid organizations and first responders to such crises. In addition, longer term tools such as weather insurance, are quite sensitive to spatial phenomena. Higher spatial correlations affect the price and responsiveness of such financial tools. Large covariate risks are the focus of index insurance, for example, and institutions offering such tools need adequate capital holdings to properly respond to the degree of and size of covariate risk. 
+To better capture rainfall distributions, rainfall intensity models in the ``standard'' parametric approach have moved from exponential \citep{Richardson1981}, to gamma \citep{Thom1958, Katz1977, Buishand1978, Coe1984, Wilks1992} and more recently to mixed gamma with generalized Pareto distributions \citep{Lennartsson2008}, or Weibull distributions \citep{Wilks1989, Furrer2008}.  More complex  Markov Chains have been suggested for rainfall occurrence \citep{Jones1993, Dastidar2010}, followed by recent research utilizing probit GLMs, allowing simulated temperatures to be better conditioned on rainfall occurrence \citep{Verdin2015}. Semi-parametric and non parametric approaches have also been devised, including a mix of Markov chains and re-sampling \citep{Apipattanavis2007}, semi-empirical histograms to model wet/dry spell length and rainfall intensity \citep{Racsko1991, Semenov2008} and fully non-parametric resampling \citep{Young1994,Lall1996, Rajagopalan1999}, or ensemble reordering \citep{Ghile2009}. In parallel to this research, new techniques have been utilized including Maximum Likelihood \citep{Fasso2011} and Bayes Theorem \citep{Sanso2000}.
 
+Many of these techniques have allowed the incorporation of spatial information. \citet{Jones1993} used third order splines to interpolate their input parameters to locations with no observations. \citet{Wilks1998} incorporated spatial correlations into a Richardson weather generator by driving it with a grid of spatially correlated random numbers, followed by \citet{Baigorria2010} who developed this approach through the use of correlation matrices and orthogonal Markov chains.  \citet{Kleiber2012} utilized latent Gaussian processes to model spatial occurrence and rainfall amounts, an approach further extended in \citet{Kleiber2012} and \citet{Verdin2015} to include other variables. The approaches above would allow spatial correlations of statistics, but individual pixels-ensemble members would still remain independent. To overcome this issue, \citet{Greatrex2012} proposed utilizing the geostatistical technique of sequential simulation to create stochastically generated, spatially correlated maps of rainfall. 
 
-The remainder the paper is as follows. In In Section~\ref{sec:data} describes the data used and its preparation. In Section~\ref{sec:model} shows how rainfall the and the processes are modeled in a  hierarchical fashion. In Section~\ref{sec:fit} discusses the parameters to be estimated. In Section~\ref{sec:sim} exhibits the performance in recovering parameters with simulated data. In Section~\ref{sec:validate} exhibits the ability of our model,  using our real historical data, in recovering deliberately removed portions of the data. In Section~\ref{sec:results}  we graph the posteriors distributions for select parameters using the full historical data set. In Section~\ref{sec:discuss} concludes and describes next steps. 
+There has been less research on the incorporation of multiple datasets. \citet{Furrer2008} incorporated ENSO into a rainfall generator via the use of GLMs. \citet{Fasso2011} used Maximum Likelihood Estimation to model heterogeneous environmental data, albeit to model air quality from satellite and ground based datasets, rather than to model rainfall. \citet{Hauser2013} utilized a Hidden Markov model linked with either polynomial regression or an artificial neural network to model rainfall conditioned on sea surface temperatures in the sub-polar North Atlantic.  This approach was also used by \citet{CareySmith2014} to incorporate varying seasonality into a Richardson weather generator.  In non-parametric research, \citet{Srivastav2015} used a maximum entropy bootstrap to simulate daily weather data in Canada.   To our knowledge, there has been no published research on the incorporation of multiple within-site realizations of rainfall, for example from gauges and satellites. 
 
+Hierarchical bayesian estimation is yet another approach equipped to model spatial as well as temporal relationships.  These model and estimates the functional relationship between weather series over time. This was first proposed in \citet{Sans2015}, then extended by \citet{Sanso2000} to incorporate 1) spatial correlation for the joint distribution of weather series from several stations and 2) the non-stationarity of rainfall data. The authors show that their model is able to simulate weather data and summary statistics for a large number of stations, some of which have poor quality data. \citet{Lima2015} extended the methodology to model multi-site daily rainfall occurrence in order to investigate the distribution of the rainy season in Brazil.   
 
-
-%More recently, simulators aim to generate weather sequences at multiple points, where the spatial correlations between rainfall occurrence at different sites are captured using spatially dependent random variables (Wilks 1999). More recently Yatest et al (2003) and later Apipattanavis et. al. (2007) model  spatially averaged weather time series for a representative time series of an entire region. As the authors, state, this approach works well if the sites are homogenous in terms of their weather. 
-
-%Crop yields respond to rainfall and temperature, but average decadal or even average monthly rainfall can obscure the effects of weather on yields. Frequent exposure to extreme temperatures (high and low) matters tremendously (Schlenker 2009). Furthermore, the daily variation in other variables, such as soil moisture, has been found to be equally important, and if not accounted for, allows for temperature's effect to be overstated (Ortiz 2014). Specifically, the NUMBER of times and WHEN a crop is exposed to highs/lows in temperature and moisture is crucial, which decadal or monthly measures cannot capture. [Is this disingenuous if we don't have temperature but just rainfall amount?]
-
-%Daily statistics and extremes of weather often have a greater impact on end-users than climatological averages. For example, although seasonal rainfall totals and average temperatures can provide a general guide to crop yields, plants are also extremely sensitive to extreme weather events over a few hours (Schlenker, 2009, Ortiz 2014), especially during flowering or pod-set.  A classic example is in groundnut, where high temperatures during the one or two days of flowering leads to pod death and plant death (Wheeler et al, 1996; Wheeler et al, 2000), or in maize, where a dry spell over the short Anthesis Tasselling Interval has a well measured and catastrophic impact on yields (Bola–os and Edmeades (1996)).  Similar impacts can be seen in hydrology, where extreme rainfall events that are often of more interest to flood modelers than seasonal averages \citet{hydro}, or in climate science, where it is crucial to be able to convert projections of regional averages into changes in local weather (REFERENCE).    
-
-%The ability to generate realistic daily time-series of weather is therefore valued in many end-user applications such as hydrological, climate or crop simulation modeling, especially over regions of the world where there are sparse ground based weather station networks.  
+The aim of this paper is to present an extension of the Hierarchical Bayes approach to incorporate two new novelties. While we do not focus on the aspect of non-stationarity aspect in rainfall series, the novelty of our approach is our ability to account for two levels of the rainfall time series information at each site: 1) both the location of the measurement and 2) the instrument used to measure rainfall are incorporated. In addition, we 3) estimate the the spatial covariance between all these series and 4) the noise or error in recording rainfall due to the instrument itself. By incorporating several layers of information sources for each site in which we would like to predict weather, we are adding more information to the parameter estimates and, hopefully, improving out-of-sample predictions. Because we used daily data to fit our model, our simulated data and out-of-sample predictions are daily, which allows us to compute statistics sensitive to daily measurements: probability of rainfall, dry spells, and extreme rainfall.  We focus on a case study in a data-sparse region, the Tigray region of Ethiopia.
 
 
+%The remainder the paper is as follows. In Section~\ref{sec:data} describes the data used and its preparation. In Section~\ref{sec:model} shows how rainfall the and the processes are modeled in a  hierarchical fashion. In Section~\ref{sec:fit} discusses the parameters to be estimated. Section~\ref{sec:sim} exhibits the performance in recovering parameters with simulated data. Section~\ref{sec:results} we graph the posteriors distributions for select parameters using the full historical data set. Section ~\ref{sec:metrics} exhibits some harder to estimate higher level rainfall metrics that practitioners would be interested in using: internal rainfall variability, probability of consecutive dry days, and probability of rainfall onset. Section~\ref{sec:discuss} concludes and describes next steps. 
 
 
 \section{Procedure and Data}
@@ -147,6 +148,7 @@ Figure~\ref{fig_ethiopia_map} shows the six locations from which the daily rainf
 \label{fig_ethiopia_map}
 \end{center}
 \end{figure}
+
 
 The specifics of the data are as follows:
 \begin{itemize}
@@ -169,6 +171,7 @@ Figure~\ref{fig_overlap} shows the range of observed and missing data for each o
 \label{fig_overlap}
 \end{center}
 \end{figure}
+
 
 Table~\ref{tab_summary} contains some background information and summary statistics related to each time series of daily rainfall. For each time series we record the latitude, longitude, and elevation of the location where measurements were made, and the number of days of observed data. The maximum distance between locations is about 70 kilometers (between Mekele in the southeast and Maykental in the northwest).
 \begin{table}[htdp]
@@ -212,13 +215,11 @@ In this part of Ethiopia, the rainy season lasts roughly from June to October. F
 
 We are also interested in the difference, on average, between the measurements of rainfall based on the ARC satellite proxy and the rain stations. Comparing rainfall frequencies pooled over 5-day periods, averaging across all parts of the year and all five locations with exactly one rain station and one ARC measurement, we find that the ARC records about 3\% fewer days of rainfall than the rain stations. Across locations, this difference ranges from about -6\% (Hager Selam) to  +1\% (Agibe).
 
-
-
 \section{Modeling Rainfall}
 \label{sec:model}
 %Our model consists of two main components: a model for the binary variable of whether or not it rains on a given day (called the frequency model), and a model for the amount of rainfall, given that there was rainfall (called the intensity model). In this paper, we are most interested in the frequency model; the methods we use to model frequency, though, could also be used to model intensity.
 
-We fit a tobit model for daily rainfall at multiple locations, with multiple time series observed at each site. Let us first set up some notation. Let $S=6$ denote the number of locations where we measure rainfall, and $\bJ = \{2,2,2,2,2,5\}$ is the vector denoting the number of daily rainfall time series observed for each of the $S$ locations. The total number of days in our time series is $N=6679$ days, from 1/1/1992 through 7/28/2010. Let $Y_{stj}$ denote the amount of rainfall, measured in mm, for location $s \in (1,...,S)$, day $t \in (1,...,N)$, and time series $j = (1,...,J_s)$. Last, let $D_{ik}$ denote the Euclidian distance between site $i$ and $k$, for $i,k \in (1,...,S)$.
+We fit a tobit model for daily rainfall at multiple locations, with multiple time series observed at each site. Let us first set up some notation. Let $S=6$ denote the number of locations where we measure rainfall, and $\in = \{2,2,2,2,2,5\}$ is the vector denoting the number of daily rainfall time series observed for each of the $S$ locations. The total number of days in our time series is $N=6679$ days, from 1/1/1992 through 7/28/2010. Let $Y_{stj}$ denote the amount of rainfall, measured in mm, for location $s \in (1,...,S)$, day $t \in (1,...,N)$, and time series $j = (1,...,J_s)$. Last, let $D_{ik}$ denote the Euclidian distance between site $i$ and $k$, for $i,k \in (1,...,S)$.
 
 We model $Y_{stj}$ using a hierarchical Bayesian tobit regression model, where the levels of the hierarchy correspond to different sources of variation:
 
@@ -232,6 +233,9 @@ $
 $\hspace{0.9in}
 \bW_{st} \sim \text{N}_{J_s}(\bZ_{st} + \bX^\text{ARC}_s \beta^\text{ARC}_s, \frac{1}{\gamma_{st}}\Sigma_s), \hspace{1.55in} \text{Latent rainfall}
 $
+
+
+
 
 % Underlying spatial mean rainfall process for each location:
 $\hspace{1.3in}
@@ -330,7 +334,6 @@ The explanation of the model is as follows.
 \item The rest of the model is straightforward. We shrink the $\beta_{ps}^Z$'s for each location toward a common mean $\mu_p$. We also model the ARC biases, $\beta^\text{ARC}_s$ as normal random variables with an unknown mean, $\mu_\text{ARC}$, and variance $\tau_\text{ARC}^2$.
 \end{enumerate}
 
-
 \section{Fitting the Model}
 \label{sec:fit}
 
@@ -346,7 +349,7 @@ Regarding the $X_t$ matrix comprising the base climatology, there are 23 vectors
 Note that we are not sampling $\alpha$, which is the degrees of freedom for the multivariate t distribution, which we set to 5 or 10, which is reasonable. That is, every day at every location we have a multivariate t with 5 degrees of freedom. 10 gives is fat tails to handle the large rainfalls. 
 
 %30 covariance and 1 tau
-The next largest parameter estimation comes with estimating our covariance matrices. For $\Sigma$, the spatial correlation across sites, we estimate 6 matrices;  5 of these matrices are two by two symmetric matrices with 3 free parameters, the two variances and then the off-diagnol. The final matrix is five by five with 15 free parameters. This totals to 30 parameters to be estimated in the Sigma covariance matrix. $\tau$, an unrestricted parameter, augments the spatial correlation matrix, making the product a covariance matrix. 
+The next largest parameter estimation comes with estimating our covariance matrices. For $\Sigma$, the spatial correlation across sites, we estimate 6 matrices;  5 of these matrices are two by two symmetric matrices with 3 free parameters, the two variances and then the off-diaganol. The final matrix is five by five with 15 free parameters. This totals to 30 parameters to be estimated in the Sigma covariance matrix. $\tau$, an unrestricted parameter, augments the spatial correlation matrix, making the product a covariance matrix. 
 
 %1 lambda
 $\lambda$ is one parameter estimate capturing the across site correlation. 
@@ -361,43 +364,142 @@ Finally, we set our hyper parameters in the model. First, $\tau_{ARC}$ and $\sig
 
 %Zt conditional distribution
 \subsection{Sampling}
+[This is Kenny's]
+
 We sample our parameter estimates using a series of Gibbs and Metropolis Hastings steps. In the Appendix, we derive the conditional distributions for the variables for which we have no conjugate priors, namely $Z_t$ and [ANY OTHERS?]. 
 
 Note that in all of our draws, we maintain the structure of missing observations in our real data. 
 
-
 \section{Simulation Study}
 \label{sec:sim}
-We first ran a simulation study, where we simulated data from a set of known parameters. These parameter values were chosen to approximate values that could have produced our observed data, based on EDA. The size of the simulated data set was similar to the real data in both dimensions (the number of time series and the number of days).
-
-We find that our model performs well with simulated data, in which are able to recover know parameters--in particular, our parameter for across and within site correlation. In addition, our model performs well in cross validation exercises with historic rainfall data, in which we reproduce historic time series for missing years or missing locations, perform well. 
-
-The results are  encouraging: we were able to precisely estimate the spatial correlation between locations as well as the variability of different data sources within single locations. Figure~\ref{fig_sim_sum1} shows trace plots for $\lambda$, $\mu_\alpha$, and $\tau_\alpha$ using the simulated data. All three parameters were well-estimated, and convergence was relatively quick with a burn-in period of 20000 draws. Furthermore, we were able to accurately estimate different ARC biases, $\alpha_s$ for each location, as well as different amounts of variability at each location, $\tau_s$. Last, the estimates of $\beta$ were accurate.
+We first ran a simulation study, where we simulated data from a set of known parameters. These parameter values were chosen to approximate values that could have produced our observed data, based on EDA. The size of the simulated data set was similar to the real data in both dimensions (the number of time series and the number of days). We find that our model performs well with simulated data, in which are able to recover know parameters--in particular, our parameter for across and within site correlation. We were able to precisely estimate the spatial correlation between locations as well as the variability of different data sources within single locations. Below we show trace plots for parameters that are lower in the hierarchical model and thus more difficult to estimate, but also the primary contribution of this model. This includes: $\lambda$, $\tau^{ARC}$, and $\Sigma$. All three parameters were well-estimated, and convergence was relatively quick with a burn-in period of less than 5,000 draws. All other parameters were also well estimated and available upon request. 
 
 
 \begin{figure}[htbp]
 \begin{center}
-\includegraphics[width=6.0in]{fig_sim_sum1.pdf}
-\caption{Simulation study results for $\lambda$, $\mu_\alpha$, and $\tau_\alpha$, where the horizontal blue lines represent the known true values of the parameters.}
-\label{fig_sim_sum1}
+\caption{Simulation study results for $\lambda$ where the horizontal blue lines represent the known true values of the parameters.}
+\includegraphics[width=6.0in]{fig__trace_lambda_sim.pdf}
+%\label{fig_sim_sum1}
 \end{center}
 \end{figure}
 
 
+
+\begin{figure}[p]
+\caption{Simulation study results for $\tau^{ARC}$ where the horizontal blue lines represent the known true values of the parameters.}
+ \begin{center}
+\includegraphics[scale=0.7]{test.pdf}
+\label{figure:figure1}
+\end{center}
+\end{figure}
+
+
+Results for $\Sigma$ are equally as good, converging to the true parameter value before 5,000 iterations. Below we show the results for Site 1, Hagere Salaam. The remaining estimates are displayed in the Appendix. 
+
+\begin{figure}[htbp]
+\begin{center}
+\caption{Simulation study results for $\Sigma$ for site one (Hagere Salaam) where the horizontal blue lines represent the known true values of the parameters.}  
+\includegraphics[page=1,width=5.0in]{fig_tobit_trace_sigma_covariance_sim.pdf}   
+\end{center}
+\end{figure}
+
+
+%\begin{figure}[htbp]
+%\begin{center}
+%\caption{Simulation study results for $\mu^{ARC}$ where the horizontal blue lines represent the known true values of the parameters.}
+%\includegraphics[width=6.0in]{fig__trace_mu.arc_sim.pdf}
+%\label{fig_sim_sum1}
+%\end{center}
+%\end{figure}
 
 \section{Results}
 \label{sec:results}
 %Remove
-Our results are based on three chains of 15,000 after a burn-in of 5,000 iterations with a jump parameter of XX and an adaption parameter of XXX. We assessed convergence by running the chain for three different starting values, 4 standard deviations above and below the historical means.The values of the Brooks, Gelman, and Rubin convergence diagnostic for each of the parameters,  were mostly below 1.1 (lambda, tau, tau.arc, mu.arc), a threshold suggested by Gainerman (1997) as satisfactory. We noticed that some of our samples stabilized after under 5,000 iterations, but a strong autocorrelation is present, such as with tau. 
+Our results are based on three chains of 20,000 after a burn-in of 15,000 iterations with an adaption parameter of 2,000. We assessed convergence by running the chain for three different starting values, 4 standard deviations above and below the historical means.The values of the Brooks, Gelman, and Rubin convergence diagnostic for each of the parameters, were mostly below 1.1 (lambda, tau, tau.arc, mu.arc), a threshold suggested by \citet{Gamerman1997} as satisfactory, except for the February Nino Effect ($\beta^{February}$). Results can be found in the Appendix.\footnote{We noticed that some of our samples stabilized after under 5,000 iterations, but a strong autocorrelation is present, such as with tau.}  
+
 
 
 \subsection{Trace Plots of Key Parameters}
 
+
+
+We ran trace plots for each parameter. Parameters for which are most interested in estimating and are typically difficult to identify $\lambda$, the distance correlation across sites, and $\Sigma$, the within site correlation matrix. 
+
+%- We computed posterior means and standard errors for each parmater; they are available in the supplemental material
+%- Plot the posterior mean of mu to show overall time series pattern
+%- Related: plot the posterior mean of P(wet) and mean mm per day.
+
+
+%Also include some posterior predictive checks.
+ %- Mean rainfall by month
+ %- Proportion of wet days per month
+ %- Interannual variability
+
+
+
+We begin by displaying $\lambda$, the parameter determining spatial correlation in our distance matrix. $\lamdba$ converges to an estimate of about 0.6, while $\tau$, our parameter scaling $\lambda$ in the covariance matrix of Z, converges to 8. $\lambda$ exhibits more autocorrelation than in the simulated data.
+
+
+
+Thus for two sites $i$ and $k$ that have an euclidean distance of .10 is approximately 10 meters, the $v_{ik}$ entry of the V matrix will be equal to 0.5, and the $v_{ik}$ entry of the correlation matrix will be the product of $\tau^{2}$, or 8, and $v_{ik}$, 0.5, which is 4. That is, mean rainfall for a particular day where two sites' measurements for that day are a distance of 1,000 meters will result in a variance of 400 mm and standard deviation of 200 mm in rainfall. [THAT'S REALLY BIG ACTUALLY. WORRISOME.]
+
+
+
 \begin{figure}[htbp]
+\caption{Trace of $\lambda$, Scalar on Distance Matrix for V}
 \begin{center}
-\includegraphics[width=5.0in]{fig_lamba_spatialcov.pdf}
+\includegraphics[width=5.0in]{fig__trace_lambda.pdf}
 \end{center}
 \end{figure}
+
+
+
+\begin{figure}[htbp]
+\caption{Trace of $\tau$, Scalar on Covariance Matrix of Z}
+\begin{center}
+\includegraphics[width=5.0in]{fig__trace_tau.pdf}
+\end{center}
+\end{figure}
+
+
+
+
+\begin{figure}[htbp]
+\caption{Trace of $\beta^{Arc}$, Bias of Using Arc Satellite Measure}
+\begin{center}
+\includegraphics[width=5.0in]{fig_tobit_trace_beta_arc.pdf}
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\caption{Trace of $\beta$'s}
+\begin{center}
+\includegraphics[width=5.0in]{fig_tobit_trace_beta_P23.pdf}
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\caption{Trace of $\beta$s' Mean, Mu}
+\begin{center}
+\includegraphics[width=5.0in]{fig_tobit_trace_mu.pdf}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\caption{Trace of $\Sigma$, Location Specific Covariances (Hagere Salaam) }
+\begin{center}
+\includegraphics[page=1,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\caption{Trace of $\sigma$, variance of betas}
+\begin{center}
+\includegraphics[width=5.0in]{fig_tobit_trace_sigma.pdf}
+\end{center}
+\end{figure}
+
 
 
 %\includegraphics[width=6.0in]{Posterior_pwet_series8.pdf}
@@ -405,41 +507,281 @@ Our results are based on three chains of 15,000 after a burn-in of 5,000 iterati
 %\caption{Simulation study results for $\lambda$, $\mu_\alpha$, and $\tau_\alpha$, where the horizontal blue lines represent the known true values of the parameters.}
 %\label{Posterior}
 
+\section{Rainfall Metrics Measured}
+\label{sec:metrics}
+
+We have shown that our model performs well in terms of recovering parameters using simulated data, and it converges relatively quickly to its posterior estimates using real rainfall data. An additional motivation of this paper is to be able to predict higher level metrics such as: onset of rainfall within a season, inter-annual rainfall variability, and the number of consecutive dry days per year. In developing countries, where smallholder farmers have little savings and or capital to shield their risk, accuracy in predicting these measures can be the difference between a successful and devastating harvest. For example, yields can be heavily affected by planting a week too early or too late with respect to rainfall onset. Knowing consecutive dry days helps in preparing for a dry season, and inter-annual variability gives us a sense of the upper and lower bounds for rainfall over time. 
+
+We begin by plotting first some basic posterior estimates for mean rainfall and the proportion of wet days per month. We then follow with some of the harder to predict diagnostics: inter-annual rainfall variability, probability of consecutive dry days, probability of rainfall onset.
 
 
+
+\begin{figure}[htbp]
+\caption{Posterior Mean Rainfall }
+\begin{center}
+\includegraphics[width=5.0in]{Posterior_mean_series.pdf}
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\caption{Posterior Probability of Rainfall}
+\begin{center}
+\includegraphics[width=5.0in]{Posterior_pwet_series.pdf}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\caption{Rainfall Onset using Simulated Rainfall}
+\begin{center}
+\includegraphics[width=5.0in]{Onset_postpred.pdf}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\caption{Inter-annual Rainfall Variability using Simulated Rainfall}
+\begin{center}
+\includegraphics[width=5.0in]{Interannual.pdf}
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\caption{Number of Consecutive Dry Days ($>$3 days} using Simulated Rainfall}
+\begin{center}
+\includegraphics[width=5.0in]{Consec_Data_Series.pdf}
+\end{center}
+\end{figure}
 
 \section{Discussion}
-\label{sec:discuss}
+\label{sec:discussion}
+
+We have considered a model where rainfall is a latent multivariate t-distribution, driven by seasonal patterns, satellite measurement error, and within site correlation between time series. The model is fitted using Monte Carlo methods with Gibbs and Metropolis Hastings sampling. Initial starting values in the three chains are set at the historical means, and then four standard deviations above and below the means. The model's accuracy is tested on simulated data and performs well, recovering all of our predetermined parameters. The hierarchical structure allows for fitting within site correlations of various time series measured at a single location, as well across site spatial correlations. Both features enable us to incorporate information on rainfall patterns that can improve out of sample simulations of rainfall, as well as tougher to estimate rainfall characteristics: inter-annual rainfall variability, probability of consecutive dry days, probability of rainfall onset.
+
+The ability to incorporate spatial, temporal, and measurement correlations has important policy implications. First, food insecurity is generally correlated over time and space in parallel with rainfall patterns. Thus, predictions that incorporate these spatial patterns can allow for better response to anticipated droughts and subsequent food shortages in a region. This is crucial for aid organizations and first responders to such crises. Second, different satellite measurements can detect and depict different weather patterns depending on their resolution and what they aim to measure: cloud cover, vegetation, lights, etc. Incorporating multiple information sets around a particular area can increase the accuracy with which we predict weather patterns by narrowing the variance around the mean trends. Although this research does not present a new weather generator for use by end-users, we hope that the methodological advances made will eventually lead to such a tool. 
+
+
+%Trace plots show convergence before 5,000 iterations. 
+%Autocorrelation and mixing 
+%The model also produces predictions that are well within acceptable ranges.
+%Several extensions model are possible. 
+%It would be desirable to have
+%An obvious extension of 
+%In terms of model applications, the possibility of producing short-term forecasting with a measurement of uncertainty is appealing when such information needs to be used as input for models in hydrology and agriculture. Simulated
+
+
+
+\newpage
+\small\normalsize
+%\bibliographystyle{elsarticle-harv}
+\bibliographystyle{chicagoa}
+\bibliography{multisite}
+
+
+\newpage
+\textbf{Appendix}
+
+
+\begin{figure}[htbp]
+\caption{Trace of Sigma, Location Specific Covariances (Maykental) }
+\begin{center}
+\includegraphics[page=2,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\caption{Trace of Sigma, Location Specific Covariances (Mekele) }
+\begin{center}
+\includegraphics[page=3,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\caption{Trace of Sigma, Location Specific Covariances (Abi Adi) }
+\begin{center}
+\includegraphics[page=4,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
+\end{center}
+\end{figure}
+
+\begin{figure}[htbp]
+\caption{Trace of Sigma, Location Specific Covariances (Agibe) }
+\begin{center}
+\includegraphics[page=5,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
+\end{center}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\caption{Trace of Sigma, Location Specific Covariances (Adi Ha) }
+\begin{center}
+\includegraphics[page=6,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
+\end{center}
+\end{figure}
+
+
+\begin{table}[ht]\caption{RG for 23 Beta for Weather Patterns at 6 Different Sites}
+\centering
+\begin{tabular}{rrrrrrr}
+  \hline
+ & 1 & 2 & 3 & 4 & 5 & 6 \\ 
+  \hline
+1 & 1.04 & 1.05 & 1.08 & 1.05 & 1.08 & 1.32 \\ 
+  2 & 1.11 & 1.12 & 1.13 & 1.10 & 1.11 & 1.19 \\ 
+  3 & 1.09 & 1.09 & 1.08 & 1.08 & 1.10 & 1.14 \\ 
+  4 & 1.15 & 1.05 & 1.02 & 1.07 & 1.28 & 1.33 \\ 
+  5 & 1.14 & 1.10 & 1.01 & 1.06 & 1.22 & 1.20 \\ 
+  6 & 1.15 & 1.14 & 1.12 & 1.09 & 1.19 & 1.14 \\ 
+  7 & 1.10 & 1.08 & 1.08 & 1.10 & 1.14 & 1.10 \\ 
+  8 & 1.07 & 1.06 & 1.09 & 1.05 & 1.11 & 1.12 \\ 
+  9 & 1.13 & 1.10 & 1.19 & 1.07 & 1.21 & 1.25 \\ 
+  10 & 1.02 & 1.01 & 1.02 & 1.02 & 1.03 & 1.05 \\ 
+  11 & 1.29 & 1.30 & 1.20 & 1.21 & 1.30 & 1.22 \\ 
+  12 & 1.29 & 1.20 & 1.21 & 1.19 & 1.28 & 1.42 \\ 
+  13 & 1.64 & 1.35 & 1.48 & 1.41 & 1.68 & 1.83 \\ 
+  14 & 1.23 & 1.12 & 1.12 & 1.12 & 1.23 & 1.22 \\ 
+  15 & 1.04 & 1.03 & 1.05 & 1.03 & 1.08 & 1.09 \\ 
+  16 & 1.01 & 1.01 & 1.04 & 1.01 & 1.01 & 1.01 \\ 
+  17 & 1.05 & 1.03 & 1.04 & 1.05 & 1.06 & 1.05 \\ 
+  18 & 1.02 & 1.02 & 1.02 & 1.02 & 1.02 & 1.03 \\ 
+  19 & 1.07 & 1.06 & 1.07 & 1.06 & 1.08 & 1.09 \\ 
+  20 & 1.01 & 1.01 & 1.00 & 1.01 & 1.01 & 1.01 \\ 
+  21 & 1.02 & 1.02 & 1.01 & 1.02 & 1.01 & 1.01 \\ 
+  22 & 1.13 & 1.06 & 1.06 & 1.14 & 1.17 & 1.18 \\ 
+  23 & 1.12 & 1.04 & 1.05 & 1.07 & 1.14 & 1.06 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{table}[ht]\caption{RG for Means of 23 Beta intercepts}
+\centering
+\begin{tabular}{rr}
+  \hline
+ & x \\ 
+  \hline
+1 & 1.03 \\ 
+  2 & 1.13 \\ 
+  3 & 1.10 \\ 
+  4 & 1.04 \\ 
+  5 & 1.08 \\ 
+  6 & 1.14 \\ 
+  7 & 1.06 \\ 
+  8 & 1.06 \\ 
+  9 & 1.15 \\ 
+  10 & 1.02 \\ 
+  11 & 1.26 \\ 
+  12 & 1.29 \\ 
+  13 & 1.56 \\ 
+  14 & 1.19 \\ 
+  15 & 1.05 \\ 
+  16 & 1.01 \\ 
+  17 & 1.05 \\ 
+  18 & 1.02 \\ 
+  19 & 1.07 \\ 
+  20 & 1.01 \\ 
+  21 & 1.02 \\ 
+  22 & 1.14 \\ 
+  23 & 1.08 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rll}
+  \hline
+ & 1 & 2 \\ 
+  \hline
+1 & RG.tau & 1.06404977811999 \\ 
+  2 & RG.lambda & 1.18651773081467 \\ 
+  3 & RG.tau.arc & 1.00685174774326 \\ 
+  4 & RG.beta.arc & 1.21547166921861 \\ 
+  5 & RG.sigma & 1.36885702732019 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{table}[ht]\caption{RG of Sigma Matrices, Site 1}
+\centering
+\begin{tabular}{rrr}
+  \hline
+ & 1 & 2 \\ 
+  \hline
+1 & 1.00 & 1.00 \\ 
+  2 & 1.00 & 1.00 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]\caption{RG of Sigma Matrices, Site 2}
+\centering
+\begin{tabular}{rrr}
+  \hline
+ & 1 & 2 \\ 
+  \hline
+1 & 1.02 & 1.01 \\ 
+  2 & 1.01 & 1.02 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]\caption{RG of Sigma Matrices, Site 3}
+\centering
+\begin{tabular}{rrr}
+  \hline
+ & 1 & 2 \\ 
+  \hline
+1 & 1.01 & 1.01 \\ 
+  2 & 1.01 & 1.00 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]\caption{RG of Sigma Matrices, Site 4}
+\centering
+\begin{tabular}{rrr}
+  \hline
+ & 1 & 2 \\ 
+  \hline
+1 & 1.01 & 1.00 \\ 
+  2 & 1.00 & 1.06 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]\caption{RG of Sigma Matrices, Site 5}
+\centering
+\begin{tabular}{rrr}
+  \hline
+ & 1 & 2 \\ 
+  \hline
+1 & 1.03 & 1.01 \\ 
+  2 & 1.01 & 1.07 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]\caption{RG of Sigma Matrices, Site 6}
+\centering
+\begin{tabular}{rrrrrr}
+  \hline
+ & 1 & 2 & 3 & 4 & 5 \\ 
+  \hline
+1 & 1.04 & 1.00 & 1.02 & 1.01 & 1.08 \\ 
+  2 & 1.00 & 1.01 & 1.02 & 1.01 & 1.47 \\ 
+  3 & 1.02 & 1.02 & 1.02 & 1.05 & 1.35 \\ 
+  4 & 1.01 & 1.01 & 1.05 & 1.08 & 1.46 \\ 
+  5 & 1.08 & 1.47 & 1.35 & 1.46 & 1.37 \\ 
+   \hline
+\end{tabular}
+\end{table}
 
 
 
 
 \end{document}
 
-
-\hspace{0.3in} $Y_{stj} = 1(Z_{stj} > 0),$\\
-\vspace{0.08in}
-\hspace{0.3in} $Z_{stj} \sim N(W_{st} + \alpha_s X^\text{ARC}_{sj}, \tau_s^2),$\\
-\vspace{0.08in}
-\hspace{0.5in} $\bW_t \sim N_S(\bX_t \bbeta, \bR),$\\
-\vspace{0.08in}
-\hspace{0.7in} $\beta_{ps} \sim N(\mu_p, \sigma^2_p),$\\
-\vspace{0.08in}
-\hspace{0.7in} $\bR=\{r_{ik}\}$, $r_{ii}=1$, $r_{ik} = \exp(-\lambda d_{ik}), \hspace{1in} \text{for $i,k \in (1,..,S)$}$\\
-\vspace{0.08in}
-\hspace{0.7in} $\bX_t = (1,t,\sin(2\pi t \omega_1), \cos(2\pi t \omega_1),...),$\\
-\vspace{0.08in}
-\hspace{0.5in} $\alpha_s \sim N(\mu_\alpha, \tau^2_\alpha),$\\
-\vspace{0.08in}
-where we use relatively flat priors for $\tau$, $\mu_p$, $\sigma_p$, $\lambda$, $\mu_\alpha$, and $\tau_\alpha$.
-
-
-We model our observed rainfall as the part of this continuous distribution that can go below zero. 
-
-So in the off season--if our rainfall is positive going up to 15 mm, we are pretending that we have t distribution for each site, and we are imagining that we have some t-distribution down here that is centered around -10 probably, and it never gets above zero so we never see anything. And then over the course of the year we have a t-distribution that's centered around -2, and some days we observe rainfall. And then for other months it's above zero. So we model this latent rainfall throughout. It's the random variable, btu we are modeling like it's coming from this continuous thing. 
-
-
-#truncated vs censored discussion 
-We should read the Sanso, based on a latent Gaussian process. They don't go into great lengths. I guess you could think of the negative rainfall as there's some underlying process still ocurring that generates the probability of there not being rainfall. But really, it's just for convenience. It's convenvient to esimate a covariance matrix when it's a continuous multivariate normal. 
-We know we have covariances in our observed rainfall. In two places in ADiha you're more likely to have raifnall in one if you have rainfall in another. IT's just easier to measure correlation if it's continuous based on the level of W, not on the level of Y. 
 

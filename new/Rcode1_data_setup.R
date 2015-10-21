@@ -2,11 +2,10 @@
 rm(list=ls())
 
 # set working directory:
-setwd("~/Git/Rainfall/")
+#setwd("~/Git/Rainfall/")
 
-#setwd("~/SkyDrive/IRI/RainfallSimulation/Rainfall")
-#path<-"~/SkyDrive/IRI/RainfallSimulation/Rainfall/"
-
+setwd("~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
+path<-"~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall"
 
 
 ### 1. The observed rainfall data ### 
@@ -73,8 +72,6 @@ Y <- as.list(rep(NA, S))
 for (s in 1:S) Y[[s]] <- data[1:J[s] + c(0, cumsum(J))[s], ]
 
 
-
-
 ### 2. The lat-long location data ### 
 ll <- read.table("lat_long_details.csv", sep=",", header=TRUE)
 ll <- ll[c(3, 5, 4, 1, 2, 6), ]  # reorder to match site.names ordering
@@ -85,6 +82,11 @@ for (i in 1:S){
     # Q for self: where does the 108 come from there? Something about lat-long and distance in KM in ethiopia?
   }
 }
+
+# .1 decimal degrees is 10 kilometers
+# 1 decimal degree is 100 kilometers
+#d.mat:   0.4202643 is 42 kilometers
+
 rownames(d.mat) <- ll[, 1]
 colnames(d.mat) <- ll[, 1]
 d.mat <- d.mat/100

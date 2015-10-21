@@ -1,13 +1,27 @@
 #Comes from the graphs in R_code_tobit_real3.R and the graphs in comparison_plots2.R
-#After running the preferred baseline file, this file should work to create all graphs using the resulting posterior. 
+#After running the preferred baseline file, this file should work to create all graphs using the resulting posterior samples.
+
+#There are several sets of graphs: 
+#1. Trace plots of parameters
+#2. Onset metric
+#3. Consecutive dry days metric
+#4. Probability/Mean/Sd/Max Posterior Plots
+#5. Historical Plots
+#6. Comparison Plots: Posterior to Historical with line plots
+#7. Comparison Plots: Posterior to Historical with error bars
+#
 
 # Clear the workspace:
 rm(list=ls())
 setwd("~/Git/Rainfall/")
-setwd("~/SkyDrive/IRI/RainfallSimulation/Rainfall")
-path<-"~/SkyDrive/IRI/RainfallSimulation/Rainfall/"
 
+path<-"/Users/kathrynvasilaky/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall/"
+#source(paste(path,"/Rcode_tobit_mcmc_functions.R",sep=""))
+#Pulls all the functions necessary for plotting
 source("Rcode_tobit_mcmc_functions.R")
+setwd("/Users/kathrynvasilaky/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
+
+
 
 ###############################
 #Load last MCMC
@@ -19,9 +33,12 @@ for (i in 1:length(input.data)) assign(names(input.data)[i], input.data[[i]])
 
 
 #Regular Posterior
-#load(file="gibbs_out_20150326_G5k.RData")
+#gibbs_out_20150326_G5k.RData
+#gibbs_out_20150616_G20k.RData
+#gibbs_out_20150326_G5k_HS1.RData
+#gibbs_out_20150514_G10k.RData
 #Last 3 years of Hager Salem as NA:
-load(file="gibbs_out_20150326_G5k_HS1.RData")
+load(file="gibbs_out_20150616_G20k.RData")
 for (i in 1:length(gibbs.list)) assign(names(gibbs.list)[i],gibbs.list[[i]])
 
 
@@ -342,7 +359,7 @@ cumsum.data.gibbs<- array(NA, dim=c(K,length(g.vec),J.sum,19)) #annual total rai
 
 for (k in 1:K){
   print( k)
-  for (g in 3001:5000){
+  for (g in 10001:20000){
     if (g%%20==0) { print(g) }
     
     # Collect Sigma into a list:
@@ -490,7 +507,7 @@ for (s in 1:S){
   }
 }
 
-dev.off
+dev.off()
 
 # Replace the Infs with NAs else you'll get an error for plots
 max.data[max.data==-Inf] <- NA
@@ -517,7 +534,6 @@ dev.off()
 
 
 # sd wet day rainfall:
-quartz()
 pdf(file=paste(path,"SdWetDays_Historical.pdf",sep=""),height=6,width=9)
 plot(-10,-10,xlim=c(1,12),ylim=c(0,max(sd.data,na.rm=TRUE)),las=1,xlab="Month",ylab="Sd (mm)",xaxt="n",main="Sd of wet day rainfall,HISTORICAL")
 axis(1,at=1:12,labels=substr(month.names,1,1))
@@ -537,7 +553,7 @@ dev.off()
 ###########################
 # Plot these posterior predictive checks:
 pb <- seq(1001,2000,by=5)
-pdf(file=paste(path,"fig_tobit_max.gibbs.pdf",sep=""),width=10,height=8)
+pdf(file=paste(path,"fig_tobit_sd.gibbs.pdf",sep=""),width=10,height=8)
 par(mfrow=c(3,4))
 for (i in 1:J.sum){
   for (m in 1:12){
@@ -545,10 +561,10 @@ for (i in 1:J.sum){
     #lab <- "P(Wet)"
     #g.out <- mean.gibbs[,pb,i,m]; d.out <- mean.data[i,m]
     #lab <- "Mean wed days (mm)"
-    #g.out <- sd.gibbs[,pb,i,m]; d.out <- sd.data[i,m]
-    #lab <- "Sd wet days (mm)"
-    g.out <- max.gibbs[,pb,i,m]; d.out <- max.data[i,m]
-    lab <- "Max rainfall (mm)"
+    g.out <- sd.gibbs[,pb,i,m]; d.out <- sd.data[i,m]
+    lab <- "Sd wet days (mm)"
+    #g.out <- max.gibbs[,pb,i,m]; d.out <- max.data[i,m]
+    #lab <- "Max rainfall (mm)"
     if (!is.na(d.out)){
       xrg <- range(c(g.out,d.out),na.rm=TRUE)
       hist(g.out,main=month.names[m],las=1,xlab=lab,xlim=xrg)
@@ -610,7 +626,7 @@ dev.off()
 ############################
 
 #KV plot comparable posterior graphs to historical
-post <- p.wet.gibbs[1,3001:5000,1:15,1:12]
+post <- p.wet.gibbs[1,10001:20000,1:15,1:12]
 post_p <- colMeans(post)
 
 pdf(file=paste(path,"PercWetDays_Posterior.pdf",sep=""),height=6,width=9)
@@ -620,7 +636,7 @@ for (i in 1:15) lines(1:12,post_p[i,],col=i)
 dev.off()
 
 # mean wet day rainfall:
-post <- mean.gibbs[1,3001:5000,1:15,1:12]
+post <- mean.gibbs[1,10001:20000,1:15,1:12]
 post_m <- colMeans(post)
 
 pdf(file=paste(path,"MeanWetDays_Posterior.pdf",sep=""),height=6,width=9)
@@ -631,7 +647,7 @@ dev.off()
 
 
 # sd wet day rainfall:
-post <- sd.gibbs[1,3001:5000,1:15,1:12]
+post <- sd.gibbs[1,10001:20000,1:15,1:12]
 post_s <- colMeans(post)
 
 pdf(file=paste(path,"SdWetDays_Posterior.pdf",sep=""),height=6,width=9)
@@ -642,7 +658,7 @@ dev.off()
 
 
 # max wet day rainfall:
-post <- max.gibbs[1,3001:5000,1:15,1:12]
+post <- max.gibbs[1,10001:20000,1:15,1:12]
 post_ma <- colMeans(post)
 
 pdf(file=paste(path,"MaxWetDays_Posterior.pdf",sep=""),height=6,width=9)

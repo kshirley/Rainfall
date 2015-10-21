@@ -12,8 +12,8 @@
 rm(list=ls())
 setwd("~/Git/Rainfall/")
 
-setwd("~kathrynvasilaky/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
-path<-"kathrynvasilaky/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall"
+setwd("~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
+path<-"~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall"
 
 # read in scripts:
 source("Rcode_tobit_mcmc_functions.R")
@@ -27,12 +27,12 @@ for (i in 1:length(input.data)) assign(names(input.data)[i], input.data[[i]])
 
 # to check simulate model: 
 # load the simulated data and true values of parameters and assign to global namespace:
-## seed <- 888
-## load(paste0("sim_data_seed_", seed, ".RData"))
-## for (i in 1:length(sim.data)) assign(names(sim.data)[i], sim.data[[i]])
+ seed <- 888
+ load(paste0("sim_data_seed_", seed, ".RData"))
+ for (i in 1:length(sim.data)) assign(names(sim.data)[i], sim.data[[i]])
 
 # Replace the real data, Y, with the simulated version, Y.sim:
-## Y <- Y.sim
+ Y <- Y.sim
 
 # Now let's write the MCMC code:
 # Eventually this block might be its own file, or function called "Rcode3"
@@ -319,11 +319,13 @@ gibbs.list <- list(mu.gibbs = mu.gibbs,
                    beta.arc.gibbs = beta.arc.gibbs, 
                    Sigma.gibbs = Sigma.gibbs, 
                    W.gibbs = W.gibbs)
-save(gibbs.list, file = "gibbs_out_20150616_G20k.RData")
+
+save(gibbs.list, file = "gibbs_out_20150904_Sim20k.RData")
+#save(gibbs.list, file = "gibbs_out_20150616_G20k.RData")
 
 
 
-load(file = "gibbs_out_20150616_G20k.RData")
+
 =======
 
 
@@ -331,6 +333,7 @@ load(file = "gibbs_out_20150616_G20k.RData")
 #load(file=paste(path,"gibbs_out_NA11172014_G5000.RData",sep=""))
 #load(file = "gibbs_out_04272014_G5000.RData")
 #load(file = "gibbs_out_20150306_G2k.RData")
+load(file = "gibbs_out_20150904_Sim20k.RData")  
 load(file = "gibbs_out_20150616_G20k.RData")
 #>>>>>>> 2ef2ef19523ccf5334856515617602eb1165130b
 for (i in 1:length(gibbs.list)) assign(names(gibbs.list)[i], gibbs.list[[i]])

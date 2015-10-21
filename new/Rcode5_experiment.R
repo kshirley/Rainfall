@@ -10,8 +10,8 @@
 # Clear the workspace:
 rm(list=ls())
 setwd("~/Git/Rainfall/")
-#setwd("~/SkyDrive/IRI/RainfallSimulation/Rainfall")
-#path<-"~/SkyDrive/IRI/RainfallSimulation/Rainfall/"
+setwd("~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
+path<-"~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall"
 
 # read in scripts:
 source("Rcode_tobit_mcmc_functions.R")
