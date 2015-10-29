@@ -62,6 +62,7 @@
 \def\bdelta{\pmb{\delta}}
 \def\bmu{\pmb{\mu}}
 \def\bsigma{\pmb{\sigma}}
+\def\bSigma{\pmb{\Sigma}}
 \def\bphi{\pmb{\phi}}
 \def\bTheta{\pmb{\Theta}}
 \def\btheta{\pmb{\theta}}
@@ -219,27 +220,24 @@ We are also interested in the difference, on average, between the measurements o
 \label{sec:model}
 %Our model consists of two main components: a model for the binary variable of whether or not it rains on a given day (called the frequency model), and a model for the amount of rainfall, given that there was rainfall (called the intensity model). In this paper, we are most interested in the frequency model; the methods we use to model frequency, though, could also be used to model intensity.
 
-We fit a tobit model for daily rainfall at multiple locations, with multiple time series observed at each site. Let us first set up some notation. Let $S=6$ denote the number of locations where we measure rainfall, and $\in = \{2,2,2,2,2,5\}$ is the vector denoting the number of daily rainfall time series observed for each of the $S$ locations. The total number of days in our time series is $N=6679$ days, from 1/1/1992 through 7/28/2010. Let $Y_{stj}$ denote the amount of rainfall, measured in mm, for location $s \in (1,...,S)$, day $t \in (1,...,N)$, and time series $j = (1,...,J_s)$. Last, let $D_{ik}$ denote the Euclidian distance between site $i$ and $k$, for $i,k \in (1,...,S)$.
+We fit a tobit model for daily rainfall at multiple locations, with multiple time series observed at each site. Let us first set up some notation. Let $S=6$ denote the number of locations where we measure rainfall, and $\in = \{2,2,2,2,2,5\}$ is the vector denoting the number of daily rainfall time series observed for each of the $S$ locations. The total number of days in our time series is $N=6679$ days, from 1/1/1992 through 7/28/2010. Let $Y_{stj}$ denote the amount of rainfall, measured in mm, for location $s \in (1,...,S)$, day $t \in (1,...,N)$, and time series $j = (1,...,J_s)$. Last, let $d_{ik}$ denote the Euclidian distance between site $i$ and $k$, for $i,k \in (1,...,S)$.
 
 We model $Y_{stj}$ using a hierarchical Bayesian tobit regression model, where the levels of the hierarchy correspond to different sources of variation:
 
 % observations:
 $\hspace{0.5in}
-Y_{stj} = \begin{cases} W_{stj} &\mbox{if } W_{stj} > 0 \hspace{2.5in} \text{Observed rainfall}\\
+Y_{stj} = \begin{cases} W_{stj} &\mbox{if } W_{stj} > 0 \hspace{2.6in} \text{(1) Observed rainfall}\\
 0  &\mbox{if } W_{stj} \leq 0, \end{cases}
 $
 
 % Latent continuous rainfall
 $\hspace{0.9in}
-\bW_{st} \sim \text{N}_{J_s}(\bZ_{st} + \bX^\text{ARC}_s \beta^\text{ARC}_s, \frac{1}{\gamma_{st}}\Sigma_s), \hspace{1.55in} \text{Latent rainfall}
+\bW_{st} \sim \text{N}_{J_s}(\mathbf{1}Z_{st} + \bX^\text{ARC}_s \beta^\text{ARC}_s, \frac{1}{\gamma_{st}}\Sigma_s), \hspace{1.6in} \text{(2) Latent rainfall}
 $
-
-
-
 
 % Underlying spatial mean rainfall process for each location:
 $\hspace{1.3in}
-\bZ_t \sim N_S(\bX_t \bbeta^Z, \tau^2\bV), \hspace{1.75in} \text{Spatial mean rainfall}
+\bZ_t \sim N_S(\bX_t \bbeta^Z, \tau^2\bV), \hspace{1.85in} \text{(3) Spatial mean rainfall}
 $
 
 % covariates including linear, quadratic time, sine and cosine, plus nino by month:
@@ -323,11 +321,12 @@ $
 %$
 
 %where we use relatively flat priors for $\tau$, $\mu_p$, $\sigma_p$, $\lambda$, $\mu_\alpha$, and $\tau_\alpha$.
+where $\mathbf{1}$ denotes the length-$J_s$ vector of ones for location $s = 1, .., S$.
 
 The explanation of the model is as follows.
 \begin{enumerate}
 \item The first level of the model is a standard tobit regression, where we model the observed rainfall, $Y_{stj}$, as being equal to the $j^{th}$ component of the latent rainfall vector, $\bW_{st}$, if it is greater than zero, and equal to zero if the $j^{th}$ component of the latent rainfall vector is less than or equal to zero.
-\item Next, for each location $s$, the length-$J_s$ vector of latent rainfall amounts, $\bW_{st}$, is a multivariate $t$ random variable centered at the spatial mean rainfall amount for that location, $\bZ_{st}$, and offset by an ARC bias effect, $\beta_s^\text{ARC}$ (where $X^\text{ARC}_{sj}$ is an indicator variable of whether time series $j$ at location $s$ is an ARC satellite product). The latent rainfall, $\bW_{st}$, is a multivariate-$t$ random variable because it is a scale mixture of multivariate normals with a mixture weight, $\frac{1}{\gamma_{st}}$, for the covariance, $\Sigma_s$, that is drawn from a gamma distribution.
+\item Next, for each location $s$, the length-$J_s$ vector of latent rainfall amounts on day $t$, $\bW_{st}$, is a multivariate $t$ random variable centered at the spatial mean rainfall amount for that location and day, $Z_{st}$, and offset by an ARC bias effect, $\beta_s^\text{ARC}$ (where $X^\text{ARC}_{sj}$ is an indicator variable of whether time series $j$ at location $s$ is an ARC satellite product). The latent rainfall, $\bW_{st}$, is a multivariate-$t$ random variable because it is a scale mixture of multivariate normals with a mixture weight, $\frac{1}{\gamma_{st}}$, for the covariance, $\Sigma_s$, that is drawn from a gamma distribution.
 \item The location-specific covariance matrices $\Sigma_s$ allow the multiple time series at each location to be correlated in unique ways. The mixing parameters $\gamma_{st}$ determine the widths of the tails of the multivariate-$t$ distributions, and are modeled with a gamma prior distribution with shape and scale parameters equal to 5/2 and 2/5, respectively, which implies that the multivariate-$t$ distribution, $\bW_{st}$, has 5 degrees of freedom. (In follow-up models, we could relax this assumption and estimate from the data how heavy the tails should be; the choice of 5 degrees of freedom is based on the fits of some simple, exploratory models).
 \item The spatial mean rainfall amount for day $t$, $\bZ_t$, is modeled as a multivariate normal random variable whose mean depends on the day, $t$ (linearly, quadratically, and periodically, with periods $\bomega = \frac{1}{365}(1, 2, 3, 4)$), and also on effects from El Nino, where the El Nino effect is an additive constant that depends on the month (allowing El Nino to have different effects across the 12 months of the year).
 \item The covariance matrix of $\bZ_t$, $\tau^2\bV$, depends on $\tau$, a scaling factor, one known input, the Euclidean distance between locations, and one unknown parameter, $\lambda$. The spatial correlation in rainfall between locations is modeled separately from the noise inherent in the different measurement methods at each location, which is modeled by $\Sigma_s$. The model assumes that the covariances of pairs of $Z_{st}$'s decay exponentially with the Euclidian distance between the pairs of locations at the unknown rate $\lambda$, which we estimate from the data using a relatively flat prior.
@@ -364,44 +363,43 @@ Finally, we set our hyper parameters in the model. First, $\tau_{ARC}$ and $\sig
 
 %Zt conditional distribution
 \subsection{Sampling}
-[This is Kenny's]
+We sample our parameter estimates using a series of Gibbs and Metropolis Hastings steps. In the Appendix, we describe the conditional distributions for each step.
+% the variables for which we have no conjugate priors, namely $Z_t$ and [ANY OTHERS?]. 
 
-We sample our parameter estimates using a series of Gibbs and Metropolis Hastings steps. In the Appendix, we derive the conditional distributions for the variables for which we have no conjugate priors, namely $Z_t$ and [ANY OTHERS?]. 
-
-Note that in all of our draws, we maintain the structure of missing observations in our real data. 
+%Note that in all of our draws, we maintain the structure of missing observations in our real data. 
 
 \section{Simulation Study}
 \label{sec:sim}
 We first ran a simulation study, where we simulated data from a set of known parameters. These parameter values were chosen to approximate values that could have produced our observed data, based on EDA. The size of the simulated data set was similar to the real data in both dimensions (the number of time series and the number of days). We find that our model performs well with simulated data, in which are able to recover know parameters--in particular, our parameter for across and within site correlation. We were able to precisely estimate the spatial correlation between locations as well as the variability of different data sources within single locations. Below we show trace plots for parameters that are lower in the hierarchical model and thus more difficult to estimate, but also the primary contribution of this model. This includes: $\lambda$, $\tau^{ARC}$, and $\Sigma$. All three parameters were well-estimated, and convergence was relatively quick with a burn-in period of less than 5,000 draws. All other parameters were also well estimated and available upon request. 
 
 
-\begin{figure}[htbp]
-\begin{center}
-\caption{Simulation study results for $\lambda$ where the horizontal blue lines represent the known true values of the parameters.}
-\includegraphics[width=6.0in]{fig__trace_lambda_sim.pdf}
+%\begin{figure}[htbp]
+%\begin{center}
+%\caption{Simulation study results for $\lambda$ where the horizontal blue lines represent the known true values of the parameters.}
+%\includegraphics[width=6.0in]{fig__trace_lambda_sim.pdf}
 %\label{fig_sim_sum1}
-\end{center}
-\end{figure}
+%\end{center}
+%\end{figure}
 
 
 
-\begin{figure}[p]
-\caption{Simulation study results for $\tau^{ARC}$ where the horizontal blue lines represent the known true values of the parameters.}
- \begin{center}
-\includegraphics[scale=0.7]{test.pdf}
-\label{figure:figure1}
-\end{center}
-\end{figure}
+%\begin{figure}[p]
+%\caption{Simulation study results for $\tau^{ARC}$ where the horizontal blue lines represent the known true values of the parameters.}
+%\begin{center}
+%\includegraphics[scale=0.7]{test.pdf}
+%\label{figure:figure1}
+%\end{center}
+%\end{figure}
 
 
 Results for $\Sigma$ are equally as good, converging to the true parameter value before 5,000 iterations. Below we show the results for Site 1, Hagere Salaam. The remaining estimates are displayed in the Appendix. 
 
-\begin{figure}[htbp]
-\begin{center}
-\caption{Simulation study results for $\Sigma$ for site one (Hagere Salaam) where the horizontal blue lines represent the known true values of the parameters.}  
-\includegraphics[page=1,width=5.0in]{fig_tobit_trace_sigma_covariance_sim.pdf}   
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\begin{center}
+%\caption{Simulation study results for $\Sigma$ for site one (Hagere Salaam) where the horizontal blue lines represent the known true values of the parameters.}  
+%\includegraphics[page=1,width=5.0in]{fig_tobit_trace_sigma_covariance_sim.pdf}   
+%\end{center}
+%\end{figure}
 
 
 %\begin{figure}[htbp]
@@ -437,7 +435,7 @@ We ran trace plots for each parameter. Parameters for which are most interested 
 
 
 
-We begin by displaying $\lambda$, the parameter determining spatial correlation in our distance matrix. $\lamdba$ converges to an estimate of about 0.6, while $\tau$, our parameter scaling $\lambda$ in the covariance matrix of Z, converges to 8. $\lambda$ exhibits more autocorrelation than in the simulated data.
+We begin by displaying $\lambda$, the parameter determining spatial correlation in our distance matrix. $\lambda$ converges to an estimate of about 0.6, while $\tau$, our parameter scaling $\lambda$ in the covariance matrix of Z, converges to 8. $\lambda$ exhibits more autocorrelation than in the simulated data.
 
 
 
@@ -445,60 +443,60 @@ Thus for two sites $i$ and $k$ that have an euclidean distance of .10 is approxi
 
 
 
-\begin{figure}[htbp]
-\caption{Trace of $\lambda$, Scalar on Distance Matrix for V}
-\begin{center}
-\includegraphics[width=5.0in]{fig__trace_lambda.pdf}
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\caption{Trace of $\lambda$, Scalar on Distance Matrix for V}
+%\begin{center}
+%\includegraphics[width=5.0in]{fig__trace_lambda.pdf}
+%\end{center}
+%\end{figure}
 
 
 
-\begin{figure}[htbp]
-\caption{Trace of $\tau$, Scalar on Covariance Matrix of Z}
-\begin{center}
-\includegraphics[width=5.0in]{fig__trace_tau.pdf}
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\caption{Trace of $\tau$, Scalar on Covariance Matrix of Z}
+%\begin{center}
+%\includegraphics[width=5.0in]{fig__trace_tau.pdf}
+%\end{center}
+%\end{figure}
 
 
 
 
-\begin{figure}[htbp]
-\caption{Trace of $\beta^{Arc}$, Bias of Using Arc Satellite Measure}
-\begin{center}
-\includegraphics[width=5.0in]{fig_tobit_trace_beta_arc.pdf}
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\caption{Trace of $\beta^{Arc}$, Bias of Using Arc Satellite Measure}
+%\begin{center}
+%\includegraphics[width=5.0in]{fig_tobit_trace_beta_arc.pdf}
+%\end{center}
+%\end{figure}
 
-\begin{figure}[htbp]
-\caption{Trace of $\beta$'s}
-\begin{center}
-\includegraphics[width=5.0in]{fig_tobit_trace_beta_P23.pdf}
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\caption{Trace of $\beta$'s}
+%\begin{center}
+%\includegraphics[width=5.0in]{fig_tobit_trace_beta_P23.pdf}
+%\end{center}
+%\end{figure}
 
-\begin{figure}[htbp]
-\caption{Trace of $\beta$s' Mean, Mu}
-\begin{center}
-\includegraphics[width=5.0in]{fig_tobit_trace_mu.pdf}
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\caption{Trace of $\beta$s' Mean, Mu}
+%\begin{center}
+%\includegraphics[width=5.0in]{fig_tobit_trace_mu.pdf}
+%\end{center}
+%\end{figure}
 
 
-\begin{figure}[htbp]
-\caption{Trace of $\Sigma$, Location Specific Covariances (Hagere Salaam) }
-\begin{center}
-\includegraphics[page=1,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\caption{Trace of $\Sigma$, Location Specific Covariances (Hagere Salaam) }
+%\begin{center}
+%\includegraphics[page=1,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
+%\end{center}
+%\end{figure}
 
-\begin{figure}[htbp]
-\caption{Trace of $\sigma$, variance of betas}
-\begin{center}
-\includegraphics[width=5.0in]{fig_tobit_trace_sigma.pdf}
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\caption{Trace of $\sigma$, variance of betas}
+%\begin{center}
+%\includegraphics[width=5.0in]{fig_tobit_trace_sigma.pdf}
+%\end{center}
+%\end{figure}
 
 
 
@@ -516,42 +514,42 @@ We begin by plotting first some basic posterior estimates for mean rainfall and 
 
 
 
-\begin{figure}[htbp]
-\caption{Posterior Mean Rainfall }
-\begin{center}
-\includegraphics[width=5.0in]{Posterior_mean_series.pdf}
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\caption{Posterior Mean Rainfall }
+%\begin{center}
+%\includegraphics[width=5.0in]{Posterior_mean_series.pdf}
+%\end{center}
+%\end{figure}
 
-\begin{figure}[htbp]
-\caption{Posterior Probability of Rainfall}
-\begin{center}
-\includegraphics[width=5.0in]{Posterior_pwet_series.pdf}
-\end{center}
-\end{figure}
-
-
-\begin{figure}[htbp]
-\caption{Rainfall Onset using Simulated Rainfall}
-\begin{center}
-\includegraphics[width=5.0in]{Onset_postpred.pdf}
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\caption{Posterior Probability of Rainfall}
+%\begin{center}
+%\includegraphics[width=5.0in]{Posterior_pwet_series.pdf}
+%\end{center}
+%\end{figure}
 
 
-\begin{figure}[htbp]
-\caption{Inter-annual Rainfall Variability using Simulated Rainfall}
-\begin{center}
-\includegraphics[width=5.0in]{Interannual.pdf}
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\caption{Rainfall Onset using Simulated Rainfall}
+%\begin{center}
+%\includegraphics[width=5.0in]{Onset_postpred.pdf}
+%\end{center}
+%\end{figure}
 
-\begin{figure}[htbp]
-\caption{Number of Consecutive Dry Days ($>$3 days} using Simulated Rainfall}
-\begin{center}
-\includegraphics[width=5.0in]{Consec_Data_Series.pdf}
-\end{center}
-\end{figure}
+
+%\begin{figure}[htbp]
+%\caption{Inter-annual Rainfall Variability using Simulated Rainfall}
+%\begin{center}
+%\includegraphics[width=5.0in]{Interannual.pdf}
+%\end{center}
+%\end{figure}
+
+%\begin{figure}[htbp]
+%\caption{Number of Consecutive Dry Days ($>$3 days} using Simulated Rainfall}
+%\begin{center}
+%\includegraphics[width=5.0in]{Consec_Data_Series.pdf}
+%\end{center}
+%\end{figure}
 
 \section{Discussion}
 \label{sec:discussion}
@@ -579,45 +577,123 @@ The ability to incorporate spatial, temporal, and measurement correlations has i
 
 
 \newpage
-\textbf{Appendix}
+\section{Appendix}
+
+The full posterior can be written as
+\begin{align*}
+p(\btheta \mid \bY) \propto \prod_{s = 1}^S \prod_{t = 1}^T \prod_{j = 1}^{J_s} & p(Y_{stj} \mid W_{stj}) p(W_{stj} \mid Z_{st}, \beta_s^\text{ARC}, \Sigma_s, \gamma_{st}) p(Z_{st} \mid \bbeta_s^Z, \tau, \lambda) \\
+& p(\bbeta_s^Z | \bmu, \bsigma) p(\beta_s^\text{ARC} \mid \mu^\text{ARC}, \tau^\text{ARC}) \\
+& p(\bmu) p(\bsigma) p(\tau) p(\lambda) p(\mu^\text{ARC}) p(\tau^\text{ARC}) p(\bSigma_s) p(\gamma_{st}),
+\end{align*}
+where we set $\gamma_{st} = 5$ in our model fits, and $\btheta$ denotes the entire vector of parameters, 
+$$
+\btheta = \{\bW, \bZ, \bbeta^\text{ARC}, \bSigma, \bgamma, \bbeta^Z, \tau, \lambda, \bmu, \bsigma, \mu^\text{ARC}, \tau^\text{ARC}\}.
+$$
+
+To sample from this posterior, we use MCMC. First we set initial values of $\lambda$, $\tau$, $\mu^\text{ARC}$, $\tau^\text{ARC}$, $\mu_p$ and $\sigma_p$ (for $p = 1, ..., 23$), $\bSigma_s$ and $\beta_s^\text{ARC}$ (for $s = 1, ..., 6$), and $\beta^Z_{sp}$ for $s = 1, ..., 6$ and $p = 1, ..., 23$. All initial values are set to be overdispersed around a rough estimate of the parameter based on fits of smaller models to the data.
+
+Then, for iteration $g = 1, 2, ...., G$, where we set $G = 5000$, we perform the following steps:
+\begin{enumerate}
+\item Sample $\bW \mid \bY, \bgamma, \bZ, \bbeta^\text{ARC}, \bSigma$.\\
+The conditional posterior distribution of the length-$J_s$ latent rainfall vector for location $s$ and day $t$, $\bW_{st}$, follows a multivariate normal distribution, and each element of this vector can be sampled from a univariate normal distribution according to the following three cases:
+\begin{enumerate}
+\item Case 1: If $Y_{stj} > 0$, then $W_{stj} = Y_{stj}$.
+\item Case 2: If $Y_{stj} = 0$, then (truncated normal distribution)
+$$
+W_{stj} \sim \text{N}(Z_{st} + X_{s}^\text{ARC}\beta_s^\text{ARC} ...).
+$$
+\item Case 3: If $Y_{stj}$ is missing, then $W_{stj}$ is drawn from the same normal distribution as in Case 2, except that the draw is not truncated to be less than zero (since the missing observed rainfall could have been greater than zero).
+\end{enumerate}
+\item Sample $\bgamma \mid \bW, \bZ, \bbeta^\text{ARC}, \bSigma, \alpha$ from \\
+$
+\gamma_{st} \sim \Gamma(\text{shape = }(J_s + \alpha)/2, \text{ rate = }2/((\bW_{st} - \bmu_{st})^T\Sigma_s^{-1}(\bW_{st} - \bmu_{st}) + \alpha)),\\
+$ where
+$
+\bmu_{st} = Z_{st} + X_{s}^\text{ARC}\beta_s^\text{ARC},
+$
+for $s = (1, ..., S)$ and $t = (1, ..., N)$.
+\item Sample $\bZ \mid \bW, \bgamma, \bbeta^\text{ARC}, \bSigma, \bbeta^Z, \tau, \lambda$. The spatial mean rainfall vector can be sampled in closed for from a multivariate normal distribution. First, where \\
+$
+Z_t \sim \text{N}_S\Biggl(\Bigl((\Sigma_t^Z)^{-1} + (\sigma^2V)^{-1}\Bigr)^{-1}\Bigl((\Sigma_t^Z)^{-1}\bmu_t^Z + (\sigma^2V)^{-1}\bX_t\bbeta^Z\Bigr), \Bigl((\Sigma_t^Z)^{-1} + (\sigma^2V)^{-1}\Bigr)^{-1}\Biggr).
+$
+\item Sample $\bbeta^\text{ARC} \mid \bW, \bgamma, \bZ, \bSigma, \mu^\text{ARC}, \tau^\text{ARC}$, where \\
+$
+\beta_s^\text{ARC} \sim ...
+$
+\item Sample $\bSigma \mid \bW, \bgamma, \bZ, \bbeta^\text{ARC}$, where \\
+$
+\Sigma_s \sim ...
+$
+\item Sample $\bbeta^Z \mid \bZ, \lambda, \tau, \bmu, \bsigma$, where \\
+$
+\beta^Z_{sp} \sim ...
+$
+\item Sample $\lambda \mid \bZ, \bbeta^Z, \tau$, where \\
+$
+\lambda \sim ...
+$
+\item Sample $\tau \mid \bZ, \bbeta^Z, \lambda$, where \\
+$
+\tau \sim \text{Inverse-Gamma}(\text{shape = })
+$
+\item Sample $\mu^\text{ARC} \mid \beta^\text{ARC}, \tau^\text{ARC}$, where \\
+$
+\mu^\text{ARC} \sim ...
+$
+\item Sample $\tau^\text{ARC} \mid \beta^\text{ARC}, \mu^\text{ARC}$, where \\
+$
+\tau^\text{ARC} \sim ...
+$
+\item Sample $\bmu \mid \bbeta^Z, \bsigma$, where \\
+$
+\mu_p \sim ...
+$
+\item Sample $\bsigma \mid \bbeta^Z, \bmu$, where \\
+$
+\sigma_p \sim ...
+$
+\end{enumerate}
 
 
-\begin{figure}[htbp]
-\caption{Trace of Sigma, Location Specific Covariances (Maykental) }
-\begin{center}
-\includegraphics[page=2,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
-\end{center}
-\end{figure}
 
-\begin{figure}[htbp]
-\caption{Trace of Sigma, Location Specific Covariances (Mekele) }
-\begin{center}
-\includegraphics[page=3,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\caption{Trace of Sigma, Location Specific Covariances (Maykental) }
+%\begin{center}
+%\includegraphics[page=2,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
+%\end{center}
+%\end{figure}
 
-\begin{figure}[htbp]
-\caption{Trace of Sigma, Location Specific Covariances (Abi Adi) }
-\begin{center}
-\includegraphics[page=4,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\caption{Trace of Sigma, Location Specific Covariances (Mekele) }
+%\begin{center}
+%\includegraphics[page=3,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
+%\end{center}
+%\end{figure}
 
-\begin{figure}[htbp]
-\caption{Trace of Sigma, Location Specific Covariances (Agibe) }
-\begin{center}
-\includegraphics[page=5,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\caption{Trace of Sigma, Location Specific Covariances (Abi Adi) }
+%\begin{center}
+%\includegraphics[page=4,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
+%\end{center}
+%\end{figure}
+
+%\begin{figure}[htbp]
+%\caption{Trace of Sigma, Location Specific Covariances (Agibe) }
+%\begin{center}
+%\includegraphics[page=5,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
+%\end{center}
+%\end{figure}
 
 
-\begin{figure}[htbp]
-\caption{Trace of Sigma, Location Specific Covariances (Adi Ha) }
-\begin{center}
-\includegraphics[page=6,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
-\end{center}
-\end{figure}
+%\begin{figure}[htbp]
+%\caption{Trace of Sigma, Location Specific Covariances (Adi Ha) }
+%\begin{center}
+%\includegraphics[page=6,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
+%\end{center}
+%\end{figure}
 
+
+\iffalse
 
 \begin{table}[ht]\caption{RG for 23 Beta for Weather Patterns at 6 Different Sites}
 \centering
@@ -779,7 +855,7 @@ The ability to incorporate spatial, temporal, and measurement correlations has i
 \end{tabular}
 \end{table}
 
-
+\fi
 
 
 \end{document}
