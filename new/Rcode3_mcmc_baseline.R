@@ -1,15 +1,18 @@
-########################################################################################################################
+################################################################################
+
 # Run 'Rcode1_data_setup.R'
-# Now you have saved a local copy of "input_data.RData" which contains the real data and some other objects
+# Now you have saved a local copy of "input_data.RData" which contains 
+# the real data and some other objects
 # Next, run 'Rcode2_simulate_data.R' to simulate some data:
-# Now you have another .RData file containing true parameter values and some simulated data
+# Now you have another .RData file containing true parameter values and 
+# some simulated data
 # file name is: "sim_data_seed_836.RData"
 # Clear the workspace:
 rm(list=ls())
 setwd("~/Git/Rainfall/")
 
-setwd("~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
-path<-"~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall"
+#setwd("~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
+#path<-"~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall"
 
 # read in scripts:
 source("Rcode_tobit_mcmc_functions.R")
@@ -22,7 +25,9 @@ load("input_data.RData")
 for (i in 1:length(input.data)) assign(names(input.data)[i], input.data[[i]])
 
 # to check simulate model: 
-# load the simulated data and true values of parameters and assign to global namespace:
+# load the simulated data and true values of parameters and assign to 
+# global namespace:
+
 ## seed <- 888
 ## load(paste0("sim_data_seed_", seed, ".RData"))
 ## for (i in 1:length(sim.data)) assign(names(sim.data)[i], sim.data[[i]])
@@ -52,7 +57,8 @@ for (s in 1:S){
   n.draw[[s]] <- numeric(J[s])
   for (j in 1:J[s]){
     w.draw[[s]][j, ] <- is.na(Y[[s]][j, ]) | Y[[s]][j, ] == 0
-    n.draw[[s]][j] <- sum(Y[[s]][j, ] == 0, na.rm = TRUE) + sum(is.na(Y[[s]][j, ]))
+    n.draw[[s]][j] <- sum(Y[[s]][j, ] == 0, na.rm = TRUE) + 
+                      sum(is.na(Y[[s]][j, ]))
   }
 }
 
@@ -95,12 +101,18 @@ for (k in 1:K) xb.start[k, , ] <- X %*% beta.start[k, , ]
 
 # simulate Z.start:
 Z.start <- array(NA, dim=c(K, N, S))
-for (k in 1:K) Z.start[k, , ] <- mvrnorm(N, rep(0, S), tau.start[k]^2*R.cov(lambda.start[k], d.mat)) + xb.start[k, , ]
+for (k in 1:K) {
+  V <- R.cov(lambda.start[k], d.mat)
+  Z.start[k, , ] <- mvrnorm(n = N, mu = rep(0, S), Sigma = tau.start[k]^2*V) + 
+                    xb.start[k, , ]
+}
 
 # simulate gamma.start
 gamma.start <- array(NA, dim=c(K, N, S))
-for (k in 1:K) gamma.start[k, , ] <- matrix(rgamma(N*S, shape = alpha.start[k]/2, scale = 2/alpha.start[k]), N, S)
-
+for (k in 1:K) {
+  gamma.start[k, , ] <- matrix(rgamma(N*S, shape = alpha.start[k]/2, 
+                                      scale = 2/alpha.start[k]), N, S)
+}
 
 ##################
 ### 1.d Set Priors
@@ -120,7 +132,9 @@ ones <- matrix(0, S*P, P)
 for (s in 1:S) ones[(s-1)*P + 1:P, ] <- diag(P)
 xtx.ones <- ones %*% xtx %*% t(ones)
 vec <- numeric(S^2*P^2)
-for (s in 1:S) vec[(s - 1)*(S*P^2) + (1:(S*P^2))] <- rep(rep((s - 1)*S + 1:S, each = P), P)
+for (s in 1:S) {
+  vec[(s - 1)*(S*P^2) + (1:(S*P^2))] <- rep(rep((s - 1)*S + 1:S, each = P), P)
+}
 gamma.temp <- matrix(0, N, S)
 Sigma.null <- as.list(rep(NA, S))
 W.null <- as.list(rep(NA, S))
@@ -199,11 +213,12 @@ for (k in 1:K){
   beta.arc.gibbs[k, 1, ] <- beta.arc
   mu.arc.gibbs[k, 1] <- mu.arc
   tau.arc.gibbs[k, 1] <- tau.arc
-  for (s in 1:S) Sigma.gibbs[[s]][k, 1, ,] <- Sigma[[s]]  
+  for (s in 1:S) Sigma.gibbs[[s]][k, 1, , ] <- Sigma[[s]]  
   Z.gibbs[k, 1, , ] <- Z[w.samp, ]
   
   # Last, set W.start inside the loop for each chain:
-  W <- draw.W.start(R = Y, Z, beta.arc, Sigma, gamma.mat, X.arc, up, w.draw, W.null)
+  W <- draw.W.start(R = Y, Z, beta.arc, Sigma, gamma.mat, X.arc, up, w.draw, 
+                    W.null)
   for (s in 1:S) W.gibbs[[s]][k, 1, , ] <- W[[s]][, w.samp]
   
   # Sample W | Sigma, mu (Z, X.arc, beta.arc), gamma:
@@ -215,18 +230,22 @@ for (k in 1:K){
     if (g %% 10 == 0) print(g)
     
     # Sample gamma | W, mu (Z, X.arc, beta.arc), Sigma, alpha:    
-    gamma.mat <- draw.gamma(S, Z, X.arc, beta.arc, N, J, Sigma, W, alpha, gamma.temp=matrix(0, N, S))
+    gamma.mat <- draw.gamma(S, Z, X.arc, beta.arc, N, J, Sigma, W, alpha, 
+                            gamma.temp = matrix(0, N, S))
     
     # Draw Z | W, gamma, beta.arc, Sigma, beta, lambda, tau:
-    Z <- draw.Z(S, Sigma, N, J, X.arc, beta.arc, W, lambda, d.mat, tau, X, beta, gamma.mat)
+    Z <- draw.Z(S, Sigma, N, J, X.arc, beta.arc, W, lambda, d.mat, tau, X, 
+                beta, gamma.mat)
     Z.gibbs[k, g, , ] <- Z[w.samp, ]
     
     # Draw beta.arc | W, gamma, Z, Sigma, mu.arc, tau.arc:
-    beta.arc <- draw.beta.arc(S, Sigma, gamma.mat, X.arc, Z, N, J, W, tau.arc, mu.arc)
+    beta.arc <- draw.beta.arc(S, Sigma, gamma.mat, X.arc, Z, N, J, W, 
+                              tau.arc, mu.arc)
     beta.arc.gibbs[k, g, ] <- beta.arc
     
     # draw mu.arc | beta.arc, tau.arc
-    mu.arc <- rnorm(1, (sum(beta.arc)/tau.arc^2)/(1 + S/tau.arc^2), sqrt(1/(1 + S/tau.arc^2)))
+    mu.arc <- rnorm(1, (sum(beta.arc)/tau.arc^2)/(1 + S/tau.arc^2), 
+                    sqrt(1/(1 + S/tau.arc^2)))
     mu.arc.gibbs[k, g] <- mu.arc
     
     # draw tau.alpha | alpha, mu.alpha
@@ -236,22 +255,25 @@ for (k in 1:K){
     tau.arc.gibbs[k, g] <- tau.arc
     
     # Sample Sigma | W, mu (Z, X.arc, beta.arc), gamma:
-    Sigma <- draw.Sigma(S, Z, X.arc, beta.arc, N, J, W, gamma.mat, v.0, Lambda.0.inv, Sigma.null)
+    Sigma <- draw.Sigma(S, Z, X.arc, beta.arc, N, J, W, gamma.mat, v.0, 
+                        Lambda.0.inv, Sigma.null)
     for (s in 1:S) Sigma.gibbs[[s]][k, g, , ] <- Sigma[[s]]
     
-    # Sample alpha | gamma.mat, a, b where prior(alpha) ~ gamma(shape=a,scale=b):
+    # Sample alpha | gamma.mat, a, b where
+    # prior(alpha) ~ gamma(shape = a, scale = b):
     #temp <- alpha.draw(gamma.mat,a=15,b=1,jump.alpha)
     #temp <- alpha.draw.unif(gamma.mat,a=2,b=30,jump.alpha)
     #alpha <- temp$alpha
     #jump.alpha <- temp$jump.alpha
-    alpha.gibbs[k, g] <- alpha
+    alpha.gibbs[k, g] <- alpha  # update: keep alpha = 5 fixed
     
     # draw beta | w, lambda:
     temp <- draw.beta.tobit(tau, lambda, vec, xtx.ones, Z, X, sigma, mu)
     beta <- temp$beta
     beta.gibbs[k, g, , ] <- beta
     
-    # draw tau | Z, beta, lambda, a, b where prior(tau^2) ~ inverse-gamma(shape=a,rate=b)
+    # draw tau | Z, beta, lambda, a, b where
+    # prior(tau^2) ~ inverse-gamma(shape = a, rate = b)
     tau <- tau.draw.tobit(Z, beta, lambda, a = 1, b = 1, T = N)
     tau.gibbs[k, g] <- tau
     
@@ -295,16 +317,10 @@ save(gibbs.list, file = "gibbs_out_20150326_G5k_HS1.RData")
 
 
 
-<<<<<<< HEAD
 load(file = "gibbs_out_20150326_G5k_HS1.RData")
-=======
-
-
-
 #load(file=paste(path,"gibbs_out_NA11172014_G5000.RData",sep=""))
 #load(file = "gibbs_out_04272014_G5000.RData")
 load(file = "gibbs_out_20150306_G2k.RData")
->>>>>>> 2ef2ef19523ccf5334856515617602eb1165130b
 for (i in 1:length(gibbs.list)) assign(names(gibbs.list)[i], gibbs.list[[i]])
 
 
