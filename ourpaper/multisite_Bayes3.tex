@@ -112,7 +112,7 @@ We estimate a Hierarchical Bayesian models for daily rainfall that incorporates 
 
 The ability to simulate a realistic time-series of daily rainfall is crucial in modeling climate impacts, particularly in locations with limited weather observations.   Simulated rainfall is widely used as an input into many end-user applications across agriculture, health, hydrology and ecology.  Weather generators, or simulators, are often used ``fill in'' missing observations, examine uncertainty or to investigate situations where historical records are not sufficiently long to include extreme events.   However, the current explosion of climate adaptation programs has substantially increased the practical demands placed on weather simulators, demands that often exceed the capabilities of state of the art.  
 
-One particularly salient example is the increase i weather index insurance in developing countries for which payouts are based on rainfall deficits.  These projects have grown from a couple hundred farmers to tens of millions over the past decade \citep{Greatrex2015}.   The price of the insurance must cover the payouts.  Price is therefore is driven by the probability of a payout, which is driven by the probability of the rainfall deficits relevant to major crop losses. Naturally, insurance projects have relied heavily on rainfall models to drive insurance price calculations.  Because payout formulas are closely tied to specific rainfall features relevant to the crops insured, it is important for rainfall models to accurately characterize the relevant details for infrequent, tail events.  These rainfall features are often challenging for rainfall models, such as onset, inter-annual variability, consecutive dry days, climate teleconnections, and local spatial relationships. Because of these challenges, there are reports of initial applications of weather models leading to spurious results and unpredictable prices \citep{Giannini2009}.  As a result, insurance companies often include substantial increases in the insurance price to protect against their lack of confidence in the rainfall models \citep{Osgood2012},.
+One particularly salient example is the increase in weather index insurance in developing countries for which payouts are based on rainfall deficits.  These projects have grown from a couple hundred farmers to tens of millions over the past decade \citep{Greatrex2015}.   The price of the insurance must cover the payouts.  Price is therefore is driven by the probability of a payout, which is driven by the probability of the rainfall deficits relevant to major crop losses. Naturally, insurance projects have relied heavily on rainfall models to drive insurance price calculations.  Because payout formulas are closely tied to specific rainfall features relevant to the crops insured, it is important for rainfall models to accurately characterize the relevant details for infrequent, tail events.  These rainfall features are often challenging for rainfall models, such as onset, inter-annual variability, consecutive dry days, climate teleconnections, and local spatial relationships. Because of these challenges, there are reports of initial applications of weather models leading to spurious results and unpredictable prices \citep{Giannini2009}.  As a result, insurance companies often include substantial increases in the insurance price to protect against their lack of confidence in the rainfall models \citep{Osgood2012},.
 
 Perhaps a greater challenge is data poverty;  insurance projects must often be implemented where there are few historical ground based rainfall observations.  In some cases, networks of new gauges are installed, and in others, new satellite datasets are used.  These alternative datasets often provide a great deal of additional knowledge about rainfall patterns at the site of interest.  However, it is a non-trivial challenge to combine these multiple information sources, especially as satellites measure rainfall in a fundamentally different way to gauges, with different spatial statistics.  In addition, in order to use these new sources of information, statistics and probabilities must be informed by any information available for the long histories necessary to characterize the extreme tail events that drive large insurance payouts. Often the historical record is captured over a region, but not by any individual data source.  Typically, the data is in the form of a series of different rain gauges across the region in which only a subset of rain gauges are operational during different years or decades.
 
@@ -242,7 +242,7 @@ $
 
 % covariates including linear, quadratic time, sine and cosine, plus nino by month:
 $\hspace{1.7in}
-\beta_{ps}^Z \sim \text{N}(\mu_p, \sigma^2_p),
+\beta_{ps}^Z \sim \text{N}(\mu_p, \sigma^2_p),  \text{for $p \in (1,..,23)$}
 $
 
 % mean of the groups of coefficients across locations
@@ -419,8 +419,6 @@ Our results are based on three chains of 20,000 after a burn-in of 15,000 iterat
 
 \subsection{Trace Plots of Key Parameters}
 
-
-
 We ran trace plots for each parameter. Parameters for which are most interested in estimating and are typically difficult to identify $\lambda$, the distance correlation across sites, and $\Sigma$, the within site correlation matrix. 
 
 %- We computed posterior means and standard errors for each parmater; they are available in the supplemental material
@@ -435,12 +433,11 @@ We ran trace plots for each parameter. Parameters for which are most interested 
 
 
 
-We begin by displaying $\lambda$, the parameter determining spatial correlation in our distance matrix. $\lambda$ converges to an estimate of about 0.6, while $\tau$, our parameter scaling $\lambda$ in the covariance matrix of Z, converges to 8. $\lambda$ exhibits more autocorrelation than in the simulated data.
+We begin by displaying $\lambda$, the parameter determining spatial correlation in our distance matrix. $\lambda$ converges to an estimate of about 0.6, while $\tau$, our parameter scaling $\lambda$ in the covariance matrix of Z, converges to 8. $\lambda$ exhibits more autocorrelation than in the simulated data. Thus for two sites $i$ and $k$ that have an euclidean distance of 1 is approximately 100 kilometers, and the $d_{ik}$ entry of the d matrix will be equal to 1, then $v_{ik}$ is $exp(-.06*1)$ is .98. In general our spatial correlations for the V matrix range from .95 to .99. 
 
+Tau is estimated at 8.8 mm.
 
-
-Thus for two sites $i$ and $k$ that have an euclidean distance of .10 is approximately 10 meters, the $v_{ik}$ entry of the V matrix will be equal to 0.5, and the $v_{ik}$ entry of the correlation matrix will be the product of $\tau^{2}$, or 8, and $v_{ik}$, 0.5, which is 4. That is, mean rainfall for a particular day where two sites' measurements for that day are a distance of 1,000 meters will result in a variance of 400 mm and standard deviation of 200 mm in rainfall. [THAT'S REALLY BIG ACTUALLY. WORRISOME.]
-
+The mean of beta arc (mu.arc) is approximately 0.7 with a  variance of 2.2? (tau.arc), so the ARC satellite has a slightly positive bias on rainfall above and beyond a rain gauge. 
 
 
 %\begin{figure}[htbp]
