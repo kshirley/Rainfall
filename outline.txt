@@ -5,27 +5,44 @@
   -So rather, we eliminate the last 3 years of hagersalam station, and check if we can reproduce it. 
 
 2 Data (almost done)
+  EDA (almost done)
 
-3 EDA (almost done)
+3 The Model (kenny finish explanation)
 
-4 The Model (kenny finish explanation)
-
-5 Fitting the model (kenny and katya  - maybe kenny appendix to show multivariate t mixture)
+4 Fitting the model (kenny and katya  - maybe kenny appendix to show multivariate t mixture)
  - appendix of the gibbs sampling steps (kenny)
  - discussion (finish the discussion of the steps for fitting the model)
 
-6 Simulation Study (optional) Kenny to update with new model
+5 Simulation Study (optional) Kenny to update with new model
  - choose somewhat realistic parameter settings and show a couple of trace plots of the challenging/interesting parameters
  - update 7/1/15 probably not include this in final paper, since we are seeing good convergence on real data.
 
-7 Results (fit to all data, discuss inferences). Run should probably be 20k iterations, just to be safe.
+6 Results (fit to all data, discuss inferences). Run should probably be 20k iterations, just to be safe.
   focus on:
-    - ARC bias, (mu_arc)
-    - site-scpecific covariance matrices (Sigma)
-    - spatial correlation (lambda)
-    - El nino effects (some betas)
-    - check variances (tau)
-    - Plot of the seasonal mean (betas)
+
+
+6.1 Summaries of parameter estimates
+
+    - Plot of the seasonal mean (betas) [11 x 6 = 66]
+      - or just mu, the mean across sites. 11 parameters. Plot of about 2 years along x-axis of spatial mean.
+
+    - ARC bias, (beta_ARC) 6 (start with a plot, but maybe reduce to a sentence)
+
+    - site-scpecific covariance matrices (Sigma) 30
+      - Idea is maybe to decompose into variances and correlations, and summarize the range of estimated correlations
+
+    - spatial correlation (lambda) 1
+      - Mention posterior mean and standard error, and interpret.
+
+    - El nino effects (some betas) [12 x 6 = 72]
+      - Start with a plot (mean + standard errors), and maybe ditch the plot for space reasons.
+
+    - check variances (tau) 1
+      - easy.
+
+    - 6 + 30 + 1 + 72 + 1 + 66 = 176
+    - this omits sigma [23] and mu_ARC [1] and tau_ARC [1]
+
 
   Notes:
   (1) run for 5k, get an idea of posterior means, then set starting points to be +/- 3 or 4 standard deviations from posterior means
@@ -37,12 +54,30 @@
 
 
 
-7/1/15 update - stuff to write in Section 7:
+6.2 Posterior predictive checks (to check the fit of the model)
+
+- Plot the posterior mean of mu to show overall time series pattern
+- Related: plot the posterior mean of P(wet) and mean mm per day.
+
+
+Also include some posterior predictive checks.
+ - Mean rainfall by month
+ - Proportion of wet days per month
+ - Interannual variability
+ - Consecutive dry days
+ - Onset
+
+
+
+
+
+7/1/15 update - stuff to write in Section 6:
 --------------
 
 - we did trace plots for each parameter (show lambda, tau, and one 2x2 covariance matrix)
 - we computed gelman-rubin statistic for each parameter, and all were relatively small except for February Nino Effect
 - We computed posterior means and standard errors for each parmater; they are available in the supplemental material
+
 - Plot the posterior mean of mu to show overall time series pattern
 - Related: plot the posterior mean of P(wet) and mean mm per day.
 
@@ -52,7 +87,8 @@ Also include some posterior predictive checks.
  - Proportion of wet days per month
  - Interannual variability
 
-Discuss the meaning of the spatial correlation estimate. If lambda = 0.07, what does this really mean? recall that distance is scaled. For example, at what distance does the sparial correlation drop below 0.05?
+Discuss the meaning of the spatial correlation estimate. If lambda = 0.07, what does this really mean? recall that distance is scaled. For example, at what distance does the spatial correlation drop below 0.05?
+  - [done -- the spatial correlations are very high, between 0.95 and 0.99 for each pair of sites in our data].
 
 We can say we're obviously measuring the March-April "hump" in rainfall, before the July-August wet season.
 
@@ -66,7 +102,7 @@ In the discussion: Explain that this helps us build an insurance product that ca
 
 Update 7/1/15: maybe we don't have to bother with this for the first draft at least:
 
-8 Out of sample predictions (hopefully show our model does a bit better than simpler models)
+7 Out of sample predictions (hopefully show our model does a bit better than simpler models)
   Experiment 1: remove one series from a site, and only one 2-4 year time span from that series
     - hager selam 2005 - 2008 station
     - make predictions under a few different models:

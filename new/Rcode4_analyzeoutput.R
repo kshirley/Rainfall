@@ -7,8 +7,8 @@
 rm(list=ls())
 setwd("~/Git/Rainfall/")
 
-setwd("~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
-path<-"~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall"
+#setwd("~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
+#path<-"~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall"
 
 #read in scripts:
 source("Rcode_tobit_mcmc_functions.R")
@@ -47,7 +47,8 @@ par(mfrow = c(2, 3))
 for (j in 1:P){
   for (s in 1:S){
     tp(beta.gibbs[, , j, s], thin= 20, ylim = range(beta.gibbs[ , , j, ]), 
-       main = paste(X.names[j], site.names[s], sep=" "), las = 1, xlab = "Iteration")
+       main = paste(X.names[j], site.names[s], sep=" "), las = 1, 
+       xlab = "Iteration")
   }
 }
 dev.off()
@@ -57,9 +58,12 @@ dev.off()
 # G-R statistics:
 gr.beta <- matrix(0, P, S)  # store them in a 23 x 5 matrix
 for (s in 1:S) {
-  x <- as.mcmc.list(list(mcmc(beta.gibbs[1, , 1:P, s], start = 10001, end = G, thin = 1), 
-                         mcmc(beta.gibbs[2, , 1:P, s], start = 10001, end = G, thin = 1), 
-                         mcmc(beta.gibbs[3, , 1:P, s], start = 10001, end = G, thin = 1)))
+  x <- as.mcmc.list(list(mcmc(beta.gibbs[1, , 1:P, s], start = 10001, end = G,
+                              thin = 1), 
+                         mcmc(beta.gibbs[2, , 1:P, s], start = 10001, end = G, 
+                              thin = 1), 
+                         mcmc(beta.gibbs[3, , 1:P, s], start = 10001, end = G, 
+                              thin = 1)))
   gr.beta[, s] <- gelman.diag(x)$psrf[, 1]
 }  
 
@@ -274,6 +278,27 @@ z.bar <- X %*% matrix(mu.bar, ncol = 1)
 plot(date.string, z.bar, type = "l")
 sel <- as.numeric(substr(date.string, 1, 4)) == 2005
 plot(date.string[sel], z.bar[sel], type = "l")
+
+
+
+# posterior mean of time series for spatial mean:
+time.bar <- apply(mu.gibbs[, 10001:G, 1:11], 3, mean)
+
+# spatial mean across locations:
+z.time <- X[, 1:11] %*% matrix(time.bar, ncol = 1)
+
+# plot the spatial mean across locations by time:
+plot(date.string, z.time, type = "l")
+sel <- as.numeric(substr(date.string, 1, 4)) == 2005
+plot(date.string[sel], z.time[sel], type = "l")
+abline(h = 0, lty = 2)
+
+f.sd <- function(x) {
+  sqrt(diag(apply(x[, 10001:G, , ], 3:4, mean)))
+}
+
+round(unlist(sapply(Sigma.gibbs, f.sd)), 1)
+
 
 
 

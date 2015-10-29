@@ -317,11 +317,26 @@ save(gibbs.list, file = "gibbs_out_20150326_G5k_HS1.RData")
 
 
 
-load(file = "gibbs_out_20150326_G5k_HS1.RData")
+#load(file = "gibbs_out_20150326_G5k_HS1.RData")
 #load(file=paste(path,"gibbs_out_NA11172014_G5000.RData",sep=""))
 #load(file = "gibbs_out_04272014_G5000.RData")
-load(file = "gibbs_out_20150306_G2k.RData")
+#load(file = "gibbs_out_20150306_G2k.RData")
+load(file = "gibbs_out_20150616_G20k.RData")  # this MCMC run is our 'official'
+# output -- use this for all posterior summaries
 for (i in 1:length(gibbs.list)) assign(names(gibbs.list)[i], gibbs.list[[i]])
+
+
+tp(lambda.gibbs, burn = 0, nc = 3, thin = 20)
+tp(lambda.gibbs, burn = 1000, nc = 3, thin = 20)
+
+lambda.hat <- mean(lambda.gibbs[, 10001:20000])
+plot(seq(0, 1, by = 0.01)*100, exp(-0.062*seq(0, 1, by = 0.01)), xlab = "km")
+
+tp(tau.gibbs, burn = 0, nc = 3, thin = 20)
+
+
+exp(-lambda.hat*d.mat[lower.tri(d.mat)])
+
 
 
 
