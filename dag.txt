@@ -1,0 +1,35 @@
+digraph {
+node [shape = circle];
+graph [rankdir = "BT"];
+1 [label = <Y>, style = "filled", fillcolor = "grey"];
+2 [label = <W>];
+3 [label = <X<sub><font point-size = "8">ARC</font></sub>>, style = "filled", fillcolor = "grey"];
+4 [label = <&#947;>];
+5 [label = <Z>];
+6 [label = <&#946;<sup><font point-size = "8">ARC</font></sup>>];
+7 [label = <&#931;>];
+8 [label = <&#945;>, style = "filled", fillcolor = "grey"];
+9 [label = <X<sub><font point-size = "8">t</font></sub>>, style = "filled", fillcolor = "grey"];
+10 [label = <&#946;<sub><font point-size = "8">Z</font></sub>>];
+11 [label = <&#955;>];
+12 [label = <&#964;>];
+13 [label = <&#956;<sub><font point-size = "8">ARC</font></sub>>];
+14 [label = <&#964;<sub><font point-size = "8">ARC</font></sub>>];
+15 [label = <&#956;>];
+16 [label = <&#963;>];
+2 -> 1;
+3 -> 2;
+4 -> 2;
+5 -> 2;
+6 -> 2;
+7 -> 2;
+8 -> 4;
+9 -> 5;
+10 -> 5;
+11 -> 5;
+12 -> 5;
+13 -> 6;
+14 -> 6;
+15 -> 10;
+16 -> 10;
+}
