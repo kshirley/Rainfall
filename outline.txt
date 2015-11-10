@@ -151,3 +151,14 @@ katya:
 
 
 
+
+
+To do 10/29:
+
+kenny:
+ - finish sampling section
+ - get JABES template
+ - start writing some results for section 6.1
+ - save gamma in each MCMC step and analyze it -- it's neede to compute covariance matrix of W
+
+

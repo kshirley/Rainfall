@@ -76,6 +76,8 @@
 \def\bV{\pmb{V}}
 \def\bR{\pmb{R}}
 \def\bW{\pmb{W}}
+\def\bB{\pmb{B}}
+\def\bA{\pmb{A}}
 
 \begin{document}
 
@@ -220,9 +222,11 @@ We are also interested in the difference, on average, between the measurements o
 \label{sec:model}
 %Our model consists of two main components: a model for the binary variable of whether or not it rains on a given day (called the frequency model), and a model for the amount of rainfall, given that there was rainfall (called the intensity model). In this paper, we are most interested in the frequency model; the methods we use to model frequency, though, could also be used to model intensity.
 
-We fit a tobit model for daily rainfall at multiple locations, with multiple time series observed at each site. Let us first set up some notation. Let $S=6$ denote the number of locations where we measure rainfall, and $\in = \{2,2,2,2,2,5\}$ is the vector denoting the number of daily rainfall time series observed for each of the $S$ locations. The total number of days in our time series is $N=6679$ days, from 1/1/1992 through 7/28/2010. Let $Y_{stj}$ denote the amount of rainfall, measured in mm, for location $s \in (1,...,S)$, day $t \in (1,...,N)$, and time series $j = (1,...,J_s)$. Last, let $d_{ik}$ denote the Euclidian distance between site $i$ and $k$, for $i,k \in (1,...,S)$.
+We fit a tobit model for daily rainfall at multiple locations, with multiple time series observed at each site. Let us first set up some notation. Let $S=6$ denote the number of locations where we measure rainfall, and $J = \{2,2,2,2,2,5\}$ is the vector denoting the number of daily rainfall time series observed for each of the $S$ locations. The total number of days in our time series is $N=6679$ days, from 1/1/1992 through 7/28/2010. Let $Y_{stj}$ denote the amount of rainfall, measured in mm, for location $s \in (1,...,S)$, day $t \in (1,...,N)$, and time series $j = (1,...,J_s)$. Last, let $d_{ik}$ denote the Euclidian distance between site $i$ and $k$, for $i,k \in (1,...,S)$.
 
 We model $Y_{stj}$ using a hierarchical Bayesian tobit regression model, where the levels of the hierarchy correspond to different sources of variation:
+
+\newpage
 
 % observations:
 $\hspace{0.5in}
@@ -257,7 +261,8 @@ $
 
 % 'nugget effect' of spatial covariance:
 $\hspace{1.7in}
-\tau \sim \frac{1}{2}\text{t}(0, 1, \text{df} = 3),
+%\tau \sim \frac{1}{2}\text{t}(0, 1, \text{df} = 3),
+\tau \sim \text{Inv-Gamma}(a = 1, b = 1),
 $
 
 % parametric spatial covariance matrix, exponential model
@@ -306,7 +311,7 @@ $
 
 % Covariance matrices for each location:
 $\hspace{1.3in}
-\Sigma_s \sim \text{Inv-Wish}(v_0 = J_s, \Lambda_0^{-1} = \text{diag}(J_s))
+\Sigma_s \sim \text{Inv-Wishart}(v_0 = J_s, \Lambda_0^{-1} = \text{diag}(J_s))
 $
 
 % mixture weight for normal covariances, resulting in multivariate t:
@@ -322,6 +327,78 @@ $
 
 %where we use relatively flat priors for $\tau$, $\mu_p$, $\sigma_p$, $\lambda$, $\mu_\alpha$, and $\tau_\alpha$.
 where $\mathbf{1}$ denotes the length-$J_s$ vector of ones for location $s = 1, .., S$.
+
+
+
+
+\newpage
+%%% New Version using align:
+
+$
+\begin{alignedat}{2}
+% observations:
+Y_{stj} &= \begin{cases} W_{stj} &\mbox{if } W_{stj} > 0 \\
+0  &\mbox{if } W_{stj} \leq 0, \end{cases} \\
+% Latent continuous rainfall
+& \bW_{st} &&\sim \text{N}_{J_s}(\mathbf{1}Z_{st} + \bX^\text{ARC}_s \beta^\text{ARC}_s, \frac{1}{\gamma_{st}}\Sigma_s), \\
+% Underlying spatial mean rainfall process for each location:
+& && \bZ_t \sim N_S(\bX_t \bbeta^Z, \tau^2\bV), \\
+\end{alignedat}
+$
+
+
+\begin{flalign}
+% observations:
+Y_{stj} &= \begin{cases} W_{stj} &\mbox{if } W_{stj} > 0 \\
+0  &\mbox{if } W_{stj} \leq 0, \end{cases} \\
+% Latent continuous rainfall
+\quad \bW_{st} &\sim \text{N}_{J_s}(\mathbf{1}Z_{st} + \bX^\text{ARC}_s \beta^\text{ARC}_s, \frac{1}{\gamma_{st}}\Sigma_s), \\
+% Underlying spatial mean rainfall process for each location:
+\quad \quad \bZ_t &\sim N_S(\bX_t \bbeta^Z, \tau^2\bV), \\
+\end{flalign}
+
+
+\begin{align}
+% observations:
+Y_{stj} &= \begin{cases} W_{stj} &\mbox{if } W_{stj} > 0 \\
+0  &\mbox{if } W_{stj} \leq 0, \end{cases} \\
+% Latent continuous rainfall
+\bW_{st} &\sim \text{N}_{J_s}(\mathbf{1}Z_{st} + \bX^\text{ARC}_s \beta^\text{ARC}_s, \frac{1}{\gamma_{st}}\Sigma_s), \\
+% Underlying spatial mean rainfall process for each location:
+\bZ_t &\sim N_S(\bX_t \bbeta^Z, \tau^2\bV), \\
+% covariates including linear, quadratic time, sine and cosine, plus nino by month:
+\beta_{ps}^Z &\sim \text{N}(\mu_p, \sigma^2_p), \\
+% mean of the groups of coefficients across locations
+\mu_{p} &\sim \text{N}(0, 5^2), \\
+% variance of the groups of coefficients across locations
+\sigma_{p} &\sim \frac{1}{2}\text{t}(0, 1, \text{df} = 3), \\
+% 'nugget effect' of spatial covariance:
+\tau &\sim \text{Inv-Gamma}(a = 1, b = 1), \\
+% parametric spatial covariance matrix, exponential model
+\bV &= \{v_{ik}\}, v_{ii}=1, v_{ik} = \exp(-\lambda d_{ik}), \\
+\lambda &\sim \text{gamma}(\text{shape} = 50, \text{ scale} = 3), \\
+%\begin{align*}
+%\bX_t &= (1, t, t^2, \sin(2\pi t \omega_1), \cos(2\pi t \omega_1),..., \sin(2\pi t \omega_4), \cos(2\pi t \omega_4), \\
+%& \hspace{0.3in} X^\text{nino}_{\text{Jan}_{[t]}}, X^\text{nino}_{\text{Feb}_{[t]}}, ..., X^\text{nino}_{\text{Dec}_{[t]}}),
+%\end{align*} \\
+% Indicator of ARC product
+\bX^\text{ARC}_{sj} &= 1(\text{jth time series at site s is an ARC product}), \\
+% ARC effect:
+\beta^\text{ARC}_s &\sim \text{N}(\mu^\text{ARC}, \tau^2_\text{ARC}), \\
+% mean ARC effect across locations
+\mu^\text{ARC} &\sim \text{N}(0, 5^2), \\
+% variance of ARC effects across locations:
+\tau_\text{ARC} &\sim \frac{1}{2}\text{t}(0, 1, \text{df} = 3), \\
+% Covariance matrices for each location:
+\Sigma_s &\sim \text{Inv-Wishart}(v_0 = J_s, \Lambda_0^{-1} = \text{diag}(J_s)) \\
+% mixture weight for normal covariances, resulting in multivariate t:
+\gamma_{st} &\sim \text{gamma}(\text{shape = } \frac{5}{2}, \text{ scale = } \frac{2}{5}),
+\end{align}
+where $\mathbf{1}$ denotes the length-$J_s$ vector of ones for location $s = 1, .., S$.
+
+
+
+\newpage
 
 The explanation of the model is as follows.
 \begin{enumerate}
@@ -582,7 +659,7 @@ p(\btheta \mid \bY) \propto \prod_{s = 1}^S \prod_{t = 1}^T \prod_{j = 1}^{J_s} 
 & p(\bbeta_s^Z | \bmu, \bsigma) p(\beta_s^\text{ARC} \mid \mu^\text{ARC}, \tau^\text{ARC}) \\
 & p(\bmu) p(\bsigma) p(\tau) p(\lambda) p(\mu^\text{ARC}) p(\tau^\text{ARC}) p(\bSigma_s) p(\gamma_{st}),
 \end{align*}
-where we set $\gamma_{st} = 5$ in our model fits, and $\btheta$ denotes the entire vector of parameters, 
+where $\btheta$ denotes the entire vector of parameters, 
 $$
 \btheta = \{\bW, \bZ, \bbeta^\text{ARC}, \bSigma, \bgamma, \bbeta^Z, \tau, \lambda, \bmu, \bsigma, \mu^\text{ARC}, \tau^\text{ARC}\}.
 $$
@@ -592,63 +669,126 @@ To sample from this posterior, we use MCMC. First we set initial values of $\lam
 Then, for iteration $g = 1, 2, ...., G$, where we set $G = 5000$, we perform the following steps:
 \begin{enumerate}
 \item Sample $\bW \mid \bY, \bgamma, \bZ, \bbeta^\text{ARC}, \bSigma$.\\
-The conditional posterior distribution of the length-$J_s$ latent rainfall vector for location $s$ and day $t$, $\bW_{st}$, follows a multivariate normal distribution, and each element of this vector can be sampled from a univariate normal distribution according to the following three cases:
+The conditional posterior distribution of the length-$J_s$ latent rainfall vector for location $s$ and day $t$, $\bW_{st}$, follows the multivariate normal distribution described in Equation 2 from Section 3. Each element of this vector can be sampled, conditional on the other elements, from a univariate normal distribution according to standard methods (cite). This draw is made in one of three ways:
 \begin{enumerate}
-\item Case 1: If $Y_{stj} > 0$, then $W_{stj} = Y_{stj}$.
-\item Case 2: If $Y_{stj} = 0$, then (truncated normal distribution)
-$$
-W_{stj} \sim \text{N}(Z_{st} + X_{s}^\text{ARC}\beta_s^\text{ARC} ...).
-$$
-\item Case 3: If $Y_{stj}$ is missing, then $W_{stj}$ is drawn from the same normal distribution as in Case 2, except that the draw is not truncated to be less than zero (since the missing observed rainfall could have been greater than zero).
+% W
+\item Case 1: If $Y_{stj} > 0$, then $W_{stj} = Y_{stj}$; in other words, no sample is drawn, but instead the value of $W_{stj}$ is fixed.
+\item Case 2: If $Y_{stj} = 0$, then the univariate normal distribution from which $W_{stj}$ is sampled  is truncated on the right by zero, since the model specifies that the latent rainfall amount must be less than zero in this case.
+\item Case 3: If $Y_{stj}$ is missing, then the sample is drawn without any truncation, since the missing observation, $Y_{stj}$, could have been equal to zero or greater than zero.
 \end{enumerate}
-\item Sample $\bgamma \mid \bW, \bZ, \bbeta^\text{ARC}, \bSigma, \alpha$ from \\
+
+% gamma
+\item Sample $\bgamma \mid \bW, \bZ, \bbeta^\text{ARC}, \bSigma, \alpha$. \\
 $
-\gamma_{st} \sim \Gamma(\text{shape = }(J_s + \alpha)/2, \text{ rate = }2/((\bW_{st} - \bmu_{st})^T\Sigma_s^{-1}(\bW_{st} - \bmu_{st}) + \alpha)),\\
+\gamma_{st} \sim \Gamma(\text{shape = }(J_s + \alpha)/2, \text{ rate = }2/((\bW_{st} - \bmu^W_{st})^T\Sigma_s^{-1}(\bW_{st} - \bmu^W_{st}) + \alpha)),\\
 $ where
 $
-\bmu_{st} = Z_{st} + X_{s}^\text{ARC}\beta_s^\text{ARC},
+\bmu^W_{st} = \mathbf{1}Z_{st} + \bX_{s}^\text{ARC}\beta_s^\text{ARC},
 $
-for $s = (1, ..., S)$ and $t = (1, ..., N)$.
-\item Sample $\bZ \mid \bW, \bgamma, \bbeta^\text{ARC}, \bSigma, \bbeta^Z, \tau, \lambda$. The spatial mean rainfall vector can be sampled in closed for from a multivariate normal distribution. First, where \\
+for $s = (1, ..., S)$ and $t = (1, ..., N)$, and $\alpha$ is set to 5.
+
+% Z
+\item Sample $\bZ \mid \bW, \bgamma, \bbeta^\text{ARC}, \bSigma, \bbeta^Z, \tau, \lambda$. \\
+The spatial mean rainfall vector can be sampled in closed form from a multivariate normal distribution. To compute the mean and variance of its multivariate normal posterior distribution, we ``complete the square" twice. First, note that the posterior distribution of $\bZ_t$ is proportional to
+$$
+p(\bW \mid \bY, \bgamma, \bZ, \bbeta^\text{ARC}, \bSigma) p(\bZ \mid \bbeta^Z, \tau, \lambda),
+$$
+where both of these terms are multivariate normal probability distribution functions (PDFs). In the first term, by treating $\bZ$ as unknown and the other parameters as known, one can see that it is proportional to the multivariate normal PDF where
+$$
+\bZ_t \sim \text{N}_S(\bmu^Z_t, \bSigma_t^Z),
+$$
+where the $s^\text{th}$ element of the mean is given by
+$$
+\mu^Z_{st} = (\mathbf{1})^T \Sigma_s^{-1}(\bW_{st} - \bX_s^\text{ARC}\beta_s^\text{ARC})/(\mathbf{1}^T \Sigma_s^{-1} \mathbf{1}),
+$$
+the variance of the $s^\text{th}$ element is given by
+$$
+\Sigma_{t[s]}^Z = 1/(\gamma_{st}\mathbf{1}^T \Sigma_s^{-1} \mathbf{1}),
+$$
+and the off-diagonal elements of $\Sigma_t^Z = 0$.
+
+Next, combining this term with the second term, which is also a multivariate normal PDF, we compute the full conditional posterior distribution for $\bZ_t$:
+$$
+\bZ_t \sim \text{N}_S\Biggl(\Bigl((\bSigma_t^Z)^{-1} + (\sigma^2\bV)^{-1}\Bigr)^{-1}\Bigl((\bSigma_t^Z)^{-1}\bmu_t^Z + (\sigma^2\bV)^{-1}\bX_t\bbeta^Z\Bigr), \Bigl((\bSigma_t^Z)^{-1} + (\sigma^2\bV)^{-1}\Bigr)^{-1}\Biggr).
+$$
+
+
+% Beta-ARC
+\item Sample $\bbeta^\text{ARC} \mid \bW, \bgamma, \bZ, \bSigma, \mu^\text{ARC}, \tau^\text{ARC}$ from
+$$
+\beta_s^\text{ARC} \sim \text{N}\Biggl(\frac{\mu_s^W/\sigma_s^2(W) + \mu^\text{ARC}/\tau_\text{ARC}^2}{1/\sigma_s^2(W) + 1/\tau_\text{ARC}^2}, \frac{1}{1/\sigma_s^2(W) + 1/\tau_\text{ARC}^2}\Biggr),
+$$
+where
+$$
+\mu_s^W = \frac{-(\bX_s^\text{ARC})^T \bSigma_s^{-1} \sum_{t = 1}^N \gamma_{st} (\mathbf{1} Z_{st} - \bW_{st})}{\sum_{t=1}^T \gamma_{st}(\bX^{ARC}_s)^T \Sigma_s^{-1} \bX_s^\text{ARC}}
+$$
+and
+$$
+\sigma_s^2(W) = 1/\sum_{t=1}^N \gamma_{st}(\bX^\text{ARC}_s)^T \Sigma_s^{-1} \bX_s^\text{ARC}.
+$$
+
+
+% Sigma
+\item Sample $\bSigma \mid \bW, \bgamma, \bZ, \bbeta^\text{ARC}$ from \\
+$$
+\Sigma_s \sim \text{Inv-Wishart}\Bigl(\text{df = }N + J_s, \text{ , scale = diag}(J_s) + \sum_{t=1}^N \gamma_{st}(\bW_{st} - \bmu^W_{st})(\bW_{st} - \bmu^W_{st})^T\Bigr),
+$$
+where 
 $
-Z_t \sim \text{N}_S\Biggl(\Bigl((\Sigma_t^Z)^{-1} + (\sigma^2V)^{-1}\Bigr)^{-1}\Bigl((\Sigma_t^Z)^{-1}\bmu_t^Z + (\sigma^2V)^{-1}\bX_t\bbeta^Z\Bigr), \Bigl((\Sigma_t^Z)^{-1} + (\sigma^2V)^{-1}\Bigr)^{-1}\Biggr).
+\bmu^W_{st} = \mathbf{1}Z_{st} + \bX_{s}^\text{ARC}\beta_s^\text{ARC}.
 $
-\item Sample $\bbeta^\text{ARC} \mid \bW, \bgamma, \bZ, \bSigma, \mu^\text{ARC}, \tau^\text{ARC}$, where \\
-$
-\beta_s^\text{ARC} \sim ...
-$
-\item Sample $\bSigma \mid \bW, \bgamma, \bZ, \bbeta^\text{ARC}$, where \\
-$
-\Sigma_s \sim ...
-$
-\item Sample $\bbeta^Z \mid \bZ, \lambda, \tau, \bmu, \bsigma$, where \\
-$
-\beta^Z_{sp} \sim ...
-$
-\item Sample $\lambda \mid \bZ, \bbeta^Z, \tau$, where \\
-$
-\lambda \sim ...
-$
-\item Sample $\tau \mid \bZ, \bbeta^Z, \lambda$, where \\
-$
-\tau \sim \text{Inverse-Gamma}(\text{shape = })
-$
-\item Sample $\mu^\text{ARC} \mid \beta^\text{ARC}, \tau^\text{ARC}$, where \\
-$
-\mu^\text{ARC} \sim ...
-$
-\item Sample $\tau^\text{ARC} \mid \beta^\text{ARC}, \mu^\text{ARC}$, where \\
-$
-\tau^\text{ARC} \sim ...
-$
-\item Sample $\bmu \mid \bbeta^Z, \bsigma$, where \\
-$
-\mu_p \sim ...
-$
-\item Sample $\bsigma \mid \bbeta^Z, \bmu$, where \\
-$
-\sigma_p \sim ...
-$
+
+
+% beta^Z
+\item Sample $\bbeta^Z \mid \bZ, \lambda, \tau, \bmu, \bsigma$. \\
+$\bbeta^Z$ is expressed as a 23 $\times S$ matrix, but its posterior distribution will be drawn from a $23 \times S = 138$-dimensional multivariate normal distribution. The variance, $\bB$, can be expressed as:
+$$
+\bB = \Biggl(\Bigl(\tau^2\bV \otimes (\bX^T\bX)^{-1}\Bigr)^{-1} + \Bigl(\text{Diag}(S) \otimes \text{Diag}(\bsigma)\Bigr)^{-1}\Biggr)^{-1},
+$$
+where $\otimes$ is the Kronecker product. The conditional posterior mean of $\bbeta^Z$ can be expressed as:
+$$
+\hat{\bbeta}^Z = \bB\Bigl(\text{vec}(\bX^T\bZ(\tau^2\bV)^{-1}) + (\text{Diag}(S) + \text{Diag}(\bsigma))^{-1} \text{vec}(\bmu\mathbf{1})\Bigr),
+$$
+where $\text{vec}(\bA)$ indicates the stacked columns of the matrix $\bA$, and $\mathbf{1}$ denotes the 1 $\times$ 6 matrix of ones, in this case.
+
+
+% sigma_p
+\item Sample $\bsigma \mid \bbeta^Z, \bmu$. \\
+We draw $\sigma_p$ using a random-walk Metropolis step for $p = 1, ..., P$.
+
+
+% mu_p
+\item Sample $\bmu \mid \bbeta^Z, \bsigma$. \\
+$$
+\mu_p \sim \text{N}\Bigl(\sigma_0^2\bar{\beta}^Z_p/(\sigma_p^2/S + \sigma_0^2), (1/\sigma_0^2 + S/\sigma_p^2)^{-1}\Bigr),
+$$
+where $\sigma_0 = 5$ as in equation [].
+
+
+% lambda
+\item Sample $\lambda \mid \bZ, \bbeta^Z, \tau$. \\
+We draw $\lambda$ using a random-walk Metropolis step.
+
+
+% tau
+\item Sample $\tau \mid \bZ, \bbeta^Z, \lambda$, from
+$$
+\tau \sim \text{Inv-Gamma}(a = 1 + NS/2, 1 + 1/2 \sum_{t=1}^N (\bZ_t - \bX_t\bbeta^Z)^T \bV^{-1} (\bZ_t - \bX_t \bbeta^Z).
+$$
+
+
+% mu^ARC
+\item Sample $\mu^\text{ARC} \mid \beta^\text{ARC}, \tau^\text{ARC}$, from
+$$
+\mu^\text{ARC} \sim \text{N}\Biggl(\frac{S\bar{\beta}^\text{ARC}/\tau_\text{ARC}^2}{1 + S/\tau_\text{ARC}^2}, \sqrt{1 + S/\tau_\text{ARC}^2}\Biggr)
+$$
+
+
+% tau^ARC
+\item Sample $\tau^\text{ARC} \mid \beta^\text{ARC}, \mu^\text{ARC}$. \\
+We draw $\tau^\text{ARC}$ using a random-walk Metropolis step.
+
+
 \end{enumerate}
 
 
