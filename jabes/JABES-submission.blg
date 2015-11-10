@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d (TeX Live 2014)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: JABES-submission.aux
+The style file: ECA_jasa.bst
+Database file #1: multisite.bib
+Warning--there's a number but no volume in Giannini2009
+Warning--there's a number but no volume in Greatrex2012
+Warning--there's a number but no volume in Greatrex2015
+You've used 37 entries,
+            2928 wiz_defined-function locations,
+            934 strings with 12628 characters,
+and the built_in function-call counts, 164497 in all, are:
+= -- 26833
+> -- 2231
+< -- 0
++ -- 12837
+- -- 681
+* -- 14468
+:= -- 32885
+add.period$ -- 37
+call.type$ -- 37
+change.case$ -- 481
+chr.to.int$ -- 37
+cite$ -- 40
+duplicate$ -- 549
+empty$ -- 1215
+format.name$ -- 830
+if$ -- 29491
+int.to.chr$ -- 5
+int.to.str$ -- 0
+missing$ -- 35
+newline$ -- 133
+num.names$ -- 383
+pop$ -- 132
+preamble$ -- 1
+purify$ -- 555
+quote$ -- 0
+skip$ -- 465
+stack$ -- 0
+substring$ -- 38073
+swap$ -- 73
+text.length$ -- 518
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 146
+warning$ -- 3
+while$ -- 835
+width$ -- 0
+write$ -- 488
+(There were 3 warnings)

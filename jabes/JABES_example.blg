@@ -1,0 +1,46 @@
+This is BibTeX, Version 0.99d (TeX Live 2014)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: JABES_example.aux
+The style file: ECA_jasa.bst
+Database file #1: example.bib
+You've used 10 entries,
+            2928 wiz_defined-function locations,
+            714 strings with 6783 characters,
+and the built_in function-call counts, 42767 in all, are:
+= -- 6922
+> -- 602
+< -- 0
++ -- 3320
+- -- 183
+* -- 3675
+:= -- 8602
+add.period$ -- 10
+call.type$ -- 10
+change.case$ -- 130
+chr.to.int$ -- 10
+cite$ -- 10
+duplicate$ -- 177
+empty$ -- 339
+format.name$ -- 208
+if$ -- 7683
+int.to.chr$ -- 5
+int.to.str$ -- 0
+missing$ -- 12
+newline$ -- 33
+num.names$ -- 111
+pop$ -- 53
+preamble$ -- 1
+purify$ -- 150
+quote$ -- 0
+skip$ -- 143
+stack$ -- 0
+substring$ -- 9798
+swap$ -- 37
+text.length$ -- 140
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 34
+warning$ -- 0
+while$ -- 226
+width$ -- 0
+write$ -- 143

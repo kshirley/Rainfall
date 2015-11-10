@@ -1,0 +1,63 @@
+\begin{thebibliography}{xx}
+
+\harvarditem{Baum}{1972}{Baum1972}
+Baum, L.~E.  \harvardyearleft 1972\harvardyearright , ``An inequality and
+  associated maximization technique in statistical estimation for probabilistic
+  functions of {M}arkov processes,'' in {\em Inequalities--III: Proceedings of
+  the Third Symposium on Inequalities Held at the University of California, Los
+  Angeles, September 1--9, 1969}, ed. O.~Shisha, New York: Academic Press,
+  pp.~1--8.
+
+\harvarditem[Baum et~al.]{Baum, Petrie, Soules \harvardand\
+  Weiss}{1970}{Baumetal1970}
+Baum, L.~E., Petrie, T., Soules, G., \harvardand\ Weiss, N.  \harvardyearleft
+  1970\harvardyearright , ``A maximization technique occurring in the
+  statistical analysis of probabilistic functions on {M}arkov chains,'' {\em
+  Annals of Mathematical Statistics}, 41,~164--171.
+
+\harvarditem[Beaumont et~al.]{Beaumont, Gotelli, Barratt, Kitchener, Daniels,
+  Pritchard \harvardand\ Bruford}{in press}{Beaumontetal}
+Beaumont, M., Gotelli, D., Barratt, E.~M., Kitchener, A.~C., Daniels, M.~J.,
+  Pritchard, J.~K., \harvardand\ Bruford, M.~W.  \harvardyearleft in
+  press\harvardyearright , ``Genetic diversity and introgression in the
+  Scottish wildcat,'' , .
+
+\harvarditem{{d}eFinetti}{1972}{deFinetti1972}
+{d}eFinetti, B.  \harvardyearleft 1972\harvardyearright , {\em Probability,
+  Induction and Statistics. The Art of Guessing}, New York: John Wiley \& Sons.
+
+\harvarditem{Feller}{1957}{Feller1957}
+Feller, W.  \harvardyearleft 1957\harvardyearright , {\em An Introduction to
+  Probability Theory and Its Applications, 2nd Edition}, New York: John Wiley
+  \& Sons.
+
+\harvarditem[Gelfand et~al.]{Gelfand, Dey \harvardand\
+  Chang}{1992}{Gelfandetal1992}
+Gelfand, A.~E., Dey, D.~K., \harvardand\ Chang, H.  \harvardyearleft
+  1992\harvardyearright , ``Model determination using predictive distributions
+  with implementation via sampling-based methods,'' in {\em Bayesian Statistics
+  4}, eds. J.~M. Bernardo, J.~O. Berger, A.~P. Dawid, \harvardand\ A.~F.~M.
+  Smith, Oxford: Oxford University Press, pp.~147--167.
+
+\harvarditem[Johnson et~al.]{Johnson, Kotz \harvardand\
+  Kemp}{1993}{Johnsonetal1993}
+Johnson, N.~L., Kotz, Z., \harvardand\ Kemp, A.~W.  \harvardyearleft
+  1993\harvardyearright , {\em Univariate Discrete Distributions, 2nd Edition},
+  New York: Wiley \& Sons.
+
+\harvarditem[Pritchard et~al.]{Pritchard, Stephens \harvardand\
+  Donnelly}{2000a}{Pritchardetal2000}
+Pritchard, J.~K., Stephens, M., \harvardand\ Donnelly, P.  \harvardyearleft
+  2000a\harvardyearright , ``Inference of Population Structure Using Multilocus
+  Genotype Data,'' {\em Genetics}, 155,~945--959.
+
+\harvarditem{Raftery}{1992}{Raftery1992}
+Raftery, A.~E.  \harvardyearleft 1992\harvardyearright , \RafteryDiscByHand.
+
+\harvarditem{Robert}{1996}{Robert1996}
+Robert, C.~P.  \harvardyearleft 1996\harvardyearright , ``Mixture of
+  distributions: inference and estimation,'' in {\em Markov Chain Monte Carlo
+  in Practice}, eds. W.~R. Gilks, S.~Richardson, \harvardand\ D.~J.
+  Spiegelhalter, New York: Chapman and Hall, pp.~441--464.
+
+\end{thebibliography}

@@ -1,0 +1,12 @@
+\begin{figure}
+\begin{center}
+\includegraphics*[width=.75\textwidth]{undirgraph.eps}
+\caption{An undirected graph showing the dependence between $w$, $d$ and
+$y$ in Section~\ref{sec:Polya}.  This graph describes hidden Markov structure
+for the pairs $(w_t,d_t)$.  The dependence on $\theta$ is implicit
+and not shown. }
+\label{fig:undirgraph}
+\end{center}
+\end{figure}
+\efloatseparator
+ 
