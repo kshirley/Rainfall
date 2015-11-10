@@ -11,6 +11,11 @@
 rm(list=ls())
 setwd("~/Git/Rainfall/")
 
+dyn.load("zdraw.so")
+dyn.load("draw_gamma.so")
+is.loaded("zdraw")
+is.loaded("draw_gamma")
+
 #setwd("~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
 #path<-"~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall"
 
@@ -28,12 +33,12 @@ for (i in 1:length(input.data)) assign(names(input.data)[i], input.data[[i]])
 # load the simulated data and true values of parameters and assign to 
 # global namespace:
 
-## seed <- 888
-## load(paste0("sim_data_seed_", seed, ".RData"))
-## for (i in 1:length(sim.data)) assign(names(sim.data)[i], sim.data[[i]])
+seed <- 267
+load(paste0("sim_data_seed_", seed, ".RData"))
+for (i in 1:length(sim.data)) assign(names(sim.data)[i], sim.data[[i]])
 
 # Replace the real data, Y, with the simulated version, Y.sim:
-## Y <- Y.sim
+Y <- Y.sim
 
 # Now let's write the MCMC code:
 # Eventually this block might be its own file, or function called "Rcode3"
@@ -62,9 +67,6 @@ for (s in 1:S){
   }
 }
 
-
-
-
 ###########################
 # 1.c Set starting values # 
 ###########################
@@ -73,10 +75,10 @@ for (s in 1:S){
 K <- 3
 
 # check names of start value parameters:
-load("start_list_v2.RData")
+#load("start_list_v2.RData")
 
 # random starting points:
-set.seed(638)
+set.seed(268)
 mu.start <- matrix(rnorm(K*P), K, P)
 sigma.start <- matrix(runif(K*P, 0.2, 1), K, P)
 alpha.start <- rep(5, K)
@@ -140,53 +142,71 @@ Sigma.null <- as.list(rep(NA, S))
 W.null <- as.list(rep(NA, S))
 for (s in 1:S) W.null[[s]] <- matrix(0, J[s], N)
 
+# inverse-chi-squared priors for variance parameters:
+# sigma:
+mean.hat <- 1
+var.hat <- 2
+v0.sigma <- 2*mean.hat^2/var.hat + 4  # 5
+s0.sigma <- mean.hat*(v0.sigma - 2)/v0.sigma  # 3/5
 
-###################################
-#1.e Set up storage for gibbs samples:
-##################################
+#tmp <- 1/rgamma(1000000, shape = v0.sigma/2, rate = v0.sigma*s0.sigma/2)
+#mean(tmp)
+#var(tmp)
 
-G <- 5000  # number of iterations/samples
-adapt <- 500
-mu.gibbs <- array(NA, dim=c(K, G, P))
-sigma.gibbs <- array(NA, dim=c(K, G, P))
-alpha.gibbs <- array(NA, dim=c(K, G))
-lambda.gibbs <- array(NA, dim=c(K, G))
-tau.gibbs <- array(NA, dim=c(K, G))
-beta.gibbs <- array(NA, dim=c(K, G, P, S))
-mu.arc.gibbs <- array(NA, dim=c(K, G))
-tau.arc.gibbs <- array(NA, dim=c(K, G))
-beta.arc.gibbs <- array(NA, dim=c(K, G, S))
+# tau:
+mean.hat <- 10
+var.hat <- 10
+v0.tau <- 2*mean.hat^2/var.hat + 4  # 24
+s0.tau <- mean.hat*(v0.tau - 2)/v0.tau  # 55/6
+
+# tau_ARC:
+mean.hat <- 1
+var.hat <- 2
+v0.tauarc <- 2*mean.hat^2/var.hat + 4  # 5
+s0.tauarc <- mean.hat*(v0.tauarc - 2)/v0.tauarc  # 3/5
+
+
+
+#######################################
+# 1.e Set up storage for gibbs samples:
+#######################################
+
+G <- 20000  # number of iterations/samples
+adapt <- 2000
+thin <- 1
+G.thin <- G/thin
+mu.gibbs <- array(NA, dim=c(K, G.thin, P))
+sigma.gibbs <- array(NA, dim=c(K, G.thin, P))
+alpha.gibbs <- array(NA, dim=c(K, G.thin))
+lambda.gibbs <- array(NA, dim=c(K, G.thin))
+tau.gibbs <- array(NA, dim=c(K, G.thin))
+beta.gibbs <- array(NA, dim=c(K, G.thin, P, S))
+mu.arc.gibbs <- array(NA, dim=c(K, G.thin))
+tau.arc.gibbs <- array(NA, dim=c(K, G.thin))
+beta.arc.gibbs <- array(NA, dim=c(K, G.thin, S))
 Sigma.gibbs <- as.list(rep(NA, S))
-for (s in 1:S) Sigma.gibbs[[s]] <- array(NA, dim=c(K, G, J[s], J[s]))
+for (s in 1:S) Sigma.gibbs[[s]] <- array(NA, dim=c(K, G.thin, J[s], J[s]))
 
 
 # Save samples of W and Z, if desired:
 n.samp <- 50
 w.samp <- sort(sample(1:N, n.samp))
-Z.gibbs <- array(NA, dim=c(K, G, n.samp, S))
+Z.gibbs <- array(NA, dim=c(K, G.thin, n.samp, S))
 W.gibbs <- as.list(rep(NA, S))
-for (s in 1:S) W.gibbs[[s]] <- array(NA, dim=c(K, G, J[s], n.samp))
+for (s in 1:S) W.gibbs[[s]] <- array(NA, dim=c(K, G.thin, J[s], n.samp))
 
 
 #################################
 # 2.Start the MCMC, Gibbs Sampling
 ################################
 
-dyn.load("zdraw.so")
-dyn.load("draw_gamma.so")
-is.loaded("zdraw")
-is.loaded("draw_gamma")
-
-set.seed(7394)
+set.seed(7344)
 t1 <- Sys.time()
 for (k in 1:K){
   print(k)
   
   # Set jump sd for RW-MH parameters:
-  jump.alpha <- 0.1
-  jump.lambda <- 0.05
-  jump.sigma <- rep(0.5, S)
-  jump.ta <- 0.35
+  jump.lambda <- 0.10
   
   # Fill in starting values:
   mu <- mu.start[k, ]
@@ -203,28 +223,32 @@ for (k in 1:K){
   Sigma <- as.list(rep(NA, S))
   for (s in 1:S) Sigma[[s]] <- Sigma.start[[s]][k, , ]
   
-  # Store parameter values:
-  mu.gibbs[k, 1, ] <- mu
-  sigma.gibbs[k, 1, ] <- sigma
-  alpha.gibbs[k, 1] <- alpha
-  lambda.gibbs[k, 1] <- lambda
-  tau.gibbs[k, 1] <- tau
-  beta.gibbs[k, 1, ,] <- beta
-  beta.arc.gibbs[k, 1, ] <- beta.arc
-  mu.arc.gibbs[k, 1] <- mu.arc
-  tau.arc.gibbs[k, 1] <- tau.arc
-  for (s in 1:S) Sigma.gibbs[[s]][k, 1, , ] <- Sigma[[s]]  
-  Z.gibbs[k, 1, , ] <- Z[w.samp, ]
-  
-  # Last, set W.start inside the loop for each chain:
-  W <- draw.W.start(R = Y, Z, beta.arc, Sigma, gamma.mat, X.arc, up, w.draw, 
-                    W.null)
-  for (s in 1:S) W.gibbs[[s]][k, 1, , ] <- W[[s]][, w.samp]
-  
   # Sample W | Sigma, mu (Z, X.arc, beta.arc), gamma:
-  #W <- W.start
-  #for (s in 1:S) W.gibbs[[s]][k,1,,] <- W[[s]][,w.samp]
-  
+  W <- draw.W(R = Y, Z, beta.arc, Sigma, gamma.mat, X.arc, W, up, w.draw)
+
+  # Last, set W.start inside the loop for each chain:
+  #W <- draw.W.start(R = Y, Z, beta.arc, Sigma, gamma.mat, X.arc, up, w.draw, 
+  #                  W.null)
+
+  # Store parameter values:
+  g <- 1
+
+  # store the samples:
+  if (g %% thin == 0) {
+    Z.gibbs[k, g/thin, , ] <- Z[w.samp, ]
+    beta.arc.gibbs[k, g/thin, ] <- beta.arc
+    mu.arc.gibbs[k, g/thin] <- mu.arc
+    tau.arc.gibbs[k, g/thin] <- tau.arc
+    for (s in 1:S) Sigma.gibbs[[s]][k, g/thin, , ] <- Sigma[[s]]
+    alpha.gibbs[k, g/thin] <- alpha
+    beta.gibbs[k, g/thin, , ] <- beta
+    tau.gibbs[k, g/thin] <- tau
+    lambda.gibbs[k, g/thin] <- lambda
+    mu.gibbs[k, g/thin, ] <- mu
+    sigma.gibbs[k, g/thin, ] <- sigma
+    for (s in 1:S) W.gibbs[[s]][k, g/thin, , ] <- W[[s]][, w.samp]
+  }
+    
   # Loop through iterations:
   for (g in 2:G){
     if (g %% 10 == 0) print(g)
@@ -236,68 +260,75 @@ for (k in 1:K){
     # Draw Z | W, gamma, beta.arc, Sigma, beta, lambda, tau:
     Z <- draw.Z(S, Sigma, N, J, X.arc, beta.arc, W, lambda, d.mat, tau, X, 
                 beta, gamma.mat)
-    Z.gibbs[k, g, , ] <- Z[w.samp, ]
     
     # Draw beta.arc | W, gamma, Z, Sigma, mu.arc, tau.arc:
     beta.arc <- draw.beta.arc(S, Sigma, gamma.mat, X.arc, Z, N, J, W, 
                               tau.arc, mu.arc)
-    beta.arc.gibbs[k, g, ] <- beta.arc
     
-    # draw mu.arc | beta.arc, tau.arc
-    mu.arc <- rnorm(1, (sum(beta.arc)/tau.arc^2)/(1 + S/tau.arc^2), 
-                    sqrt(1/(1 + S/tau.arc^2)))
-    mu.arc.gibbs[k, g] <- mu.arc
-    
-    # draw tau.alpha | alpha, mu.alpha
-    temp <- ta.draw(beta.arc, mu.arc, tau.arc, jump.ta, g, adapt)
-    tau.arc <- temp$tau.alpha
-    jump.ta <- temp$jump.ta
-    tau.arc.gibbs[k, g] <- tau.arc
-    
+    # draw mu_ARC, tau_ARC | beta_ARC from normal-inv-chi-squared priors:
+    temp <- normal.inv.chi.squared(y.bar = mean(beta.arc), 
+                                   s.squared = var(beta.arc), 
+                                   n = S, 
+                                   mu0 = 0, 
+                                   k0 = 1, 
+                                   v0 = v0.tauarc, 
+                                   sigma0 = s0.tauarc)
+    tau.arc <- temp$sigma
+    mu.arc <- temp$mu
+
     # Sample Sigma | W, mu (Z, X.arc, beta.arc), gamma:
     Sigma <- draw.Sigma(S, Z, X.arc, beta.arc, N, J, W, gamma.mat, v.0, 
                         Lambda.0.inv, Sigma.null)
-    for (s in 1:S) Sigma.gibbs[[s]][k, g, , ] <- Sigma[[s]]
-    
-    # Sample alpha | gamma.mat, a, b where
-    # prior(alpha) ~ gamma(shape = a, scale = b):
-    #temp <- alpha.draw(gamma.mat,a=15,b=1,jump.alpha)
-    #temp <- alpha.draw.unif(gamma.mat,a=2,b=30,jump.alpha)
-    #alpha <- temp$alpha
-    #jump.alpha <- temp$jump.alpha
-    alpha.gibbs[k, g] <- alpha  # update: keep alpha = 5 fixed
     
     # draw beta | w, lambda:
     temp <- draw.beta.tobit(tau, lambda, vec, xtx.ones, Z, X, sigma, mu)
     beta <- temp$beta
-    beta.gibbs[k, g, , ] <- beta
     
     # draw tau | Z, beta, lambda, a, b where
-    # prior(tau^2) ~ inverse-gamma(shape = a, rate = b)
-    tau <- tau.draw.tobit(Z, beta, lambda, a = 1, b = 1, T = N)
-    tau.gibbs[k, g] <- tau
+    tau <- tau.draw.tobit(Z, beta, lambda, 
+                          a = v0.tau/2, 
+                          b = v0.tau*s0.tau/2, 
+                          T = N)
     
     # draw lambda | beta, tau, Z:
     temp <- lambda.draw.tobit(X, beta, tau, lambda, d.mat, Z, S, jump.lambda)
     lambda <- temp$lambda
     jump.lambda <- temp$jump.lambda
-    lambda.gibbs[k, g] <- lambda
     
-    # draw mu, sigma | beta:
-    temp <- mu.sigma.draw(beta, mu, sigma, S, P, jump.sigma, g, adapt)
-    jump.sigma <- temp$jump.sigma
-    mu <- temp$mu
-    mu.gibbs[k, g, ] <- mu
+    # draw mu, sigma | beta given normal-inv-chi-squared priors:
+    temp <- normal.inv.chi.squared(y.bar = apply(beta, 1, mean), 
+                                   s.squared = apply(beta, 1, var), 
+                                   n = S, 
+                                   mu0 = 0, 
+                                   k0 = 1, 
+                                   v0 = v0.sigma, 
+                                   sigma0 = s0.sigma)    
     sigma <- temp$sigma
-    sigma.gibbs[k, g, ] <- sigma
+    mu <- temp$mu
     
     # Sample W | Sigma, mu (Z, X.arc, beta.arc), gamma:
     W <- draw.W(R = Y, Z, beta.arc, Sigma, gamma.mat, X.arc, W, up, w.draw)
-    for (s in 1:S) W.gibbs[[s]][k, g, , ] <- W[[s]][, w.samp]
+
+    # store the samples:
+    if (g %% thin == 0) {
+      Z.gibbs[k, g/thin, , ] <- Z[w.samp, ]
+      beta.arc.gibbs[k, g/thin, ] <- beta.arc
+      mu.arc.gibbs[k, g/thin] <- mu.arc
+      tau.arc.gibbs[k, g/thin] <- tau.arc
+      for (s in 1:S) Sigma.gibbs[[s]][k, g/thin, , ] <- Sigma[[s]]
+      alpha.gibbs[k, g/thin] <- alpha
+      beta.gibbs[k, g/thin, , ] <- beta
+      tau.gibbs[k, g/thin] <- tau
+      lambda.gibbs[k, g/thin] <- lambda
+      mu.gibbs[k, g/thin, ] <- mu
+      sigma.gibbs[k, g/thin, ] <- sigma
+      for (s in 1:S) W.gibbs[[s]][k, g/thin, , ] <- W[[s]][, w.samp]
+    }
   }
 }
 t2 <- Sys.time()
 t2 - t1
+
 
 
 # Save the Gibbs samples in a list:
@@ -312,9 +343,39 @@ gibbs.list <- list(mu.gibbs = mu.gibbs,
                    beta.arc.gibbs = beta.arc.gibbs, 
                    Sigma.gibbs = Sigma.gibbs, 
                    W.gibbs = W.gibbs)
-save(gibbs.list, file = "gibbs_out_20150326_G5k_HS1.RData")
+#save(gibbs.list, file = "gibbs_out_20150326_G5k_HS1.RData")
+#save(gibbs.list, file = "gibbs_out_20151030_G1k_thin10.RData")
+#save(gibbs.list, file = "gibbs_out_20151105_G20k.RData")
+save(gibbs.list, file = "gibbs_out_sim_267_G20k.RData")
 
 
+
+
+
+
+
+
+
+
+
+
+
+# Look at gamma
+plot(apply(gamma.gibbs[, , , 1], 3, mean))
+
+xg <- apply(gamma.gibbs[, , , ], 3:4, mean)
+par(mfrow = c(2, 3))
+for (s in 1:S) plot((1:N) %% 365, xg[, s], ylim = range(xg))
+
+
+par(mfrow = c(1, 1))
+hist(gamma.gibbs[, , 200, 1],  prob = TRUE, xlim = c(0, 9), ylim = c(0, 1), 
+     breaks = 30)
+lines(seq(0, 9, 0.01), dgamma(seq(0, 9, 0.01), shape = 2.5, scale = 0.4), 
+      col = 2)
+
+
+hist(rgamma(1000, shape = 2.5, scale = 2/5))
 
 
 #load(file = "gibbs_out_20150326_G5k_HS1.RData")
@@ -326,11 +387,6 @@ load(file = "gibbs_out_20150616_G20k.RData")  # this MCMC run is our 'official'
 for (i in 1:length(gibbs.list)) assign(names(gibbs.list)[i], gibbs.list[[i]])
 
 
-tp(lambda.gibbs, burn = 0, nc = 3, thin = 20)
-tp(lambda.gibbs, burn = 1000, nc = 3, thin = 20)
-
-lambda.hat <- mean(lambda.gibbs[, 10001:20000])
-plot(seq(0, 1, by = 0.01)*100, exp(-0.062*seq(0, 1, by = 0.01)), xlab = "km")
 
 tp(tau.gibbs, burn = 0, nc = 3, thin = 20)
 
@@ -339,6 +395,9 @@ exp(-lambda.hat*d.mat[lower.tri(d.mat)])
 
 
 
+plot(w.samp %% 365, apply(gamma.gibbs[, 10001:20000, , 1], 3, mean))
+
+plot(w.samp %% 365, apply(gamma.gibbs[, 10001:20000, , ], 3, mean))
 
 
 ##########################
@@ -357,10 +416,43 @@ mu.arc.start <- apply(mu.arc.gibbs[,post.burn],1,mean)
 tau.arc.start <- apply(tau.arc.gibbs[,post.burn],1,mean)
 beta.arc.start <- apply(beta.arc.gibbs[,post.burn,],c(1,3),mean)
 Sigma.start <- as.list(rep(NA,S))
-for (s in 1:S) Sigma.start[[s]] <- apply(Sigma.gibbs[[s]][,post.burn,,],c(1,3,4),mean)
+for (s in 1:S) {
+  Sigma.start[[s]] <- apply(Sigma.gibbs[[s]][, post.burn, , ], c(1, 3, 4), mean)
+}
 
-start.list <- list(mu.start=mu.start,sigma.start=sigma.start,alpha.start=alpha.start,lambda.start=lambda.start,
-                   tau.start=tau.start,beta.start=beta.start,mu.arc.start=mu.arc.start,tau.arc.start=tau.arc.start,
-                   beta.arc.start=beta.arc.start,Sigma.start=Sigma.start)
-save(start.list,file=paste(path,"start_list_v5.RData",sep=""))
+start.list <- list(mu.start = mu.start, 
+                   sigma.start = sigma.start, 
+                   alpha.start = alpha.start,
+                   lambda.start = lambda.start,
+                   tau.start = tau.start,
+                   beta.start = beta.start,
+                   mu.arc.start = mu.arc.start,
+                   tau.arc.start = tau.arc.start,
+                   beta.arc.start = beta.arc.start,
+                   Sigma.start = Sigma.start)
+
+save(start.list,file = paste(path,"start_list_v5.RData",sep = ""))
 # v3 is the G=5000 output from 3/12 that includes P=23 predictors and alpha=10
+
+
+
+    # Sample alpha | gamma.mat, a, b where
+    # prior(alpha) ~ gamma(shape = a, scale = b):
+    #temp <- alpha.draw(gamma.mat,a=15,b=1,jump.alpha)
+    #temp <- alpha.draw.unif(gamma.mat,a=2,b=30,jump.alpha)
+    #alpha <- temp$alpha
+    #jump.alpha <- temp$jump.alpha
+    
+
+# for sigma_p (mean = 1, var = 1)
+mean.hat <- 1
+var.hat <- 2
+v0 <- 2*mean.hat^2/var.hat + 4  # 6
+s0 <- mean.hat*(v0 - 2)/v0  # 2/3
+
+draws <- rics(100000, v = v0, s.squared = s0)
+par(mfrow = c(1, 2))
+hist(draws)
+plot(density(draws), xlim = c(0, 5))
+mean(draws); var(draws)
+

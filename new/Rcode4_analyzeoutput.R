@@ -1,10 +1,11 @@
-########################################################################################################################
-# Assume that you have done the data setup, and you've fit the model using new/mcmc_baseline.R to either the 
-# simulated data or the real data.
+###############################################################################
+
+# Assume that you have done the data setup, and you've fit the model using 
+# new/mcmc_baseline.R to either the simulated data or the real data.
 # Here we'll look at trace plots of the posterior draws
 
 # Clear the workspace:
-rm(list=ls())
+rm(list = ls())
 setwd("~/Git/Rainfall/")
 
 #setwd("~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
@@ -21,8 +22,9 @@ library(coda)
 load("input_data.RData")
 for (i in 1:length(input.data)) assign(names(input.data)[i], input.data[[i]])
 
-# load the simulated data and true values of parameters and assign to global namespace:
-seed <- 888
+# load the simulated data and true values of parameters and assign to global 
+# namespace:
+seed <- 267
 load(paste0("sim_data_seed_", seed, ".RData"))
 for (i in 1:length(sim.data)) assign(names(sim.data)[i], sim.data[[i]])
 
@@ -31,7 +33,9 @@ for (i in 1:length(sim.data)) assign(names(sim.data)[i], sim.data[[i]])
 
 #gibbs_out_20150904_Sim20k.RData
 #gibbs_out_20150616_G20k.RData
-load(file = "gibbs_out_20150616_G20k.RData")
+#load(file = "gibbs_out_20150616_G20k.RData")
+#load(file = "gibbs_out_2015sim267_G20k.RData")
+load(file = "gibbs_out_sim_267_G20k.RData")
 for (i in 1:length(gibbs.list)) assign(names(gibbs.list)[i], gibbs.list[[i]])
 
 # set up a few parameters related to the MCMC itself:
@@ -41,158 +45,85 @@ K <- 3
 
 
 
-### beta:
-pdf(file = "plots-20k/fig_tobit_trace_beta_P23.pdf", width = 8, height = 6)
+### beta (seasonal effects):
+pdf(file = "plots-sim267/fig_tobit_trace_beta.pdf", width = 8, height = 6)
 par(mfrow = c(2, 3))
 for (j in 1:P){
   for (s in 1:S){
-    tp(beta.gibbs[, , j, s], thin= 20, ylim = range(beta.gibbs[ , , j, ]), 
+    tp(beta.gibbs[, , j, s], thin = 100, ylim = range(beta.gibbs[ , , j, ]), 
        main = paste(X.names[j], site.names[s], sep=" "), las = 1, 
        xlab = "Iteration")
+    abline(h = sim.data$beta[j, s], col = 4)
   }
 }
 dev.off()
 
-# All the betas look good re: convergence
-
-# G-R statistics:
-gr.beta <- matrix(0, P, S)  # store them in a 23 x 5 matrix
-for (s in 1:S) {
-  x <- as.mcmc.list(list(mcmc(beta.gibbs[1, , 1:P, s], start = 10001, end = G,
-                              thin = 1), 
-                         mcmc(beta.gibbs[2, , 1:P, s], start = 10001, end = G, 
-                              thin = 1), 
-                         mcmc(beta.gibbs[3, , 1:P, s], start = 10001, end = G, 
-                              thin = 1)))
-  gr.beta[, s] <- gelman.diag(x)$psrf[, 1]
-}  
-
-round(gr.beta, 2)
-apply(gr.beta, 2, range)
-apply(gr.beta, 1, range)
-
-
 ### mu (mean of the betas)
-pdf(file = "plots-20k/fig_tobit_trace_mu.pdf", width = 8, height = 6)
+pdf(file = "plots-sim267/fig_tobit_trace_mu.pdf", width = 8, height = 6)
 par(mfrow = c(1, 1))
 for (j in 1:P){
-  tp(mu.gibbs[, , j], thin = 20, main = X.names[j], las = 1, xlab = "Iteration")
+  tp(mu.gibbs[, , j], thin = 100, main = X.names[j], las = 1, 
+     xlab = "Iteration", ylim = range(mu.gibbs))
+  abline(h = sim.data$mu[j], col = 4)
 }
 dev.off()
-
-# look OK
-
-# G-R statistics:
-x <- as.mcmc.list(list(mcmc(mu.gibbs[1, , 1:P], start = 10001, end = G, thin = 1), 
-                       mcmc(mu.gibbs[2, , 1:P], start = 10001, end = G, thin = 1), 
-                       mcmc(mu.gibbs[3, , 1:P], start = 10001, end = G, thin = 1)))
-gr.mu <- gelman.diag(x)$psrf[, 1]
-
 
 ### sigma (sd of betas)
-pdf(file = "plots-20k/fig_tobit_trace_sigma.pdf", width = 8, height = 6)
+pdf(file = "plots-sim267/fig_tobit_trace_sigma.pdf", width = 8, height = 6)
 par(mfrow = c(1, 1))
 for (j in 1:P){
-  tp(sigma.gibbs[, , j], thin = 20, main = X.names[j], las = 1, xlab = "Iteration")
+  tp(sigma.gibbs[, , j], thin = 100, main = X.names[j], las = 1, 
+     xlab = "Iteration", ylim = range(sigma.gibbs))
+  abline(h = sim.data$sigma[j], col = 4)
 }
 dev.off()
 
-# G-R statistics:
-x <- as.mcmc.list(list(mcmc(sigma.gibbs[1, , 1:P], start = 10001, end = G, thin = 1), 
-                       mcmc(sigma.gibbs[2, , 1:P], start = 10001, end = G, thin = 1), 
-                       mcmc(sigma.gibbs[3, , 1:P], start = 10001, end = G, thin = 1)))
-gr.sigma <- gelman.diag(x)$psrf[, 1]
-
-
-
-
-### tau: (tau^2*V, scaling factor of correlation matrix to produce covariance matrix for Zt, spatial mean rainfall)
-pdf(file = "plots-20k/fig__trace_tau.pdf", width = 8, height = 6)
-tp(tau.gibbs, las = 1, main = "tau", ylab = "tau", burn = 15000)
+### tau: (tau^2*V, scaling factor of correlation matrix to produce covariance 
+###       matrix for Zt, spatial mean rainfall)
+pdf(file = "plots-sim267/fig_tobit_trace_tau.pdf", width = 8, height = 6)
+tp(tau.gibbs, las = 1, main = "tau", ylab = "tau", thin = 100)
+abline(h = sim.data$tau, col = 4)
 dev.off()
 
-gr.tau <- gelman.diag(as.mcmc.list(list(mcmc(as.matrix(tau.gibbs[1, ]), start = 10001, end = G, thin = 1), 
-                              mcmc(as.matrix(tau.gibbs[2, ]), start = 10001, end = G, thin = 1), 
-                              mcmc(as.matrix(tau.gibbs[3, ]), start = 10001, end = G, thin = 1))))
-# 1.06                              
-
-
-
-### lambda:(scaler of distance correlation matrix, V=lambda*distance)
-pdf(file = "plots-20k/fig__trace_lambdasim.pdf", width = 8, height = 6)
-tp(lambda.gibbs, las = 1, main = "lambda", ylab = "lambda", burn = 15000, ylim = c(0, 0.2))
-#abline(h=sim.data$lambda,col=4)
+### lambda: (scaler of distance correlation matrix, V=lambda*distance)
+pdf(file = "plots-sim267/fig_tobit_trace_lambda.pdf", width = 8, height = 6)
+tp(lambda.gibbs, las = 1, main = "lambda", ylab = "lambda", burn = (G/2 + 1), 
+   thin = 100)
+abline(h = sim.data$lambda, col = 4)
 dev.off()
-# zooming in on post burnin:
-#tp(lambda.gibbs, las = 1, main = "lambda", ylab = "lambda", burn = 7500)
-
-# explicitly limiting y axis to c(0, 0.2)
-#tp(lambda.gibbs, las = 1, main = "lambda", ylab = "lambda", ylim = c(0, 0.2))
-
-gr.lambda <- gelman.diag(as.mcmc.list(list(mcmc(as.matrix(lambda.gibbs[1, ]), start = 10001, end = G, thin = 1), 
-                              mcmc(as.matrix(lambda.gibbs[2, ]), start = 10001, end = G, thin = 1), 
-                              mcmc(as.matrix(lambda.gibbs[3, ]), start = 10001, end = G, thin = 1))))
-# 1.19
-
-
-
 
 ### mu_arc:
-pdf(file = "plots-20k/fig__trace_mu.arc.pdf", width = 8, height = 6)
-tp(mu.arc.gibbs, las=1, main="mu arc", ylab="mu arc")
-gr.mu.arc <- gelman.diag(as.mcmc.list(list(mcmc(as.matrix(mu.arc.gibbs[1, ]), start = 10001, end = G, thin = 1), 
-                              mcmc(as.matrix(mu.arc.gibbs[2, ]), start = 10001, end = G, thin = 1), 
-                              mcmc(as.matrix(mu.arc.gibbs[3, ]), start = 10001, end = G, thin = 1))))
-#abline(h=sim.data$mu.arc,col=4)
-# 1.00
+pdf(file = "plots-sim267/fig_tobit_trace_mu_arc.pdf", width = 8, height = 6)
+tp(mu.arc.gibbs, las = 1, main = "mu_arc", ylab = "mu_arc", thin = 100)
+abline(h = sim.data$mu.arc, col = 4)
 dev.off()
 
-### tau_arc
-pdf(file = "plots-20k/fig__trace_tau.arc.pdf", width = 8, height = 6)
-tp(tau.arc.gibbs, las = 1, main = "mu arc", ylab = "tau arc")
-#abline(h=sim.data$tau.arc,col=4)
+### tau_arc:
+pdf(file = "plots-sim267/fig_tobit_trace_tau_arc.pdf", width = 8, height = 6)
+tp(tau.arc.gibbs, las = 1, main = "tau_arc", ylab = "tau_arc", thin = 100)
+abline(h = sim.data$tau.arc, col = 4)
 dev.off()
-
-gr.tau.arc <- gelman.diag(as.mcmc.list(list(mcmc(as.matrix(tau.arc.gibbs[1, ]), start = 10001, end = G, thin = 1), 
-                              mcmc(as.matrix(tau.arc.gibbs[2, ]), start = 10001, end = G, thin = 1), 
-                              mcmc(as.matrix(tau.arc.gibbs[3, ]), start = 10001, end = G, thin = 1))))
-
-# 1.01
-
-
 
 ### beta.arc is the arc bias on the Xarc variable for each site
-pdf(file = "plots-20k/fig_tobit_trace_beta.arc.pdf", width = 8, height = 6)
+pdf(file = "plots-sim267/fig_tobit_trace_beta_arc.pdf", width = 8, height = 6)
 par(mfrow = c(1, 1))
 for (s in 1:S){
-  tp(beta.arc.gibbs[, , s], thin = 20, main = site.names[s], las = 1, xlab = "Iteration")
-  #abline(h=sim.data$beta.arc[s],col=4,lwd=2)
+  tp(beta.arc.gibbs[, , s], thin = 100, main = site.names[s], las = 1, 
+     xlab = "Iteration", ylim = range(beta.arc.gibbs))
+  abline(h = sim.data$beta.arc[s], col = 4)
 }
-
 dev.off()
 
-# look OK
-
-# G-R statistics:
-x <- as.mcmc.list(list(mcmc(beta.arc.gibbs[1, , 1:S], start = 10001, end = G, thin = 1), 
-                       mcmc(beta.arc.gibbs[2, , 1:S], start = 10001, end = G, thin = 1), 
-                       mcmc(beta.arc.gibbs[3, , 1:S], start = 10001, end = G, thin = 1)))
-gr.beta.arc <- gelman.diag(x)$psrf[, 1]
-
-range(gr.beta.arc)
-# 1.01 to 1.32
-
-
-
 ### Sigma: is the big spatial variation matrix between sites)
-pdf(file = "plots-20k/fig_tobit_trace_sigma_covariance.pdf", width = 8, height = 8)
+pdf(file = "plots-sim267/fig_tobit_trace_sigma_covariance.pdf", width = 8, 
+    height = 8)
 for (s in 1:S) {
   par(mfrow = c(J[s], J[s]))
   if (s != 6) {
     for (i in 1:J[s]) {
       for (j in 1:J[s]) {  	
-        tp(Sigma.gibbs[[s]][, , i, j], las = 1, thin = 20, xlab = "Iteration")
-        #abline(h=sim.data$Sigma[[s]][i,j],col=4,lwd=2)
+        tp(Sigma.gibbs[[s]][, , i, j], las = 1, thin = 100, xlab = "Iteration")
+        abline(h=sim.data$Sigma[[s]][i, j], col = 4, lwd = 2)
         title(main = paste0("Site = ", s, ", Row = ", i, ", Col = ", j))
       }
     }
@@ -200,38 +131,114 @@ for (s in 1:S) {
     for (i in 1:J[s]) {
       for (j in 1:J[s]) {
       	par(mar = c(0, 2, 0, 0), xaxt = "n")
-        tp(Sigma.gibbs[[s]][, , i, j], las = 1, thin = 20, xlab = "", main = "", ylab = "")
-      	#abline(h=sim.data$Sigma[[s]][i,j],col=4,lwd=2)
+        tp(Sigma.gibbs[[s]][, , i, j], las = 1, thin = 100, xlab = "", 
+           main = "", ylab = "")
+      	abline(h = sim.data$Sigma[[s]][i, j], col = 4, lwd = 2)
       }
     }  	
   }
 }
 dev.off()
 
-#first site and first list of correlations for the site over 3 chains
-#Sigma.gibbs[[site]][chain, runs , correlation matrix , column/series]
-gr.Sigma.gibbs <- c()
-k <- 1
-while(k<21) {
 
+
+
+# Gelman-Rubin statistics for each batch of parameters:
+
+# beta
+gr.beta <- matrix(0, P, S)  # store them in a 23 x 6 matrix
 for (s in 1:S) {
-    for (i in 1:J[s]) {
-      for (j in 1:J[s]) {    
-                x <- as.mcmc.list(list(mcmc(Sigma.gibbs[[s]][1, ,i , j ], start = 10001, thin = 1), 
-                           mcmc(Sigma.gibbs[[s]][2, ,i , j ], start = 10001,  thin = 1), 
-                           mcmc(Sigma.gibbs[[s]][3, ,i , j ], start = 10001,  thin = 1) ) )
-                gr.sigma <- gelman.diag(x)$psrf[1]
-                print(s)
-                print(i)
-                print(j)
-                print(gr.sigma)
-                gr.Sigma.gibbs[[k]] <- gr.sigma
-                
-                k = k + 1
-      }
+  x <- as.mcmc.list(list(mcmc(beta.gibbs[1, , 1:P, s], start = (G/2 + 1), 
+                              end = G, thin = 1), 
+                         mcmc(beta.gibbs[2, , 1:P, s], start = (G/2 + 1), 
+                              end = G, thin = 1), 
+                         mcmc(beta.gibbs[3, , 1:P, s], start = (G/2 + 1), 
+                              end = G, thin = 1)))
+  gr.beta[, s] <- gelman.diag(x)$psrf[, 1]
+}
+
+round(gr.beta, 2)
+apply(gr.beta, 2, range)
+apply(gr.beta, 1, range)
+
+# mu
+x <- as.mcmc.list(list(mcmc(mu.gibbs[1, , 1:P], start = (G/2 + 1), end = G, 
+                            thin = 1), 
+                       mcmc(mu.gibbs[2, , 1:P], start = (G/2 + 1), end = G, 
+                            thin = 1), 
+                       mcmc(mu.gibbs[3, , 1:P], start = (G/2 + 1), end = G, 
+                            thin = 1)))
+gr.mu <- gelman.diag(x)$psrf[, 1]
+
+# sigma
+x <- as.mcmc.list(list(mcmc(sigma.gibbs[1, , 1:P], start = (G/2 + 1), end = G, 
+                            thin = 1), 
+                       mcmc(sigma.gibbs[2, , 1:P], start = (G/2 + 1), end = G, 
+                            thin = 1), 
+                       mcmc(sigma.gibbs[3, , 1:P], start = (G/2 + 1), end = G, 
+                            thin = 1)))
+gr.sigma <- gelman.diag(x)$psrf[, 1]
+
+# tau
+gr.tau <- gelman.diag(as.mcmc.list(list(
+  mcmc(as.matrix(tau.gibbs[1, ]), start = (G/2 + 1), end = G, thin = 1), 
+  mcmc(as.matrix(tau.gibbs[2, ]), start = (G/2 + 1), end = G, thin = 1), 
+  mcmc(as.matrix(tau.gibbs[3, ]), start = (G/2 + 1), end = G, thin = 1)))
+)
+# 1.06                              
+
+# lambda
+gr.lambda <- gelman.diag(as.mcmc.list(list(
+  mcmc(as.matrix(lambda.gibbs[1, ]), start = (G/2 + 1), end = G, thin = 1), 
+  mcmc(as.matrix(lambda.gibbs[2, ]), start = (G/2 + 1), end = G, thin = 1), 
+  mcmc(as.matrix(lambda.gibbs[3, ]), start = (G/2 + 1), end = G, thin = 1)))
+)
+# 1.19
+
+# mu_arc
+gr.mu.arc <- gelman.diag(as.mcmc.list(list(
+  mcmc(as.matrix(mu.arc.gibbs[1, ]), start = (G/2 + 1), end = G, thin = 1), 
+  mcmc(as.matrix(mu.arc.gibbs[2, ]), start = (G/2 + 1), end = G, thin = 1), 
+  mcmc(as.matrix(mu.arc.gibbs[3, ]), start = (G/2 + 1), end = G, thin = 1)))
+)
+
+# tau_arc
+gr.tau.arc <- gelman.diag(as.mcmc.list(list(
+  mcmc(as.matrix(tau.arc.gibbs[1, ]), start = (G/2 + 1), end = G, thin = 1), 
+  mcmc(as.matrix(tau.arc.gibbs[2, ]), start = (G/2 + 1), end = G, thin = 1), 
+  mcmc(as.matrix(tau.arc.gibbs[3, ]), start = (G/2 + 1), end = G, thin = 1)))
+)
+
+# beta_arc
+x <- as.mcmc.list(list(
+  mcmc(beta.arc.gibbs[1, , 1:S], start = (G/2 + 1), end = G, thin = 1), 
+  mcmc(beta.arc.gibbs[2, , 1:S], start = (G/2 + 1), end = G, thin = 1), 
+  mcmc(beta.arc.gibbs[3, , 1:S], start = (G/2 + 1), end = G, thin = 1))
+)
+gr.beta.arc <- gelman.diag(x)$psrf[, 1]
+
+# first site and first list of correlations for the site over 3 chains
+# Sigma.gibbs[[site]][chain, runs , correlation matrix , column/series]
+gr.Sigma <- list("vector", S)
+for (s in 1:S) {
+  gr.Sigma.gibbs[[s]] <- matrix(0, J[s], J[s])
+  for (i in 1:J[s]) {
+    for (j in 1:J[s]) {    
+      x <- as.mcmc.list(list(
+             mcmc(Sigma.gibbs[[s]][1, ,i , j], start = (G/2 + 1), thin = 1), 
+             mcmc(Sigma.gibbs[[s]][2, ,i , j], start = (G/2 + 1), thin = 1), 
+             mcmc(Sigma.gibbs[[s]][3, ,i , j], start = (G/2 + 1), thin = 1))
+      )
+      gr.Sigma[[s]][i, j] <- gelman.diag(x)$psrf[1]
     }
   }
 }
+
+
+
+
+
+
 
 RG1 <- matrix(gr.Sigma.gibbs[1:4], nrow = 2, byrow = TRUE)
 RG2 <- matrix(gr.Sigma.gibbs[5:8], nrow = 2, byrow = TRUE)
@@ -242,7 +249,7 @@ RG6 <- matrix(gr.Sigma.gibbs[21:45], nrow = 5, byrow = TRUE)
 
 
 
-#RG Stats
+# Gelman-Rubin stats
 gr.beta.table <- xtable(gr.beta)
 gr.mu.table <- xtable(as.matrix(gr.mu))
 
@@ -265,6 +272,43 @@ RG3.table <- xtable(RG3)
 RG4.table <- xtable(RG4)
 RG5.table <- xtable(RG5)
 RG6.table <- xtable(RG6)
+
+
+
+### Plots comparing the priors to the posteriors (for a few parameters):
+post.burn <- 10001:20000
+dense <- density(lambda.gibbs[, post.burn])
+
+plot(density(rgamma(100000, shape = 1, scale = 1)), xlab = "lambda", 
+     ylab = "p(lambda)", main = "lambda", xlim = c(0, 5), las = 1, 
+     ylim = c(0, max(dense$y)))
+abline(h = 0, col = gray(0.5))
+lines(dense, col = 2)
+legend("topright", inset = 0.01, col = c(1, 2), 
+       legend = c("Prior", "Posterior"), lwd = 1)
+
+
+
+
+
+
+
+mean.hat <- 10
+var.hat <- 10
+v0.tau <- 2*mean.hat^2/var.hat + 4  # 24
+s0.tau <- mean.hat*(v0.tau - 2)/v0.tau  # 55/6
+
+plot(density(sqrt(1/rgamma(100000, shape = v0.tau/2, scale = v0.tau*s0.tau/2))), 
+     xlab = "tau", ylab = "p(tau)", main = "tau")
+
+
+# posterior mean of lambda
+#lambda.hat <- mean(lambda.gibbs[, (G/2 + 1):G])
+#plot(seq(0, 1, by = 0.01)*100, exp(-lambda.hat*seq(0, 1, by = 0.01)), 
+#     xlab = "km")
+
+
+
 
 
 
@@ -328,8 +372,8 @@ apply(Sigma.gibbs[[1]][, 5001:10000, , ], 3:4, mean)
 
 
 
-#Ruben Gelman Stat for a few key parameters using the Ruben Gelman statistic, modified for our lists. 
-#For a little more detail on where the adapted code cam from see RGelman_test.R
+# Gelman-Rubin stat for a few key parameters
+# For more detail on where the adapted code came from see RGelman_test.R
 
 burn <- 15000:20000
 #Lambda

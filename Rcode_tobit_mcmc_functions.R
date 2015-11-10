@@ -253,7 +253,11 @@ draw.Sigma <- function(S, Z, X.arc, beta.arc, T, J, W, gamma.mat, v.0,
   return(Sigma.null)
 }
 
-# draw beta given z, R:
+#tmp <- Covar %x% solve(t(X) %*% X)
+#tmp2 <- diag(S) %x% diag(sigma^2)
+#tmp3 <- t(X) %*% Z %*% Covar.inv
+
+# draw beta^z | Z, lambda, tau, mu, sigma:
 draw.beta.tobit <- function(tau, lambda, vec, xtx.ones, Z, X, sigma, mu) {
   Covar <- tau^2*R.cov(lambda, d.mat)
   S <- dim(Covar)[1]
@@ -290,12 +294,12 @@ tau.draw.tobit <- function(Z, beta, lambda, a, b, T) {
 lambda.draw.tobit <- function(X, beta, tau, lambda, d.mat, Z, S, jump.lambda) {
   mu.Z <- X %*% beta
   Covar <- tau^2*R.cov(lambda, d.mat)
-  ll.data <- sum(dmvnorm(Z-mu.Z, rep(0, S), Covar, log = TRUE))
-  lp.old <- ll.data + log(dgamma(lambda, shape = 50, scale = 0.03))
+  ll.data <- sum(dmvnorm(Z - mu.Z, rep(0, S), Covar, log = TRUE))
+  lp.old <- ll.data + log(dgamma(lambda, shape = 1, scale = 1))
   lambda.star <- abs(lambda + rnorm(1, 0, jump.lambda))
   Covar.star <- tau^2*R.cov(lambda.star, d.mat)
-  ll.data.star <- sum(dmvnorm(Z-mu.Z, rep(0, S), Covar.star, log = TRUE)) 
-  lp.star <- ll.data.star + log(dgamma(lambda.star, shape = 50, scale = 0.03))
+  ll.data.star <- sum(dmvnorm(Z - mu.Z, rep(0, S), Covar.star, log = TRUE)) 
+  lp.star <- ll.data.star + log(dgamma(lambda.star, shape = 1, scale = 1))
   r <- exp(lp.star - lp.old)
   if (g < adapt) jump.lambda <- ifelse(r > 0.44, jump.lambda*A1, jump.lambda*B1)
   if (runif(1) < r) lambda <- lambda.star
@@ -316,6 +320,8 @@ mu.sigma.draw <- function(beta, mu, sigma, S, P, jump.sigma, g, adapt) {
   promote <- runif(P) < r
   sigma[promote] <- sigma.star[promote]
   mu <- rnorm(P, apply(beta, 1, mean), sigma/sqrt(S))
+  #mu <- rnorm(P, 5^2/((sigma^2/S) + 5^2)*apply(beta, 1, mean), 
+  #            sqrt(1/(1/5^2 + S/sigma^2)))
   return(list(mu = mu, sigma = sigma, jump.sigma = jump.sigma))
 }
 
@@ -327,7 +333,7 @@ draw.W <- function(R, Z, beta.arc, Sigma, gamma.mat, X.arc, W, up, w.draw) {
   for (s in 1:S){
     # J[s] x T matrix
     mu.mat <- t(matrix(Z[, s], T, J[s]) + 
-              matrix(rep(X.arc[[s]]*beta.arc[s], each = T), ncol = J[s]))
+                matrix(rep(X.arc[[s]]*beta.arc[s], each = T), ncol = J[s]))
     for (j in 1:J[s]){ # draw j given -j
       Sigma.temp <- Sigma[[s]][j, -j] %*% solve(Sigma[[s]][-j, -j])
       cond.mu <- mu.mat[j, ] + Sigma.temp %*% (W[[s]][-j, ] - mu.mat[-j, ])
@@ -378,6 +384,27 @@ draw.W <- function(R, Z, beta.arc, Sigma, gamma.mat, X.arc, W, up, w.draw) {
 }
 
 
+# function to draw a random inverse chi-square variable:
+rics <- function(n, v, s.squared) {
+  v * s.squared/rchisq(n, v)	
+}
+
+# draw mu and sigma from a normal-inverse-chi-squared posterior:
+normal.inv.chi.squared <- function(y.bar, s.squared, n, mu0, k0, v0, sigma0) {
+  # y.bar is the sample mean of n data points
+  # s.squared is the sample variance: 1/(n - 1)\sum_{i=1}^n (y_i - y.bar)^2
+  # n is the sample size
+  # y.bar and s.squared can be vectors to do multiple draws
+  v_n <- v0 + n
+  sigma_n <- (1 / (v0 + n)) * (v0*sigma0^2 + 
+                               (n - 1)*s.squared + 
+                               k0*n*(y.bar - mu0)^2/(k0 + n))
+  sigma <- sqrt(rics(n = length(y.bar), v = v_n, s.squared = sigma_n))
+  mu_n <- (k0/sigma^2*mu0 + n/sigma^2*y.bar) / (k0/sigma^2 + n/sigma^2)
+  mu_var <- 1/(k0/sigma^2 + n/sigma^2)
+  mu <- rnorm(n = length(y.bar), mean = mu_n, sd = sqrt(mu_var))
+  return(list(sigma = sigma, mu = mu))
+}
 
 ##### Not currently used #####
 

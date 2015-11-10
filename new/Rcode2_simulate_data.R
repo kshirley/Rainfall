@@ -1,11 +1,10 @@
-########################################################################################################################
+#2345678901234567890123456789012345678901234567890123456789012345678901234567890
 
 # Start here after running 'Rcode1_data_setup.R'
 rm(list=ls())
 setwd("~/Git/Rainfall/")
-setwd("~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
-path<-"~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall"
-
+#setwd("~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall")
+#path <- "~/Documents/OneDrive/IRI/RainfallSimulation/Rainfall/Rainfall"
 
 # load the input data and assign them to the global namespace:
 load("input_data.RData")
@@ -18,13 +17,13 @@ library(MASS)
 # Simulate data:
 
 # Set true parameter values:
-seed <-888
+seed <- 267
 set.seed(seed)
 mu <- rnorm(P, 0, 1)
-sigma <- runif(P, 0.3, 0.8)
+sigma <- runif(P, 0.3, 1)
 alpha <- 5 # degrees of freedom for student-t
 lambda <- 3 # spatial correlation decay
-tau <- 4 # scalar for spatial covariance
+tau <- 6 # scalar for spatial covariance
 mu.arc <- 1 # mean ARC effect
 beta.arc <- seq(0, 2, length = S)
 tau.arc <- sd(beta.arc) # variability of ARC effects
@@ -59,11 +58,13 @@ for (s in 1:S){
   #print(s)
   gamma <- rgamma(n = N, shape = alpha/2, scale = 2/alpha)
   W[[s]] <- mvrnorm(n = N, mu = rep(0, J[s]), Sigma = Sigma[[s]])/sqrt(gamma)
-  W[[s]] <- t(W[[s]] + matrix(Z[, s], N, J[s]) + matrix(rep(X.arc[[s]]*beta.arc[s], each = N), ncol = J[s]))
+  W[[s]] <- t(W[[s]] + matrix(Z[, s], N, J[s]) + 
+              matrix(rep(X.arc[[s]]*beta.arc[s], each = N), ncol = J[s]))
   gamma.mat[, s] <- gamma
 }
 
-# Truncate at zero, and delete values to match missing data properties of the real data:
+# Truncate at zero, and delete values to match missing data properties of the 
+# real data:
 Y.complete <- as.list(rep(NA, S))  # with no missing data, but truncated
 Y.sim <- as.list(rep(NA, S))  # with some data missing
 for (s in 1:S){
