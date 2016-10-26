@@ -39,7 +39,11 @@
 \begin{document}
 
 \title{Hierarchical Bayes models for daily rainfall time series at multiple locations from heterogenous data sources}
-\author{}
+\author {Kenneth Shirley \thanks{ATT Research Labs}
+\and Kathryn Vasilaky \thanks{Earth Institute and International Research Institute for Climate and Society, Columbia University, Lamont Campus 61 Route 9W, Lamont Hall, 2G (corresponding email: \tt{knv4columbia.edu})}
+\and Helen Greatrex  \thanks{International Research Institute for Climate and Society Columbia University}
+\and Daniel Osgood \thanks{International Research Institute for Climate and Society Columbia University}}
+
 
 \maketitle
 
@@ -60,7 +64,7 @@ We estimate a Hierarchical Bayesian models for daily rainfall that incorporates 
 \section{Introduction}\label{sec:intro}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The ability to simulate a realistic time-series of daily rainfall is crucial in modeling climate impacts, particularly in locations with limited weather observations.   Simulated rainfall is widely used as an input into many end-user applications across agriculture, health, hydrology and ecology.  Weather generators, or simulators, are often used ``fill in'' missing observations, examine uncertainty or to investigate situations where historical records are not sufficiently long to include extreme events.   However, the current explosion of climate adaptation programs has substantially increased the practical demands placed on weather simulators, demands that often exceed the capabilities of state of the art.  
+The ability to simulate a realistic time-series of daily rainfall is crucial in modeling climate impacts, particularly in locations with limited weather observations.   Simulated rainfall is widely used as an input into many end-user applications across agriculture, health, hydrology and ecology.  Weather generators, or simulators, are often used ``fill in'' missing observations, examine uncertainty or to investigate situations where historical records are not sufficiently long to include extreme events.  However, the current explosion of climate adaptation programs has substantially increased the practical demands placed on weather simulators, demands that often exceed the capabilities of state of the art.  
 
 One particularly salient example is the increase in weather index insurance in developing countries for which payouts are based on rainfall deficits.  These projects have grown from a couple hundred farmers to tens of millions over the past decade \cite{Greatrex2015}.   The price of the insurance must cover the payouts.  Price is therefore is driven by the probability of a payout, which is driven by the probability of the rainfall deficits relevant to major crop losses. Naturally, insurance projects have relied heavily on rainfall models to drive insurance price calculations.  Because payout formulas are closely tied to specific rainfall features relevant to the crops insured, it is important for rainfall models to accurately characterize the relevant details for infrequent, tail events.  These rainfall features are often challenging for rainfall models, such as onset, inter-annual variability, consecutive dry days, climate teleconnections, and local spatial relationships. Because of these challenges, there are reports of initial applications of weather models leading to spurious results and unpredictable prices \cite{Giannini2009}.  As a result, insurance companies often include substantial increases in the insurance price to protect against their lack of confidence in the rainfall models \cite{Osgood2012}.
 
@@ -301,33 +305,34 @@ We ran the MCMC algorithm for 20,000 iterations in total, using the first 2,000 
 We first ran a simulation study, where we simulated data from a set of known parameters. These parameter values were chosen to approximate values that could have produced our observed data, based on EDA. The size of the simulated data set was similar to the real data in both dimensions (the number of time series and the number of days). We find that our model performs well with simulated data, in which are able to recover know parameters--in particular, our parameter for across and within site correlation. We were able to precisely estimate the spatial correlation between locations as well as the variability of different data sources within single locations. Below we show trace plots for parameters that are lower in the hierarchical model and thus more difficult to estimate, but also the primary contribution of this model. This includes: $\lambda$, $\tau^{ARC}$, and $\Sigma$. All three parameters were well-estimated, and convergence was relatively quick with a burn-in period of less than 5,000 draws. All other parameters were also well estimated and available upon request. 
 
 
-%\begin{figure}[htbp]
-%\begin{center}
-%\caption{Simulation study results for $\lambda$ where the horizontal blue lines represent the known true values of the parameters.}
-%\includegraphics[width=6.0in]{fig__trace_lambda_sim.pdf}
-%\label{fig_sim_sum1}
-%\end{center}
-%\end{figure}
+\begin{figure}[htbp]
+\begin{center}
+\caption{Simulation study results for $\lambda$ where the horizontal blue lines represent the known true values of the parameters.}
+\includegraphics[width=6.0in]{fig__trace_lambda_sim.pdf}
+\label{fig_sim_sum1}
+\end{center}
+\end{figure}
 
 
 
-%\begin{figure}[p]
-%\caption{Simulation study results for $\tau^{ARC}$ where the horizontal blue lines represent the known true values of the parameters.}
-%\begin{center}
-%\includegraphics[scale=0.7]{test.pdf}
-%\label{figure:figure1}
-%\end{center}
-%\end{figure}
+\begin{figure}[p]
+\caption{Simulation study results for $\tau^{ARC}$ where the horizontal blue lines represent the known true values of the parameters.}
+\begin{center}
+\includegraphics[scale=0.7]{test.pdf}
+\label{figure:figure1}
+\end{center}
+\end{figure}
 
 
-Results for $\Sigma$ are equally as good, converging to the true parameter value before 5,000 iterations. Below we show the results for Site 1, Hagere Salaam. The remaining estimates are displayed in the Appendix. 
+Results for $\Sigma$ are equally as good, converging to the true parameter value before 5,000 iterations. Below we show the results for Site 1, Hagere Salaam. 
+%The remaining estimates are displayed in the Appendix. 
 
-%\begin{figure}[htbp]
-%\begin{center}
-%\caption{Simulation study results for $\Sigma$ for site one (Hagere Salaam) where the horizontal blue lines represent the known true values of the parameters.}  
-%\includegraphics[page=1,width=5.0in]{fig_tobit_trace_sigma_covariance_sim.pdf}   
-%\end{center}
-%\end{figure}
+\begin{figure}[htbp]
+\begin{center}
+\caption{Simulation study results for $\Sigma$ for site one (Hagere Salaam) where the horizontal blue lines represent the known true values of the parameters.}  
+\includegraphics[page=1,width=5.0in]{fig_tobit_trace_sigma_covariance_sim.pdf}   
+\end{center}
+\end{figure}
 
 
 %\begin{figure}[htbp]
@@ -364,19 +369,15 @@ We ran trace plots for each parameter. Parameters for which are most interested 
 
 
 
-We begin by displaying $\lambda$, the parameter determining spatial correlation in our distance matrix. $\lambda$ converges to an estimate of about 0.6, while $\tau$, our parameter scaling $\lambda$ in the covariance matrix of Z, converges to 8. $\lambda$ exhibits more autocorrelation than in the simulated data. Thus for two sites $i$ and $k$ that have an euclidean distance of 1 is approximately 100 kilometers, and the $d_{ik}$ entry of the d matrix will be equal to 1, then $v_{ik}$ is $exp(-.06*1)$ is .98. In general our spatial correlations for the V matrix range from .95 to .99. 
-
-Tau is estimated at 8.8 mm.
-
-The mean of beta arc (mu.arc) is approximately 0.7 with a  variance of 2.2? (tau.arc), so the ARC satellite has a slightly positive bias on rainfall above and beyond a rain gauge. 
+We begin by displaying $\lambda$, the parameter determining spatial correlation in our distance matrix. $\lambda$ converges to an estimate of about 0.6, while $\tau$, our parameter scaling $\lambda$ in the covariance matrix of Z, converges to 8. $\lambda$ exhibits more autocorrelation than in the simulated data. Thus for two sites $i$ and $k$ that have an euclidean distance of 1 is approximately 100 kilometers, and the $d_{ik}$ entry of the d matrix will be equal to 1, then $v_{ik}$ is $exp(-.06*1)$ is .98. In general our spatial correlations for the V matrix range from .95 to .99. Tau is estimated at 8.8 mm. 
 
 
-%\begin{figure}[htbp]
-%\caption{Trace of $\lambda$, Scalar on Distance Matrix for V}
-%\begin{center}
-%\includegraphics[width=5.0in]{fig__trace_lambda.pdf}
-%\end{center}
-%\end{figure}
+\begin{figure}[htbp]
+\caption{Trace of $\lambda$, Scalar on Distance Matrix for V}
+\begin{center}
+\includegraphics[width=5.0in]{fig__trace_lambda.pdf}
+\end{center}
+\end{figure}
 
 
 
@@ -387,15 +388,16 @@ The mean of beta arc (mu.arc) is approximately 0.7 with a  variance of 2.2? (tau
 %\end{center}
 %\end{figure}
 
+The mean of beta arc (mu.arc) is approximately 0.7 with a  variance of 2.2 (tau.arc), so the ARC satellite exhibits a slightly positive bias on rainfall above and beyond a rain gauge. Location specific covariances, one of the more difficult parameters to measure, also converges well before 5,000 iterations. 
 
 
+\begin{figure}[htbp]
+\caption{Trace of $\beta^{Arc}$, Bias of Using Arc Satellite Measure}
+\begin{center}
+\includegraphics[width=5.0in]{fig_tobit_trace_beta_arc.pdf}
+\end{center}
+\end{figure}
 
-%\begin{figure}[htbp]
-%\caption{Trace of $\beta^{Arc}$, Bias of Using Arc Satellite Measure}
-%\begin{center}
-%\includegraphics[width=5.0in]{fig_tobit_trace_beta_arc.pdf}
-%\end{center}
-%\end{figure}
 
 %\begin{figure}[htbp]
 %\caption{Trace of $\beta$'s}
@@ -412,12 +414,12 @@ The mean of beta arc (mu.arc) is approximately 0.7 with a  variance of 2.2? (tau
 %\end{figure}
 
 
-%\begin{figure}[htbp]
-%\caption{Trace of $\Sigma$, Location Specific Covariances (Hagere Salaam) }
-%\begin{center}
-%\includegraphics[page=1,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
-%\end{center}
-%\end{figure}
+\begin{figure}[htbp]
+\caption{Trace of $\Sigma$, Location Specific Covariances (Hagere Salaam) }
+\begin{center}
+\includegraphics[page=1,width=5.0in]{fig_tobit_trace_sigma_covariance.pdf}     
+\end{center}
+\end{figure}
 
 %\begin{figure}[htbp]
 %\caption{Trace of $\sigma$, variance of betas}
@@ -433,12 +435,16 @@ The mean of beta arc (mu.arc) is approximately 0.7 with a  variance of 2.2? (tau
 %\caption{Simulation study results for $\lambda$, $\mu_\alpha$, and $\tau_\alpha$, where the horizontal blue lines represent the known true values of the parameters.}
 %\label{Posterior}
 
+\newpage
+
 \section{Rainfall Metrics Measured}
 \label{sec:metrics}
 
 We have shown that our model performs well in terms of recovering parameters using simulated data, and it converges relatively quickly to its posterior estimates using real rainfall data. An additional motivation of this paper is to be able to predict higher level metrics such as: onset of rainfall within a season, inter-annual rainfall variability, and the number of consecutive dry days per year. In developing countries, where smallholder farmers have little savings and or capital to shield their risk, accuracy in predicting these measures can be the difference between a successful and devastating harvest. For example, yields can be heavily affected by planting a week too early or too late with respect to rainfall onset. Knowing consecutive dry days helps in preparing for a dry season, and inter-annual variability gives us a sense of the upper and lower bounds for rainfall over time. 
 
-We begin by plotting first some basic posterior estimates for mean rainfall and the proportion of wet days per month. We then follow with some of the harder to predict diagnostics: inter-annual rainfall variability, probability of consecutive dry days, probability of rainfall onset.
+%Actualy the mean and pwet don't look too good. 
+%We begin by first plotting some basic posterior estimates for mean rainfall and the proportion of wet days per month. 
+Simulated data from the posterior predictive distribution are compared with the observed data to explore the fit of the model. These samples were taken every 50 iterations after burn-in. 
 
 
 
@@ -457,28 +463,37 @@ We begin by plotting first some basic posterior estimates for mean rainfall and 
 %\end{figure}
 
 
-%\begin{figure}[htbp]
-%\caption{Rainfall Onset using Simulated Rainfall}
-%\begin{center}
-%\includegraphics[width=5.0in]{Onset_postpred.pdf}
-%\end{center}
-%\end{figure}
+
+We can see that some of these more difficult to predict diagnostics: inter-annual rainfall variability, probability of consecutive dry days, probability of rainfall onset are well within the error bounds.
 
 
-%\begin{figure}[htbp]
-%\caption{Inter-annual Rainfall Variability using Simulated Rainfall}
-%\begin{center}
-%\includegraphics[width=5.0in]{Interannual.pdf}
-%\end{center}
-%\end{figure}
+\begin{figure}[htbp]
+\caption{Rainfall Onset using Simulated Rainfall}
+\begin{center}
+\includegraphics[page=3,width=5.0in]{Onset_postpred.pdf}
+\end{center}
+\end{figure}
 
-%\begin{figure}[htbp]
-%\caption{Number of Consecutive Dry Days ($>$3 days} using Simulated Rainfall}
-%\begin{center}
-%\includegraphics[width=5.0in]{Consec_Data_Series.pdf}
-%\end{center}
-%\end{figure}
+\newpage
 
+\begin{figure}[htbp]
+\caption{Number of Consecutive Dry Days ($>$3 days} using Simulated Rainfall}
+\begin{center}
+\includegraphics[width=5.0in]{Consec_Data_Series.pdf}
+\end{center}
+\end{figure}
+
+\newpage
+
+
+\begin{figure}[htbp]
+\caption{Inter-annual Rainfall Variability using Simulated Rainfall}
+\begin{center}
+\includegraphics[width=5.0in]{Interannual.pdf}
+\end{center}
+\end{figure}
+
+\newpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Discussion}\label{sec:discussion}
@@ -629,6 +644,176 @@ $$
 We draw $\tau^\text{ARC}$ using a random-walk Metropolis step.
 
 \end{enumerate}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Appendix Ruben Gelman Statistics}\label{sec:appendixtwo}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{table}[ht]\caption{RG for 23 Beta for Weather Patterns at 6 Different Sites}
+\centering
+\begin{tabular}{rrrrrrr}
+  \hline
+ & 1 & 2 & 3 & 4 & 5 & 6 \\ 
+  \hline
+1 & 1.04 & 1.05 & 1.08 & 1.05 & 1.08 & 1.32 \\ 
+  2 & 1.11 & 1.12 & 1.13 & 1.10 & 1.11 & 1.19 \\ 
+  3 & 1.09 & 1.09 & 1.08 & 1.08 & 1.10 & 1.14 \\ 
+  4 & 1.15 & 1.05 & 1.02 & 1.07 & 1.28 & 1.33 \\ 
+  5 & 1.14 & 1.10 & 1.01 & 1.06 & 1.22 & 1.20 \\ 
+  6 & 1.15 & 1.14 & 1.12 & 1.09 & 1.19 & 1.14 \\ 
+  7 & 1.10 & 1.08 & 1.08 & 1.10 & 1.14 & 1.10 \\ 
+  8 & 1.07 & 1.06 & 1.09 & 1.05 & 1.11 & 1.12 \\ 
+  9 & 1.13 & 1.10 & 1.19 & 1.07 & 1.21 & 1.25 \\ 
+  10 & 1.02 & 1.01 & 1.02 & 1.02 & 1.03 & 1.05 \\ 
+  11 & 1.29 & 1.30 & 1.20 & 1.21 & 1.30 & 1.22 \\ 
+  12 & 1.29 & 1.20 & 1.21 & 1.19 & 1.28 & 1.42 \\ 
+  13 & 1.64 & 1.35 & 1.48 & 1.41 & 1.68 & 1.83 \\ 
+  14 & 1.23 & 1.12 & 1.12 & 1.12 & 1.23 & 1.22 \\ 
+  15 & 1.04 & 1.03 & 1.05 & 1.03 & 1.08 & 1.09 \\ 
+  16 & 1.01 & 1.01 & 1.04 & 1.01 & 1.01 & 1.01 \\ 
+  17 & 1.05 & 1.03 & 1.04 & 1.05 & 1.06 & 1.05 \\ 
+  18 & 1.02 & 1.02 & 1.02 & 1.02 & 1.02 & 1.03 \\ 
+  19 & 1.07 & 1.06 & 1.07 & 1.06 & 1.08 & 1.09 \\ 
+  20 & 1.01 & 1.01 & 1.00 & 1.01 & 1.01 & 1.01 \\ 
+  21 & 1.02 & 1.02 & 1.01 & 1.02 & 1.01 & 1.01 \\ 
+  22 & 1.13 & 1.06 & 1.06 & 1.14 & 1.17 & 1.18 \\ 
+  23 & 1.12 & 1.04 & 1.05 & 1.07 & 1.14 & 1.06 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{table}[ht]\caption{RG for Means of 23 Beta intercepts}
+\centering
+\begin{tabular}{rr}
+  \hline
+ & x \\ 
+  \hline
+1 & 1.03 \\ 
+  2 & 1.13 \\ 
+  3 & 1.10 \\ 
+  4 & 1.04 \\ 
+  5 & 1.08 \\ 
+  6 & 1.14 \\ 
+  7 & 1.06 \\ 
+  8 & 1.06 \\ 
+  9 & 1.15 \\ 
+  10 & 1.02 \\ 
+  11 & 1.26 \\ 
+  12 & 1.29 \\ 
+  13 & 1.56 \\ 
+  14 & 1.19 \\ 
+  15 & 1.05 \\ 
+  16 & 1.01 \\ 
+  17 & 1.05 \\ 
+  18 & 1.02 \\ 
+  19 & 1.07 \\ 
+  20 & 1.01 \\ 
+  21 & 1.02 \\ 
+  22 & 1.14 \\ 
+  23 & 1.08 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rll}
+  \hline
+ & 1 & 2 \\ 
+  \hline
+1 & RG.tau & 1.06404977811999 \\ 
+  2 & RG.lambda & 1.18651773081467 \\ 
+  3 & RG.tau.arc & 1.00685174774326 \\ 
+  4 & RG.beta.arc & 1.21547166921861 \\ 
+  5 & RG.sigma & 1.36885702732019 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
+
+\begin{table}[ht]\caption{RG of Sigma Matrices, Site 1}
+\centering
+\begin{tabular}{rrr}
+  \hline
+ & 1 & 2 \\ 
+  \hline
+1 & 1.00 & 1.00 \\ 
+  2 & 1.00 & 1.00 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]\caption{RG of Sigma Matrices, Site 2}
+\centering
+\begin{tabular}{rrr}
+  \hline
+ & 1 & 2 \\ 
+  \hline
+1 & 1.02 & 1.01 \\ 
+  2 & 1.01 & 1.02 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]\caption{RG of Sigma Matrices, Site 3}
+\centering
+\begin{tabular}{rrr}
+  \hline
+ & 1 & 2 \\ 
+  \hline
+1 & 1.01 & 1.01 \\ 
+  2 & 1.01 & 1.00 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]\caption{RG of Sigma Matrices, Site 4}
+\centering
+\begin{tabular}{rrr}
+  \hline
+ & 1 & 2 \\ 
+  \hline
+1 & 1.01 & 1.00 \\ 
+  2 & 1.00 & 1.06 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]\caption{RG of Sigma Matrices, Site 5}
+\centering
+\begin{tabular}{rrr}
+  \hline
+ & 1 & 2 \\ 
+  \hline
+1 & 1.03 & 1.01 \\ 
+  2 & 1.01 & 1.07 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]\caption{RG of Sigma Matrices, Site 6}
+\centering
+\begin{tabular}{rrrrrr}
+  \hline
+ & 1 & 2 & 3 & 4 & 5 \\ 
+  \hline
+1 & 1.04 & 1.00 & 1.02 & 1.01 & 1.08 \\ 
+  2 & 1.00 & 1.01 & 1.02 & 1.01 & 1.47 \\ 
+  3 & 1.02 & 1.02 & 1.02 & 1.05 & 1.35 \\ 
+  4 & 1.01 & 1.01 & 1.05 & 1.08 & 1.46 \\ 
+  5 & 1.08 & 1.47 & 1.35 & 1.46 & 1.37 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+
 
 \bibliographystyle{ECA_jasa}
 \bibliography{multisite}

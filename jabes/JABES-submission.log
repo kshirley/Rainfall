@@ -1,16 +1,16 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  10 NOV 2015 00:05
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  19 OCT 2016 01:44
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
 **JABES-submission.tex
 (./JABES-submission.tex
-LaTeX2e <2014/05/01>
-Babel <3.9k> and hyphenation patterns for 78 languages loaded.
-(/usr/local/texlive/2014/texmf-dist/tex/latex/base/article.cls
-Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
-(/usr/local/texlive/2014/texmf-dist/tex/latex/base/size11.clo
-File: size11.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+LaTeX2e <2015/01/01>
+Babel <3.9l> and hyphenation patterns for 79 languages loaded.
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/size11.clo
+File: size11.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
 \c@section=\count80
@@ -24,31 +24,31 @@ File: size11.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
 )
-(/usr/local/texlive/2014/texmf-dist/tex/latex/graphics/graphicx.sty
-Package: graphicx 2014/04/25 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/usr/local/texlive/2014/texmf-dist/tex/latex/graphics/keyval.sty
-Package: keyval 2014/05/08 v1.15 key=value parser (DPC)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks14
 )
-(/usr/local/texlive/2014/texmf-dist/tex/latex/graphics/graphics.sty
-Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2014/10/28 v1.0p Standard LaTeX Graphics (DPC,SPQR)
 
-(/usr/local/texlive/2014/texmf-dist/tex/latex/graphics/trig.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/graphics/trig.sty
 Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 )
-(/usr/local/texlive/2014/texmf-dist/tex/latex/latexconfig/graphics.cfg
+(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/graphics.cfg
 File: graphics.cfg 2010/04/23 v1.9 graphics configuration of TeX Live
 )
-Package graphics Info: Driver file: pdftex.def on input line 91.
+Package graphics Info: Driver file: pdftex.def on input line 94.
 
-(/usr/local/texlive/2014/texmf-dist/tex/latex/pdftex-def/pdftex.def
+(/usr/local/texlive/2015/texmf-dist/tex/latex/pdftex-def/pdftex.def
 File: pdftex.def 2011/05/27 v0.06d Graphics/color for pdfTeX
 
-(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/infwarerr.sty
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/infwarerr.sty
 Package: infwarerr 2010/04/08 v1.3 Providing info/warning/error messages (HO)
 )
-(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ltxcmds.sty
 Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 )
 \Gread@gobject=\count87
@@ -56,24 +56,24 @@ Package: ltxcmds 2011/11/09 v1.22 LaTeX kernel commands for general use (HO)
 \Gin@req@height=\dimen103
 \Gin@req@width=\dimen104
 )
-(/usr/local/texlive/2014/texmf-dist/tex/latex/amsmath/amsmath.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsmath.sty
 Package: amsmath 2013/01/14 v2.14 AMS math features
 \@mathmargin=\skip43
 
 For additional information on amsmath, use the `?' option.
-(/usr/local/texlive/2014/texmf-dist/tex/latex/amsmath/amstext.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amstext.sty
 Package: amstext 2000/06/29 v2.01
 
-(/usr/local/texlive/2014/texmf-dist/tex/latex/amsmath/amsgen.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0
 \@emptytoks=\toks15
 \ex@=\dimen105
 ))
-(/usr/local/texlive/2014/texmf-dist/tex/latex/amsmath/amsbsy.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d
 \pmbraise@=\dimen106
 )
-(/usr/local/texlive/2014/texmf-dist/tex/latex/amsmath/amsopn.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsopn.sty
 Package: amsopn 1999/12/14 v2.01 operator names
 )
 \inf@bad=\count88
@@ -114,17 +114,17 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
 LaTeX Info: Redefining \[ on input line 2665.
 LaTeX Info: Redefining \] on input line 2666.
 )
-(/usr/local/texlive/2014/texmf-dist/tex/latex/amsfonts/amssymb.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/amssymb.sty
 Package: amssymb 2013/01/14 v3.01 AMS font symbols
 
-(/usr/local/texlive/2014/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/amsfonts.sty
 Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
 \symAMSa=\mathgroup4
 \symAMSb=\mathgroup5
 LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 ))
-(/usr/local/texlive/2014/texmf-dist/tex/latex/natbib/natbib.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/natbib/natbib.sty
 Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibhang=\skip46
 \bibsep=\skip47
@@ -150,7 +150,7 @@ LaTeX Font Info:    ... okay on input line 39.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 39.
 LaTeX Font Info:    ... okay on input line 39.
 
-(/usr/local/texlive/2014/texmf-dist/tex/context/base/supp-pdf.mkii
+(/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count101
 \scratchdimen=\dimen114
@@ -163,15 +163,15 @@ LaTeX Font Info:    ... okay on input line 39.
 \MPnumerator=\count105
 \makeMPintoPDFobject=\count106
 \everyMPtoPDFconversion=\toks21
-) (/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
+) (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
 )
 
-(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/ifluatex.sty
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ifluatex.sty
 Package: ifluatex 2010/03/01 v1.3 Provides the ifluatex switch (HO)
 Package ifluatex Info: LuaTeX not detected.
 )
-(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/ifpdf.sty
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/ifpdf.sty
 Package: ifpdf 2011/01/30 v2.3 Provides the ifpdf switch (HO)
 Package ifpdf Info: pdfTeX in PDF mode is detected.
 )
@@ -180,22 +180,22 @@ Package pdftexcmds Info: \pdf@primitive is available.
 Package pdftexcmds Info: \pdf@ifprimitive is available.
 Package pdftexcmds Info: \pdfdraftmode found.
 )
-(/usr/local/texlive/2014/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
 
-(/usr/local/texlive/2014/texmf-dist/tex/latex/oberdiek/grfext.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/grfext.sty
 Package: grfext 2010/08/19 v1.1 Manage graphics extensions (HO)
 
-(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/kvdefinekeys.sty
 Package: kvdefinekeys 2011/04/07 v1.3 Define keys (HO)
 ))
-(/usr/local/texlive/2014/texmf-dist/tex/latex/oberdiek/kvoptions.sty
+(/usr/local/texlive/2015/texmf-dist/tex/latex/oberdiek/kvoptions.sty
 Package: kvoptions 2011/06/30 v3.11 Key value format for package options (HO)
 
-(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/kvsetkeys.sty
 Package: kvsetkeys 2012/04/25 v1.16 Key value parser (HO)
 
-(/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/etexcmds.sty
+(/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/etexcmds.sty
 Package: etexcmds 2011/02/16 v1.5 Avoid name clashes with e-TeX commands (HO)
 Package etexcmds Info: Could not find \expanded.
 (etexcmds)             That can mean that you are not using pdfTeX 1.50 or
@@ -207,133 +207,334 @@ Package grfext Info: Graphics extension search list:
 G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 452.
 
-(/usr/local/texlive/2014/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+(/usr/local/texlive/2015/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Font Info:    Try loading font information for U+msa on input line 44.
+LaTeX Font Info:    Try loading font information for U+msa on input line 48.
 
-(/usr/local/texlive/2014/texmf-dist/tex/latex/amsfonts/umsa.fd
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 44.
+LaTeX Font Info:    Try loading font information for U+msb on input line 48.
 
-(/usr/local/texlive/2014/texmf-dist/tex/latex/amsfonts/umsb.fd
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [1
+)
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 48.
 
-{/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <8> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 48.
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <6> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 48.
+ [1
+
+{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
  [4] [5]
-[6] <fig_ethiopia_papermap.jpg, id=26, 1336.995pt x 983.675pt>
+[6] <fig_ethiopia_papermap.jpg, id=30, 1336.995pt x 983.675pt>
 File: fig_ethiopia_papermap.jpg Graphic file (type jpg)
 
 <use fig_ethiopia_papermap.jpg>
-Package pdftex.def Info: fig_ethiopia_papermap.jpg used on input line 97.
+Package pdftex.def Info: fig_ethiopia_papermap.jpg used on input line 101.
 (pdftex.def)             Requested size: 325.215pt x 239.26888pt.
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 106.
-
-
-(/usr/local/texlive/2014/texmf-dist/tex/latex/base/omscmr.fd
-File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
-)
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 106.
- [7 <./fig_ethiopia_papermap.jpg>] <fig_observed_data_new.pdf, id=32, 867.24pt 
-x 578.16pt>
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 110.
+ [7 <./fig_ethiopia_papermap.jpg>]
+<fig_observed_data_new.pdf, id=36, 867.24pt x 578.16pt>
 File: fig_observed_data_new.pdf Graphic file (type pdf)
 
 <use fig_observed_data_new.pdf>
-Package pdftex.def Info: fig_observed_data_new.pdf used on input line 120.
+Package pdftex.def Info: fig_observed_data_new.pdf used on input line 124.
 (pdftex.def)             Requested size: 361.34999pt x 240.90234pt.
- [8 <./fig_observed_data_new.pdf>]
-<fig_eda.pdf, id=40, 1011.78pt x 433.62pt>
+
+
+./JABES-submission.tex:132: LaTeX Error: Unknown float option `d'.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.132 \begin{table}[htdp]
+                         
+? 
+[8 <./fig_observed_data_new.pdf>] <fig_eda.pdf, id=44, 1011.78pt x 433.62pt>
 File: fig_eda.pdf Graphic file (type pdf)
- <use fig_eda.pdf>
-Package pdftex.def Info: fig_eda.pdf used on input line 159.
+
+<use fig_eda.pdf>
+Package pdftex.def Info: fig_eda.pdf used on input line 163.
 (pdftex.def)             Requested size: 469.75499pt x 201.32686pt.
 
-Overfull \hbox (4.51688pt too wide) in paragraph at lines 159--160
+Overfull \hbox (4.51688pt too wide) in paragraph at lines 163--164
  [] 
  []
 
 [9] [10 <./fig_eda.pdf>]
-Overfull \hbox (5.04079pt too wide) in paragraph at lines 180--184
+Overfull \hbox (5.04079pt too wide) in paragraph at lines 184--188
 []$ \OML/cmm/m/it/10.95 Y[] \OT1/cmr/m/n/10.95 = [] [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 180--184
+Underfull \hbox (badness 10000) in paragraph at lines 184--188
 
  []
 
 
-Overfull \hbox (2.71086pt too wide) in paragraph at lines 186--189
+Overfull \hbox (2.71086pt too wide) in paragraph at lines 190--193
 []$ [][] \OMS/cmsy/m/n/10.95 ^^X [][]\OT1/cmr/m/n/10.95 (\OT1/cmr/bx/n/10.95 1\
 OML/cmm/m/it/10.95 Z[] \OT1/cmr/m/n/10.95 + [][]\OML/cmm/m/it/10.95 ^^L[]; [][]
 []\OT1/cmr/m/n/10.95 )\OML/cmm/m/it/10.95 ;  []$ 
  []
 
 
-Overfull \hbox (3.44261pt too wide) in paragraph at lines 191--194
+Overfull \hbox (3.44261pt too wide) in paragraph at lines 195--198
 []$ [][] \OMS/cmsy/m/n/10.95 ^^X \OML/cmm/m/it/10.95 N[]\OT1/cmr/m/n/10.95 ([][
 ][][]\OML/cmm/m/it/10.95 ; ^^\[][]\OT1/cmr/m/n/10.95 )\OML/cmm/m/it/10.95 ;  []
 $ 
  []
 
 
-Overfull \hbox (2.07748pt too wide) in paragraph at lines 196--199
+Overfull \hbox (2.07748pt too wide) in paragraph at lines 200--203
 []$ \OML/cmm/m/it/10.95 ^^L[] \OMS/cmsy/m/n/10.95 ^^X []\OT1/cmr/m/n/10.95 (\OM
 L/cmm/m/it/10.95 ^^V[]; ^^[[]\OT1/cmr/m/n/10.95 )\OML/cmm/m/it/10.95 ;  []p \OT
 1/cmr/m/n/10.95 = 1\OML/cmm/m/it/10.95 ; \OT1/cmr/m/n/10.95 2\OML/cmm/m/it/10.9
 5 ; :::; \OT1/cmr/m/n/10.95 23$ 
  []
 
-[11] [12] [13] [14] [15] [16] [17]
-Underfull \hbox (badness 10000) in paragraph at lines 579--580
+[11] [12] <fig__trace_lambda_sim.pdf, id=67, 578.16pt x 433.62pt>
+File: fig__trace_lambda_sim.pdf Graphic file (type pdf)
+
+<use fig__trace_lambda_sim.pdf>
+Package pdftex.def Info: fig__trace_lambda_sim.pdf used on input line 311.
+(pdftex.def)             Requested size: 433.62pt x 325.2142pt.
+ <test.pdf, id=68, 578.16pt x 433.62pt>
+File: test.pdf Graphic file (type pdf)
+
+<use test.pdf>
+Package pdftex.def Info: test.pdf used on input line 321.
+(pdftex.def)             Requested size: 404.70924pt x 303.53192pt.
+
+<fig_tobit_trace_sigma_covariance_sim.pdf, id=69, page=1, 578.16pt x 578.16pt>
+File: fig_tobit_trace_sigma_covariance_sim.pdf Graphic file (type pdf)
+
+<use fig_tobit_trace_sigma_covariance_sim.pdf, page 1>
+Package pdftex.def Info: fig_tobit_trace_sigma_covariance_sim.pdf, page1 used o
+n input line 333.
+(pdftex.def)             Requested size: 361.34999pt x 361.3491pt.
+ [13] [14 <./fig__trace_lambda_sim.pdf>] [15 <./test.pdf>] [16 <./fig_tobit_tra
+ce_sigma_covariance_sim.pdf>] <fig__trace_lambda.pdf, id=101, 578.16pt x 433.62
+pt>
+File: fig__trace_lambda.pdf Graphic file (type pdf)
+
+<use fig__trace_lambda.pdf>
+Package pdftex.def Info: fig__trace_lambda.pdf used on input line 378.
+(pdftex.def)             Requested size: 361.34999pt x 271.01183pt.
+
+<fig_tobit_trace_beta_arc.pdf, id=102, 578.16pt x 433.62pt>
+File: fig_tobit_trace_beta_arc.pdf Graphic file (type pdf)
+
+<use fig_tobit_trace_beta_arc.pdf>
+Package pdftex.def Info: fig_tobit_trace_beta_arc.pdf used on input line 397.
+(pdftex.def)             Requested size: 361.34999pt x 271.01183pt.
+
+<fig_tobit_trace_sigma_covariance.pdf, id=103, page=1, 578.16pt x 578.16pt>
+File: fig_tobit_trace_sigma_covariance.pdf Graphic file (type pdf)
+
+<use fig_tobit_trace_sigma_covariance.pdf, page 1>
+Package pdftex.def Info: fig_tobit_trace_sigma_covariance.pdf, page1 used on in
+put line 420.
+(pdftex.def)             Requested size: 361.34999pt x 361.3491pt.
+ [17] [18 <./fig__trace_lambda.pdf> <./fig_tobit_trace_beta_arc.pdf>] [19 <./fi
+g_tobit_trace_sigma_covariance.pdf>] <Onset_postpred.pdf, id=132, page=3, 433.6
+2pt x 433.62pt>
+File: Onset_postpred.pdf Graphic file (type pdf)
+
+<use Onset_postpred.pdf, page 3>
+Package pdftex.def Info: Onset_postpred.pdf, page3 used on input line 473.
+(pdftex.def)             Requested size: 361.34999pt x 361.36676pt.
+ [20] [21 <./Onset_postpred.pdf>]
+<Consec_Data_Series.pdf, id=145, 433.62pt x 650.43pt>
+File: Consec_Data_Series.pdf Graphic file (type pdf)
+
+<use Consec_Data_Series.pdf>
+Package pdftex.def Info: Consec_Data_Series.pdf used on input line 482.
+(pdftex.def)             Requested size: 361.34999pt x 542.05013pt.
+
+./JABES-submission.tex:484: Extra }, or forgotten \endgroup.
+\@endfloatbox ...pagefalse \outer@nobreak \egroup 
+                                                  \color@endbox 
+l.484 \end{figure}
+                  
+? 
+[22 <./Consec_Data_Series.pdf>] <Interannual.pdf, id=156, 505.89pt x 505.89pt>
+File: Interannual.pdf Graphic file (type pdf)
+
+<use Interannual.pdf>
+Package pdftex.def Info: Interannual.pdf used on input line 492.
+(pdftex.def)             Requested size: 361.34999pt x 361.35352pt.
+ [23] [24] [25]
+Underfull \hbox (badness 10000) in paragraph at lines 594--595
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 605--606
+Underfull \hbox (badness 10000) in paragraph at lines 620--621
 
  []
 
-[18] (./JABES-submission.bbl [19]
+[26] [27] (./JABES-submission.bbl
 Overfull \hbox (118.82355pt too wide) in paragraph at lines 60--65
 \OT1/cmr/bx/n/10.95 URL: \OT1/cmr/m/it/10.95 http://dx.doi.org/10.1002/qj.49708
 837511$\OMS/cmsy/m/n/10.95 n$\OT1/cmr/m/it/10.95 nhttp://onlinelibrary.wiley.co
 m/doi/10.1002/qj.49708837511/abstract 
  []
 
-[20] [21] [22]) [23] (./JABES-submission.aux) ) 
+[28] [29] [30]) [31] [32] [33] [34] [35]
+./JABES-submission.tex:821: Output loop---100 consecutive dead cycles.
+\clearpage ...rite \m@ne {}\vbox {}\penalty -\@Mi 
+                                                  
+l.821 \end{document}
+                    
+? 
+[36
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+] (./JABES-submission.aux)
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
 Here is how much of TeX's memory you used:
- 2928 strings out of 493117
- 38940 string characters out of 6135433
- 108915 words of memory out of 5000000
- 6339 multiletter control sequences out of 15000+600000
- 14515 words of font info for 55 fonts, out of 8000000 for 9000
+ 2982 strings out of 493089
+ 40361 string characters out of 6134842
+ 117214 words of memory out of 5000000
+ 6405 multiletter control sequences out of 15000+600000
+ 14682 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,11n,26p,1367b,277s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2014/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2014/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/local/texlive/2014/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2014/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2014/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2014/texmf-dist/f
-onts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2014/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2014/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2014/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2014/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmr9.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public
-/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmsy8.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmti10.pfb>
-Output written on JABES-submission.pdf (23 pages, 538426 bytes).
+ 38i,11n,26p,1367b,322s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
+></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb
+></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb>
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
+/usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></u
+sr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr
+/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/l
+ocal/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/loc
+al/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local
+/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/te
+xlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texli
+ve/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/
+2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2
+015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/201
+5/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2015/
+texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2015/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
+Output written on JABES-submission.pdf (36 pages, 1406368 bytes).
 PDF statistics:
- 150 PDF objects out of 1000 (max. 8388607)
- 105 compressed objects within 2 object streams
+ 257 PDF objects out of 1000 (max. 8388607)
+ 180 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 61 words of extra memory for PDF output out of 10000 (max. 10000000)
 
